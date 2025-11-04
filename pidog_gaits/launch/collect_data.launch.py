@@ -1,0 +1,51 @@
+"""Launch file for collecting training data."""
+
+from launch import LaunchDescription
+from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python.packages import get_package_share_directory
+import os
+
+
+def generate_launch_description():
+    """
+    Launch Webots + Gait Generator + Data Collector.
+
+    This collects training data by running various gaits and recording the joint angles.
+    """
+
+    pidog_sim_dir = get_package_share_directory('pidog_sim')
+
+    return LaunchDescription([
+        # Launch Webots simulator
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(pidog_sim_dir, 'launch', 'pidog_launch.py')
+            )
+        ),
+
+        # Launch gait generator
+        Node(
+            package='pidog_gaits',
+            executable='gait_generator',
+            name='gait_generator',
+            output='screen',
+            parameters=[{
+                'frequency': 30,
+                'default_gait': 'walk_forward'
+            }]
+        ),
+
+        # Launch data collector
+        Node(
+            package='pidog_gaits',
+            executable='data_collector',
+            name='data_collector',
+            output='screen',
+            parameters=[{
+                'output_dir': './training_data',
+                'collect_duration': 60.0  # 60 seconds per gait
+            }]
+        ),
+    ])
