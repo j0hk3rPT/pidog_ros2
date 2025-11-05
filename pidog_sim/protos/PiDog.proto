@@ -152,7 +152,9 @@ PROTO PiDog [
                     ]
                     name "back_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject USE acrylic_visual
+                    boundingObject Sphere {
+                      radius 0.008
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -289,7 +291,9 @@ PROTO PiDog [
                     ]
                     name "front_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject USE acrylic_visual
+                    boundingObject Sphere {
+                      radius 0.008
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -417,7 +421,9 @@ PROTO PiDog [
                     ]
                     name "back_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject USE acrylic_visual
+                    boundingObject Sphere {
+                      radius 0.008
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -568,7 +574,9 @@ PROTO PiDog [
                     ]
                     name "front_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject USE acrylic_visual
+                    boundingObject Sphere {
+                      radius 0.008
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
