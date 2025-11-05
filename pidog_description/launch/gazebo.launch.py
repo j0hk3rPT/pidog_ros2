@@ -59,9 +59,9 @@ def generate_launch_description():
             executable='create',
             arguments=[
                 '-name', 'Robot.urdf',
-                '-x', '1.2',
-                '-z', '2.3',
-                '-Y', '3.4',
+                '-x', '0.0',
+                '-y', '0.0',
+                '-z', '0.15',
                 '-topic', '/robot_description',
             ],
             output='screen',
