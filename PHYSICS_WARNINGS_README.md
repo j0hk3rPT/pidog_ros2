@@ -58,12 +58,12 @@ Then you'd need simplified collision geometry (boxes/cylinders).
 Current optimizations in `pidog_world.wbt`:
 
 ```python
-basicTimeStep 64          # 4x original (16ms → 64ms)
-optimalThreadCount 4      # Multi-core physics
-softERP 0.05              # Very soft error reduction
-softCFM 0.1               # Very forgiving constraints
+basicTimeStep 16          # Standard timestep (16ms)
+optimalThreadCount 16     # Multi-core physics
+softERP 0.3               # Moderate error reduction
+softCFM 0.0001            # Standard constraints
 maxContactJoints 10       # Limit contact points
-selfCollision FALSE       # Disabled self-collision
+selfCollision TRUE        # Self-collision enabled
 ```
 
 This reduces warnings by ~80-90% compared to default settings.

@@ -13,12 +13,12 @@ PROTO PiDog [
   field  SFString    customData      ""       # Is `Robot.customData`.
   field  SFBool      supervisor      FALSE    # Is `Robot.supervisor`.
   field  SFBool      synchronization TRUE     # Is `Robot.synchronization`.
-  field  SFBool      selfCollision   FALSE    # Is `Robot.selfCollision`.
-  field SFVec3f motorPID          20 0 0     # (P, I, D)
-  field SFFloat motorMaxVelocity  10.0       # rad/s
-  field SFFloat motorMaxTorque    0.3       # N·m
-  field SFFloat motorMinPosition -1.57      # rad
-  field SFFloat motorMaxPosition  1.57      # rad
+  field  SFBool      selfCollision   TRUE     # Is `Robot.selfCollision`.
+  field SFVec3f motorPID          5 0 3      # (P, I, D) - low P, high D for stability
+  field SFFloat motorMaxVelocity  7.0       # rad/s (real servo: 0.15s/60° at 6V)
+  field SFFloat motorMaxTorque    0.137     # N·m (real servo: 1.4 kg·cm at 6V)
+  field SFFloat motorMinPosition -2.00      # rad (±115°, real servo: 180°±10°)
+  field SFFloat motorMaxPosition  2.00      # rad
 ]
 {
   Robot {
@@ -33,6 +33,26 @@ PROTO PiDog [
     children [
       DEF body_visual CadShape {
         url "../../../../pidog_description/share/pidog_description/meshes/body.dae"
+      }
+      Solid {
+        translation 0.000 0.000 -0.025
+        children [
+          Shape {
+            geometry Box {
+              size 0.080 0.040 0.020
+            }
+          }
+        ]
+        name "battery"
+        physics Physics {
+          density -1
+          mass 0.100
+          centerOfMass [ 0.000 0.000 0.000 ]
+          inertiaMatrix [
+            1.67e-05 5.67e-05 6.67e-05
+            0.0 0.0 0.0
+          ]
+        }
       }
       HingeJoint {
         jointParameters HingeJointParameters {
@@ -123,7 +143,7 @@ PROTO PiDog [
                     }
                   }
                   Solid {
-                    translation 0.063500 -0.002250 0.001000
+                    translation 0.076000 -0.008000 0.001000
                     rotation 0.000000 1.000000 0.000000 3.141500
                     children [
                       DEF acrylic_visual CadShape {
@@ -131,8 +151,14 @@ PROTO PiDog [
                       }
                     ]
                     name "back_right_acrylic"
-                    boundingObject DEF acrylic Sphere {
-                      radius 0.012
+                    contactMaterial "paw"
+                    boundingObject Transform {
+                      translation 0.000 0.012 -0.008
+                      children [
+                        DEF acrylic Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -263,14 +289,20 @@ PROTO PiDog [
                     }
                   }
                   Solid {
-                    translation 0.063500 -0.002250 0.001000
+                    translation 0.076000 -0.008000 0.001000
                     rotation 0.000000 1.000000 0.000000 3.141500
                     children [
                       USE acrylic_visual
                     ]
                     name "front_right_acrylic"
-                    boundingObject Sphere {
-                      radius 0.012
+                    contactMaterial "paw"
+                    boundingObject Transform {
+                      translation 0.000 0.012 -0.008
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -393,13 +425,19 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.063500 -0.002250 -0.001000
+                    translation -0.076000 -0.008000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
                     name "back_left_acrylic"
-                    boundingObject Sphere {
-                      radius 0.012
+                    contactMaterial "paw"
+                    boundingObject Transform {
+                      translation 0.000 0.012 -0.008
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -545,13 +583,19 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.063500 -0.002250 -0.001000
+                    translation -0.076000 -0.008000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
                     name "front_left_acrylic"
-                    boundingObject Sphere {
-                      radius 0.012
+                    contactMaterial "paw"
+                    boundingObject Transform {
+                      translation 0.000 0.012 -0.008
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -917,8 +961,8 @@ PROTO PiDog [
     }
     physics Physics {
       density -1
-      mass 0.150235
-      centerOfMass [ -0.000000 -0.000000 -0.000000 ]
+      mass 0.252
+      centerOfMass [ 0.010 0.000 0.005 ]
       inertiaMatrix [
         3.850881e-04 1.600993e-04 3.450055e-04
         1.660096e-08 1.660096e-08 4.845267e-09
