@@ -20,11 +20,17 @@ def generate_launch_description():
         world=os.path.join(package_dir, 'worlds', 'pidog_world.wbt'),
     )
 
-    # Direct controller node (runs inside Webots, connects via extern)
-    # No need for webots_ros2_driver or bridge - controller handles everything!
+    # Direct controller node (runs as external ROS2 node, connects to Webots)
+    direct_controller = Node(
+        package='pidog_control',
+        executable='pidog_direct_controller',
+        name='pidog_direct_controller',
+        output='screen'
+    )
 
     return LaunchDescription([
         webots,
+        direct_controller,
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action=webots,

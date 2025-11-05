@@ -36,7 +36,7 @@ PiDog {
   translation     0 0 0.1
   rotation        0 0 1 0
   name            "PiDog"
-  controller      "pidog_direct_controller"
+  controller      "<extern>"
   controllerArgs  []
   customData      ""
   supervisor      FALSE
