@@ -114,11 +114,11 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Standing pose publisher to hold robot up
-    standing_pose_publisher = Node(
-        package=resources_package,
-        executable='standing_pose_publisher',
-        name='standing_pose_publisher',
+    # Gazebo controller to hold robot in standing pose
+    gazebo_controller = Node(
+        package='pidog_control',
+        executable='pidog_gazebo_controller',
+        name='pidog_gazebo_controller',
         output='screen',
     )
 
@@ -131,5 +131,5 @@ def generate_launch_description():
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
-        standing_pose_publisher,
+        gazebo_controller,
     ])

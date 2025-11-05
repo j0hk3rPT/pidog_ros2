@@ -3,9 +3,27 @@
 <package format="3">
   <name>pidog_description</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>PiDog robot description and Gazebo simulation</description>
   <maintainer email="joel@todo.todo">joel</maintainer>
   <license>MIT</license>
+
+  <!-- Dependencies -->
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+
+  <!-- Gazebo dependencies -->
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>gz_ros2_control</depend>
+
+  <!-- ros2_control -->
+  <depend>controller_manager</depend>
+  <depend>joint_state_broadcaster</depend>
+  <depend>position_controllers</depend>
+  <depend>ros2_control</depend>
+  <depend>ros2_controllers</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
