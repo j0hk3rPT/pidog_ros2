@@ -1,0 +1,20 @@
+# PiDog Training Requirements - NVIDIA GPU (CUDA)
+# Install with: pip3 install -r requirements-gpu-cuda.txt
+
+# PyTorch with CUDA 12.1 support
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Visualization and data processing
+matplotlib>=3.5.0
+numpy>=1.21.0
+
+# Optional: Advanced training features
+tensorboard>=2.10.0
+tqdm>=4.65.0
+
+# Verification:
+# After installation, run:
+#   python3 -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0)}')"
