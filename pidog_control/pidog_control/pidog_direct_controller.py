@@ -30,13 +30,13 @@ class PiDogDirectController(Node):
             'neck1_to_motor_9', 'neck2_to_motor_10', 'neck3_to_motor_11'
         ]
 
-        # Initial positions: tilt head up
+        # Standing pose: shoulders straight, knees bent to lift body
         initial_positions = [
-            0.0, 0.0,  # front_left leg
-            0.0, 0.0,  # front_right leg
-            0.0, 0.0,  # back_left leg
-            0.0, 0.0,  # back_right leg
-            0.0,       # tail
+            0.0, -0.8,  # front_left: shoulder straight, knee bent 45° down
+            0.0, -0.8,  # front_right: shoulder straight, knee bent 45° down
+            0.0, -0.8,  # back_left: shoulder straight, knee bent 45° down
+            0.0, -0.8,  # back_right: shoulder straight, knee bent 45° down
+            0.0,        # tail neutral
             0.2, 0.2, 0.2  # neck joints (tilt head up)
         ]
 
