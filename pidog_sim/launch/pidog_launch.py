@@ -10,6 +10,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     package_dir = get_package_share_directory('pidog_sim')
+    robot_description_path = os.path.join(package_dir, 'resource', 'pidog_world.urdf')
 
     webots = WebotsLauncher(
         world=os.path.join(package_dir, 'worlds', 'pidog_world.wbt'),
@@ -17,6 +18,9 @@ def generate_launch_description():
 
     my_robot_driver = WebotsController(
         robot_name='PiDog',
+        parameters=[
+            {'robot_description': robot_description_path},
+        ],
     )
 
     return LaunchDescription([
