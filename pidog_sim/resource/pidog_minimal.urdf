@@ -1,4 +1,47 @@
 <?xml version="1.0" ?>
 <robot name="PiDog">
-    <!-- Minimal URDF - no plugin, webots_ros2_driver handles motors automatically -->
+    <webots>
+        <!-- Define all motors so webots_ros2_driver creates ROS topic interfaces -->
+        <device reference="body_to_front_left_leg_b" type="RotationalMotor">
+            <commandTopic>/PiDog/body_to_front_left_leg_b/set_position</commandTopic>
+        </device>
+        <device reference="front_left_leg_b_to_a" type="RotationalMotor">
+            <commandTopic>/PiDog/front_left_leg_b_to_a/set_position</commandTopic>
+        </device>
+
+        <device reference="body_to_front_right_leg_b" type="RotationalMotor">
+            <commandTopic>/PiDog/body_to_front_right_leg_b/set_position</commandTopic>
+        </device>
+        <device reference="front_right_leg_b_to_a" type="RotationalMotor">
+            <commandTopic>/PiDog/front_right_leg_b_to_a/set_position</commandTopic>
+        </device>
+
+        <device reference="body_to_back_left_leg_b" type="RotationalMotor">
+            <commandTopic>/PiDog/body_to_back_left_leg_b/set_position</commandTopic>
+        </device>
+        <device reference="back_left_leg_b_to_a" type="RotationalMotor">
+            <commandTopic>/PiDog/back_left_leg_b_to_a/set_position</commandTopic>
+        </device>
+
+        <device reference="body_to_back_right_leg_b" type="RotationalMotor">
+            <commandTopic>/PiDog/body_to_back_right_leg_b/set_position</commandTopic>
+        </device>
+        <device reference="back_right_leg_b_to_a" type="RotationalMotor">
+            <commandTopic>/PiDog/back_right_leg_b_to_a/set_position</commandTopic>
+        </device>
+
+        <device reference="motor_8_to_tail" type="RotationalMotor">
+            <commandTopic>/PiDog/motor_8_to_tail/set_position</commandTopic>
+        </device>
+
+        <device reference="neck1_to_motor_9" type="RotationalMotor">
+            <commandTopic>/PiDog/neck1_to_motor_9/set_position</commandTopic>
+        </device>
+        <device reference="neck2_to_motor_10" type="RotationalMotor">
+            <commandTopic>/PiDog/neck2_to_motor_10/set_position</commandTopic>
+        </device>
+        <device reference="neck3_to_motor_11" type="RotationalMotor">
+            <commandTopic>/PiDog/neck3_to_motor_11/set_position</commandTopic>
+        </device>
+    </webots>
 </robot>
