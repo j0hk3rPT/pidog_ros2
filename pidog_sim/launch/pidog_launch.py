@@ -22,11 +22,6 @@ def generate_launch_description():
     return LaunchDescription([
         webots,
         my_robot_driver,
-        Node(
-            package='pidog_control',
-            executable='pidog_gait_control',
-            name='pidog_gait_control',
-            output='screen'),
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action=webots,

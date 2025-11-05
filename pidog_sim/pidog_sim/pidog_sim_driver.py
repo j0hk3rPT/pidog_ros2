@@ -48,8 +48,6 @@ class PiDogSimDriver:
 
         qos_profile = QoSProfile(depth=10)
         self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
-        self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
-        self.timer = self.__node.create_timer(1/30, self.update)
 
         self.__node.get_logger().info("PiDogSimDriver initialized.")
 
