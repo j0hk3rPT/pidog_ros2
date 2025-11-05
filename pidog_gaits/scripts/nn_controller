@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Wrapper script for nn_controller."""
+from pidog_gaits.nn_controller import main
+
+if __name__ == '__main__':
+    main()
