@@ -132,7 +132,7 @@ PROTO PiDog [
                     ]
                     name "back_right_acrylic"
                     boundingObject DEF acrylic Sphere {
-                      radius 0.008
+                      radius 0.012
                     }
                     physics Physics {
                       density -1
@@ -270,7 +270,7 @@ PROTO PiDog [
                     ]
                     name "front_right_acrylic"
                     boundingObject Sphere {
-                      radius 0.008
+                      radius 0.012
                     }
                     physics Physics {
                       density -1
@@ -399,7 +399,7 @@ PROTO PiDog [
                     ]
                     name "back_left_acrylic"
                     boundingObject Sphere {
-                      radius 0.008
+                      radius 0.012
                     }
                     physics Physics {
                       density -1
@@ -551,7 +551,7 @@ PROTO PiDog [
                     ]
                     name "front_left_acrylic"
                     boundingObject Sphere {
-                      radius 0.008
+                      radius 0.012
                     }
                     physics Physics {
                       density -1

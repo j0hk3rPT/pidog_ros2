@@ -7,18 +7,19 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/project
 
 WorldInfo {
   title "PIDOG WORLD — pkg pidog_sim/worlds/pidog_world.wbt"
-  basicTimeStep 32
+  basicTimeStep 16
   optimalThreadCount 16
   contactProperties [
     ContactProperties {
       material1 "default"
       material2 "default"
-      coulombFriction 1.2
+      coulombFriction 1.5
       bounce 0
       bounceVelocity 0
-      softERP 0.2
-      softCFM 0.001
+      softERP 0.3
+      softCFM 0.0001
       maxContactJoints 10
+      bumpAbsorption 0.5
     }
   ]
 }
@@ -36,7 +37,7 @@ CircleArena {
 }
 
 PiDog {
-  translation     0 0 0.15
+  translation     0 0 0.18
   rotation        0 0 1 0
   name            "PiDog"
   controller      "<extern>"
