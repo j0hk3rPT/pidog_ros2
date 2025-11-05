@@ -30,19 +30,29 @@ class PiDogDirectController(Node):
             'neck1_to_motor_9', 'neck2_to_motor_10', 'neck3_to_motor_11'
         ]
 
+        # Initial positions: tilt head back for stability
+        initial_positions = [
+            0.0, 0.0,  # front_left leg
+            0.0, 0.0,  # front_right leg
+            0.0, 0.0,  # back_left leg
+            0.0, 0.0,  # back_right leg
+            0.0,       # tail
+            -0.3, -0.3, -0.3  # neck joints (tilt head back)
+        ]
+
         self.motors = []
-        for name in self.motor_names:
+        for i, name in enumerate(self.motor_names):
             motor = self.robot.getDevice(name)
             if motor is None:
                 self.get_logger().error(f"Motor not found: {name}")
             else:
-                motor.setPosition(0.0)
+                motor.setPosition(initial_positions[i])
                 self.motors.append(motor)
 
         self.get_logger().info(f"Initialized {len(self.motors)} motors")
 
-        # Current joint positions
-        self.joint_positions = [0.0] * 12
+        # Current joint positions (start with initial pose)
+        self.joint_positions = initial_positions.copy()
 
         # Subscribe to joint commands
         self.create_subscription(JointState, 'motor_pos', self.motor_callback, 10)
