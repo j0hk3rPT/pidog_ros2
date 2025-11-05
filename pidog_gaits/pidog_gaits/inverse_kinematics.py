@@ -75,6 +75,8 @@ class LegIK:
 
         for i, coord in enumerate(leg_coords):
             y, z = coord
+            # Invert Y for URDF coordinate system (forward is negative Y)
+            y = -y
             leg_angle, foot_angle = cls.coord2angles(y, z)
 
             # Adjust for leg mounting orientation

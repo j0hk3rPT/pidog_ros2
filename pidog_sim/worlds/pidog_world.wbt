@@ -23,7 +23,7 @@ WorldInfo {
     ContactProperties {
       material1 "paw"
       material2 "default"
-      coulombFriction 2.4
+      coulombFriction 1.8
       bounce 0
       bounceVelocity 0
       softERP 0.3

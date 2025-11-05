@@ -106,7 +106,7 @@ class Trot:
         """
         theta = step * pi / (self.STEP_COUNT - 1)
         temp = (self.leg_step_width[leg] * (cos(theta) - self.fb) / 2 * self.fb)
-        y = self.leg_origin[leg] - temp  # Inverted: was +temp, now -temp
+        y = self.leg_origin[leg] + temp  # Original: +temp (reverted from -temp)
         return y
 
     def step_z_func(self, step):
@@ -160,7 +160,7 @@ class Trot:
                         z = self.step_z_func(step)
                     else:
                         # Other legs slide on ground
-                        y = origin_leg_coord[i][0] - self.step_down_length[i] * self.fb  # Inverted: was +, now -
+                        y = origin_leg_coord[i][0] + self.step_down_length[i] * self.fb  # Original: + (reverted from -)
                         z = self.Z_ORIGIN
 
                     leg_coord.append([y, z])
