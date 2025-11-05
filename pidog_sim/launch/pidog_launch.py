@@ -18,14 +18,20 @@ def generate_launch_description():
 
     my_robot_driver = WebotsController(
         robot_name='PiDog',
-        parameters=[
-            {'robot_description': robot_description_path},
-        ],
+    )
+
+    # Bridge between gait generator and webots motors
+    bridge_node = Node(
+        package='pidog_control',
+        executable='pidog_webots_bridge',
+        name='pidog_webots_bridge',
+        output='screen'
     )
 
     return LaunchDescription([
         webots,
         my_robot_driver,
+        bridge_node,
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action=webots,
