@@ -7,7 +7,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/project
 
 WorldInfo {
   title "PIDOG WORLD — pkg pidog_sim/worlds/pidog_world.wbt"
-  basicTimeStep 16
+  basicTimeStep 32
   contactProperties [
     ContactProperties {
       material1 "default"
@@ -15,7 +15,7 @@ WorldInfo {
       coulombFriction 0.8
       bounce 0
       softERP 0.2
-      softCFM 1e-4
+      softCFM 0.001
     }
   ]
 }
@@ -41,7 +41,7 @@ PiDog {
   customData      ""
   supervisor      FALSE
   synchronization TRUE
-  selfCollision   TRUE
+  selfCollision   FALSE
   motorPID          20 0 0
   motorMaxVelocity  10.0
   motorMaxTorque    0.3
