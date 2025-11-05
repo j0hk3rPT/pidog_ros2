@@ -55,8 +55,6 @@ class PiDogSimDriver:
         self.joint_states = msg.position
 
     def step(self):
-        rclpy.spin_once(self.__node, timeout_sec=0)
-        # The driver spins the executor; just apply your control here
-        
+        # Webots framework handles spinning - just apply motor commands
         for i, m in enumerate(self.motor_list):
             m.setPosition(self.joint_states[i])
