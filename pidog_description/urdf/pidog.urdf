@@ -134,7 +134,7 @@
     <origin xyz="0.0405 -0.06685 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="back_right_leg_b_to_motor_0" type="fixed">
@@ -149,7 +149,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
 
   </joint>
     <joint name="back_right_leg_a_to_motor_1" type="fixed">
@@ -275,7 +275,7 @@
     <origin xyz="0.0405 0.05315 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="front_right_leg_b_to_motor_2" type="fixed">
@@ -290,7 +290,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
 
   </joint>
     <joint name="front_right_leg_a_to_motor_3" type="fixed">
@@ -416,7 +416,7 @@
     <origin xyz="-0.0405 -0.06685 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="back_left_leg_b_to_motor_4" type="fixed">
@@ -431,7 +431,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="back_left_leg_a_to_acrylic" type="fixed">
@@ -557,7 +557,7 @@
     <origin xyz="-0.0405 0.05315 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="front_left_leg_b_to_motor_6" type="fixed">
@@ -572,7 +572,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="0.3" lower="-1.57" upper="1.57"/>
-    <dynamics damping="0.5" friction="0.2"/>
+    <dynamics damping="2.0" friction="0.5"/>
   </joint>
 
   <joint name="front_left_leg_a_to_acrylic" type="fixed">
@@ -877,44 +877,44 @@
     <origin xyz="0.0 0.0 0.036" rpy="0 0.0 0"/>
   </joint>
 
-  <!-- Gazebo-specific settings for sphere paw contacts -->
+  <!-- Gazebo-specific settings for sphere paw contacts - EXTREMELY SOFT -->
   <gazebo reference="back_right_acrylic">
-    <mu1>1.2</mu1>
-    <mu2>1.2</mu2>
-    <kp>5000000.0</kp>
-    <kd>500.0</kd>
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+    <kp>100000.0</kp>
+    <kd>2000.0</kd>
     <minDepth>0.0</minDepth>
-    <maxVel>0.01</maxVel>
+    <maxVel>0.001</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_right_acrylic">
-    <mu1>1.2</mu1>
-    <mu2>1.2</mu2>
-    <kp>5000000.0</kp>
-    <kd>500.0</kd>
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+    <kp>100000.0</kp>
+    <kd>2000.0</kd>
     <minDepth>0.0</minDepth>
-    <maxVel>0.01</maxVel>
+    <maxVel>0.001</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="back_left_acrylic">
-    <mu1>1.2</mu1>
-    <mu2>1.2</mu2>
-    <kp>5000000.0</kp>
-    <kd>500.0</kd>
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+    <kp>100000.0</kp>
+    <kd>2000.0</kd>
     <minDepth>0.0</minDepth>
-    <maxVel>0.01</maxVel>
+    <maxVel>0.001</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_left_acrylic">
-    <mu1>1.2</mu1>
-    <mu2>1.2</mu2>
-    <kp>5000000.0</kp>
-    <kd>500.0</kd>
+    <mu1>2.0</mu1>
+    <mu2>2.0</mu2>
+    <kp>100000.0</kp>
+    <kd>2000.0</kd>
     <minDepth>0.0</minDepth>
-    <maxVel>0.01</maxVel>
+    <maxVel>0.001</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
