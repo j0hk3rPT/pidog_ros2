@@ -20,25 +20,11 @@ def generate_launch_description():
         world=os.path.join(package_dir, 'worlds', 'pidog_world.wbt'),
     )
 
-    my_robot_driver = WebotsController(
-        robot_name='PiDog',
-        parameters=[
-            {'robot_description': robot_description_content},
-        ],
-    )
-
-    # Bridge between gait generator and webots motors
-    bridge_node = Node(
-        package='pidog_control',
-        executable='pidog_webots_bridge',
-        name='pidog_webots_bridge',
-        output='screen'
-    )
+    # Direct controller node (runs inside Webots, connects via extern)
+    # No need for webots_ros2_driver or bridge - controller handles everything!
 
     return LaunchDescription([
         webots,
-        my_robot_driver,
-        bridge_node,
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action=webots,
