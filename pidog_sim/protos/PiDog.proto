@@ -15,8 +15,8 @@ PROTO PiDog [
   field  SFBool      synchronization TRUE     # Is `Robot.synchronization`.
   field  SFBool      selfCollision   TRUE     # Is `Robot.selfCollision`.
   field SFVec3f motorPID          20 0 0     # (P, I, D)
-  field SFFloat motorMaxVelocity  10.0       # rad/s
-  field SFFloat motorMaxTorque    0.3       # N·m
+  field SFFloat motorMaxVelocity  7.0       # rad/s (real servo: 0.15s/60° at 6V)
+  field SFFloat motorMaxTorque    0.137     # N·m (real servo: 1.4 kg·cm at 6V)
   field SFFloat motorMinPosition -1.57      # rad
   field SFFloat motorMaxPosition  1.57      # rad
 ]
@@ -33,6 +33,22 @@ PROTO PiDog [
     children [
       DEF body_visual CadShape {
         url "../../../../pidog_description/share/pidog_description/meshes/body.dae"
+      }
+      Solid {
+        translation 0.000 0.000 -0.025
+        children [
+          Shape {
+            geometry Box {
+              size 0.080 0.040 0.020
+            }
+          }
+        ]
+        name "battery"
+        physics Physics {
+          density -1
+          mass 0.100
+          centerOfMass [ 0.000 0.000 0.000 ]
+        }
       }
       HingeJoint {
         jointParameters HingeJointParameters {
@@ -921,8 +937,8 @@ PROTO PiDog [
     }
     physics Physics {
       density -1
-      mass 0.150235
-      centerOfMass [ -0.000000 -0.000000 -0.000000 ]
+      mass 0.252
+      centerOfMass [ 0.010 0.000 0.005 ]
       inertiaMatrix [
         3.850881e-04 1.600993e-04 3.450055e-04
         1.660096e-08 1.660096e-08 4.845267e-09

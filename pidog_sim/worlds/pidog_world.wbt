@@ -23,7 +23,7 @@ WorldInfo {
     ContactProperties {
       material1 "paw"
       material2 "default"
-      coulombFriction 2.8
+      coulombFriction 2.4
       bounce 0
       bounceVelocity 0
       softERP 0.3
@@ -56,8 +56,8 @@ PiDog {
   synchronization TRUE
   selfCollision   TRUE
   motorPID          20 0 0
-  motorMaxVelocity  10.0
-  motorMaxTorque    0.3
+  motorMaxVelocity  7.0
+  motorMaxTorque    0.137
   motorMinPosition -1.57
   motorMaxPosition  1.57
 }
