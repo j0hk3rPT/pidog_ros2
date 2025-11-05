@@ -1,0 +1,67 @@
+# Docker Compose for GPU-Accelerated PiDog Training
+# Supports both ROCm (AMD) and CUDA (NVIDIA) GPUs
+
+version: '3.8'
+
+services:
+  # ROCm service for AMD GPUs
+  pidog-rocm:
+    image: rocm/pytorch:latest
+    container_name: pidog_training_rocm
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    ipc: host
+    shm_size: '8gb'
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - ROCM_VISIBLE_DEVICES=0
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - rocm
+
+  # CUDA service for NVIDIA GPUs
+  pidog-cuda:
+    image: pytorch/pytorch:latest
+    container_name: pidog_training_cuda
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - PYTHONUNBUFFERED=1
+    ipc: host
+    shm_size: '8gb'
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - cuda
+
+  # CPU-only service (no GPU)
+  pidog-cpu:
+    image: pytorch/pytorch:latest
+    container_name: pidog_training_cpu
+    environment:
+      - PYTHONUNBUFFERED=1
+    ipc: host
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - cpu
