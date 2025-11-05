@@ -46,7 +46,7 @@ CircleArena {
 }
 
 PiDog {
-  translation     0 0 0.15
+  translation     0 0 0.12
   rotation        0 0 1 0
   name            "PiDog"
   controller      "<extern>"
@@ -55,7 +55,7 @@ PiDog {
   supervisor      FALSE
   synchronization TRUE
   selfCollision   TRUE
-  motorPID          20 0 0
+  motorPID          20 0 1
   motorMaxVelocity  7.0
   motorMaxTorque    0.137
   motorMinPosition -1.57
