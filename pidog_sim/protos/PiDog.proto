@@ -14,7 +14,7 @@ PROTO PiDog [
   field  SFBool      supervisor      FALSE    # Is `Robot.supervisor`.
   field  SFBool      synchronization TRUE     # Is `Robot.synchronization`.
   field  SFBool      selfCollision   TRUE     # Is `Robot.selfCollision`.
-  field SFVec3f motorPID          20 0 0     # (P, I, D)
+  field SFVec3f motorPID          20 0 1     # (P, I, D) - added damping
   field SFFloat motorMaxVelocity  7.0       # rad/s (real servo: 0.15s/60° at 6V)
   field SFFloat motorMaxTorque    0.137     # N·m (real servo: 1.4 kg·cm at 6V)
   field SFFloat motorMinPosition -1.57      # rad
