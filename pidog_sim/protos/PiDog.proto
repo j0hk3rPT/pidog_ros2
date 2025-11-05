@@ -66,8 +66,8 @@ PROTO PiDog [
                 }
               ]
               name "motor_0"
-              boundingObject DEF motor Mesh {
-                url "../../../../pidog_description/share/pidog_description/meshes/motor.dae"
+              boundingObject DEF motor Box {
+                size 0.012 0.012 0.013
               }
               physics Physics {
                 density -1
@@ -109,7 +109,9 @@ PROTO PiDog [
                       USE motor_visual
                     ]
                     name "motor_1"
-                    boundingObject USE motor
+                    boundingObject Box {
+                      size 0.012 0.012 0.013
+                    }
                     physics Physics {
                       density -1
                       mass 0.009000
@@ -129,8 +131,8 @@ PROTO PiDog [
                       }
                     ]
                     name "back_right_acrylic"
-                    boundingObject DEF acrylic Mesh {
-                      url "../../../../pidog_description/share/pidog_description/meshes/acrylic.dae"
+                    boundingObject DEF acrylic Sphere {
+                      radius 0.012
                     }
                     physics Physics {
                       density -1
@@ -144,8 +146,10 @@ PROTO PiDog [
                   }
                 ]
                 name "back_right_leg_a"
-                boundingObject DEF leg_a Mesh {
-                  url "../../../../pidog_description/share/pidog_description/meshes/leg_a.dae"
+                boundingObject DEF leg_a Cylinder {
+                  height 0.08
+                  radius 0.006
+                  subdivision 8
                 }
                 physics Physics {
                   density -1
@@ -160,8 +164,10 @@ PROTO PiDog [
             }
           ]
           name "back_right_leg_b"
-          boundingObject DEF leg_b Mesh {
-            url "../../../../pidog_description/share/pidog_description/meshes/leg_b.dae"
+          boundingObject DEF leg_b Cylinder {
+            height 0.055
+            radius 0.006
+            subdivision 8
           }
           physics Physics {
             density -1
@@ -202,7 +208,9 @@ PROTO PiDog [
                 USE motor_visual
               ]
               name "motor_2"
-              boundingObject USE motor
+              boundingObject Box {
+                size 0.012 0.012 0.013
+              }
               physics Physics {
                 density -1
                 mass 0.009000
@@ -241,7 +249,9 @@ PROTO PiDog [
                       USE motor_visual
                     ]
                     name "motor_3"
-                    boundingObject USE motor
+                    boundingObject Box {
+                      size 0.012 0.012 0.013
+                    }
                     physics Physics {
                       density -1
                       mass 0.009000
@@ -259,7 +269,9 @@ PROTO PiDog [
                       USE acrylic_visual
                     ]
                     name "front_right_acrylic"
-                    boundingObject USE acrylic
+                    boundingObject Sphere {
+                      radius 0.012
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -272,7 +284,11 @@ PROTO PiDog [
                   }
                 ]
                 name "front_right_leg_a"
-                boundingObject USE leg_a
+                boundingObject Cylinder {
+                  height 0.08
+                  radius 0.006
+                  subdivision 8
+                }
                 physics Physics {
                   density -1
                   mass 0.007296
@@ -286,7 +302,11 @@ PROTO PiDog [
             }
           ]
           name "front_right_leg_b"
-          boundingObject USE leg_b
+          boundingObject Cylinder {
+            height 0.055
+            radius 0.006
+            subdivision 8
+          }
           physics Physics {
             density -1
             mass 0.007296
@@ -331,7 +351,9 @@ PROTO PiDog [
                 USE motor_visual
               ]
               name "motor_4"
-              boundingObject USE motor
+              boundingObject Box {
+                size 0.012 0.012 0.013
+              }
               physics Physics {
                 density -1
                 mass 0.009000
@@ -376,7 +398,9 @@ PROTO PiDog [
                       USE acrylic_visual
                     ]
                     name "back_left_acrylic"
-                    boundingObject USE acrylic
+                    boundingObject Sphere {
+                      radius 0.012
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -397,11 +421,8 @@ PROTO PiDog [
                       }
                     ]
                     name "motor_5"
-                    boundingObject Pose {
-                      rotation 0.000000 0.000000 1.000000 3.141500
-                      children [
-                        USE motor
-                      ]
+                    boundingObject Box {
+                      size 0.012 0.012 0.013
                     }
                     physics Physics {
                       density -1
@@ -415,11 +436,10 @@ PROTO PiDog [
                   }
                 ]
                 name "back_left_leg_a"
-                boundingObject Pose {
-                  rotation 0.000000 1.000000 0.000000 3.141500
-                  children [
-                    USE leg_a
-                  ]
+                boundingObject Cylinder {
+                  height 0.08
+                  radius 0.006
+                  subdivision 8
                 }
                 physics Physics {
                   density -1
@@ -434,11 +454,10 @@ PROTO PiDog [
             }
           ]
           name "back_left_leg_b"
-          boundingObject Pose {
-            rotation 1.000000 0.000000 0.000000 3.141500
-            children [
-              USE leg_b
-            ]
+          boundingObject Cylinder {
+            height 0.055
+            radius 0.006
+            subdivision 8
           }
           physics Physics {
             density -1
@@ -484,7 +503,9 @@ PROTO PiDog [
                 USE motor_visual
               ]
               name "motor_6"
-              boundingObject USE motor
+              boundingObject Box {
+                size 0.012 0.012 0.013
+              }
               physics Physics {
                 density -1
                 mass 0.009000
@@ -529,7 +550,9 @@ PROTO PiDog [
                       USE acrylic_visual
                     ]
                     name "front_left_acrylic"
-                    boundingObject USE acrylic
+                    boundingObject Sphere {
+                      radius 0.012
+                    }
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -550,11 +573,8 @@ PROTO PiDog [
                       }
                     ]
                     name "motor_7"
-                    boundingObject Pose {
-                      rotation 0.000000 0.000000 1.000000 3.141500
-                      children [
-                        USE motor
-                      ]
+                    boundingObject Box {
+                      size 0.012 0.012 0.013
                     }
                     physics Physics {
                       density -1
@@ -568,11 +588,10 @@ PROTO PiDog [
                   }
                 ]
                 name "front_left_leg_a"
-                boundingObject Pose {
-                  rotation 0.000000 1.000000 0.000000 3.141500
-                  children [
-                    USE leg_a
-                  ]
+                boundingObject Cylinder {
+                  height 0.08
+                  radius 0.006
+                  subdivision 8
                 }
                 physics Physics {
                   density -1
@@ -587,11 +606,10 @@ PROTO PiDog [
             }
           ]
           name "front_left_leg_b"
-          boundingObject Pose {
-            rotation 1.000000 0.000000 0.000000 3.141500
-            children [
-              USE leg_b
-            ]
+          boundingObject Cylinder {
+            height 0.055
+            radius 0.006
+            subdivision 8
           }
           physics Physics {
             density -1
@@ -640,8 +658,8 @@ PROTO PiDog [
                 }
               ]
               name "tail"
-              boundingObject DEF tail Mesh {
-                url "../../../../pidog_description/share/pidog_description/meshes/tail.dae"
+              boundingObject DEF tail Box {
+                size 0.006 0.035 0.006
               }
               physics Physics {
                 density -1
@@ -656,11 +674,8 @@ PROTO PiDog [
           }
         ]
         name "motor_8"
-        boundingObject Pose {
-          rotation -0.707123 0.707090 -0.000033 3.141527
-          children [
-            USE motor
-          ]
+        boundingObject Box {
+          size 0.012 0.012 0.013
         }
         physics Physics {
           density -1
@@ -774,8 +789,8 @@ PROTO PiDog [
                                             }
                                           ]
                                           name "eyes"
-                                          boundingObject DEF eyes Mesh {
-                                            url "../../../../pidog_description/share/pidog_description/meshes/eyes.dae"
+                                          boundingObject DEF eyes Box {
+                                            size 0.030 0.040 0.015
                                           }
                                           physics Physics {
                                             density -1
@@ -789,8 +804,8 @@ PROTO PiDog [
                                         }
                                       ]
                                       name "head"
-                                      boundingObject DEF head Mesh {
-                                        url "../../../../pidog_description/share/pidog_description/meshes/head.dae"
+                                      boundingObject DEF head Box {
+                                        size 0.030 0.050 0.040
                                       }
                                       physics Physics {
                                         density -1
@@ -804,7 +819,9 @@ PROTO PiDog [
                                     }
                                   ]
                                   name "motor_11"
-                                  boundingObject USE motor
+                                  boundingObject Box {
+                                    size 0.012 0.012 0.013
+                                  }
                                   physics Physics {
                                     density -1
                                     mass 0.009000
@@ -818,8 +835,8 @@ PROTO PiDog [
                               }
                             ]
                             name "neck3"
-                            boundingObject DEF neck3 Mesh {
-                              url "../../../../pidog_description/share/pidog_description/meshes/neck3.dae"
+                            boundingObject DEF neck3 Box {
+                              size 0.040 0.015 0.030
                             }
                             physics Physics {
                               density -1
@@ -833,7 +850,9 @@ PROTO PiDog [
                           }
                         ]
                         name "motor_10"
-                        boundingObject USE motor
+                        boundingObject Box {
+                          size 0.012 0.012 0.013
+                        }
                         physics Physics {
                           density -1
                           mass 0.009000
@@ -847,8 +866,8 @@ PROTO PiDog [
                     }
                   ]
                   name "neck2"
-                  boundingObject DEF neck2 Mesh {
-                    url "../../../../pidog_description/share/pidog_description/meshes/neck2.dae"
+                  boundingObject DEF neck2 Box {
+                    size 0.015 0.045 0.015
                   }
                   physics Physics {
                     density -1
@@ -862,7 +881,9 @@ PROTO PiDog [
                 }
               ]
               name "motor_9"
-              boundingObject USE motor
+              boundingObject Box {
+                size 0.012 0.012 0.013
+              }
               physics Physics {
                 density -1
                 mass 0.009000
@@ -876,8 +897,8 @@ PROTO PiDog [
           }
         ]
         name "neck1"
-        boundingObject DEF neck1 Mesh {
-          url "../../../../pidog_description/share/pidog_description/meshes/neck1.dae"
+        boundingObject DEF neck1 Box {
+          size 0.008 0.020 0.020
         }
         physics Physics {
           density -1
@@ -891,8 +912,8 @@ PROTO PiDog [
       }
     ]
     name IS name
-    boundingObject DEF body Mesh {
-      url "../../../../pidog_description/share/pidog_description/meshes/body.dae"
+    boundingObject DEF body Box {
+      size 0.12 0.16 0.04
     }
     physics Physics {
       density -1
