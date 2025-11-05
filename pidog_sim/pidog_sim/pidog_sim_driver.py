@@ -1,8 +1,4 @@
-import rclpy
-from std_msgs.msg import Float32, Float32MultiArray
-from rclpy.qos import QoSProfile
 from sensor_msgs.msg import JointState
-from tf2_ros import TransformBroadcaster, TransformStamped
 
 class PiDogSimDriver:
     def init(self, webots_node, properties):
@@ -39,19 +35,19 @@ class PiDogSimDriver:
 
         self.joint_states = [0.0] * 12
 
-        # Use the webots_node provided by the framework (don't create new node!)
-        self.__node = webots_node
+        # Store webots_node for later use - it IS the ROS node
+        self.node = webots_node
 
-        # Create subscription for motor commands
-        self.__node.create_subscription(JointState, 'motor_pos',
-                                        self.__cmd_pos_callback, 1)
+        # Create subscription for motor commands from gait generator
+        self.node.createSubscription(JointState, 'motor_pos', self.__cmd_pos_callback)
 
-        qos_profile = QoSProfile(depth=10)
-        self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
+        # Create publisher for joint states
+        self.joint_pub = self.node.createPublisher(JointState, 'joint_states')
 
-        self.__node.get_logger().info("PiDogSimDriver initialized.")
+        print("PiDogSimDriver initialized.")
 
-    def __cmd_pos_callback(self, msg: Float32):
+    def __cmd_pos_callback(self, msg):
+        """Callback to receive motor position commands from gait generator."""
         self.joint_states = msg.position
 
     def step(self):
