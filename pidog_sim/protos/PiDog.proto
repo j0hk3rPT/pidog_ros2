@@ -425,7 +425,7 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.080000 -0.008000 -0.001000
+                    translation -0.076000 -0.012000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
@@ -583,7 +583,7 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.080000 -0.008000 -0.001000
+                    translation -0.076000 -0.012000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
