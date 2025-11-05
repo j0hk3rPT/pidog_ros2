@@ -2,7 +2,7 @@
 # license: Apache License 2.0
 # license url: http://www.apache.org/licenses/LICENSE-2.0
 # This is a proto file for Webots for the PiDog
-# Extracted from: /home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/urdf/pidog.urdf
+# Extracted from: ../../pidog_description/urdf/pidog.urdf
 
 PROTO PiDog [
   field  SFVec3f     translation     0 0 0.1
@@ -32,7 +32,7 @@ PROTO PiDog [
     selfCollision IS selfCollision
     children [
       DEF body_visual CadShape {
-        url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/body.dae"
+        url "../../pidog_description/meshes/body.dae"
       }
       HingeJoint {
         jointParameters HingeJointParameters {
@@ -57,17 +57,17 @@ PROTO PiDog [
           rotation 0.000000 1.000000 0.000000 1.570000
           children [
             DEF leg_b_visual CadShape {
-              url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/leg_b.dae"
+              url "../../pidog_description/meshes/leg_b.dae"
             }
             Solid {
               children [
                 DEF motor_visual CadShape {
-                  url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/motor.dae"
+                  url "../../pidog_description/meshes/motor.dae"
                 }
               ]
               name "motor_0"
               boundingObject DEF motor Mesh {
-                url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/motor.dae"
+                url "../../pidog_description/meshes/motor.dae"
               }
               physics Physics {
                 density -1
@@ -102,7 +102,7 @@ PROTO PiDog [
                 rotation 0.000000 0.000000 1.000000 1.570000
                 children [
                   DEF leg_a_visual CadShape {
-                    url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/leg_a.dae"
+                    url "../../pidog_description/meshes/leg_a.dae"
                   }
                   Solid {
                     children [
@@ -125,12 +125,12 @@ PROTO PiDog [
                     rotation 0.000000 1.000000 0.000000 3.141500
                     children [
                       DEF acrylic_visual CadShape {
-                        url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/acrylic.dae"
+                        url "../../pidog_description/meshes/acrylic.dae"
                       }
                     ]
                     name "back_right_acrylic"
                     boundingObject DEF acrylic Mesh {
-                      url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/acrylic.dae"
+                      url "../../pidog_description/meshes/acrylic.dae"
                     }
                     physics Physics {
                       density -1
@@ -145,7 +145,7 @@ PROTO PiDog [
                 ]
                 name "back_right_leg_a"
                 boundingObject DEF leg_a Mesh {
-                  url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/leg_a.dae"
+                  url "../../pidog_description/meshes/leg_a.dae"
                 }
                 physics Physics {
                   density -1
@@ -161,7 +161,7 @@ PROTO PiDog [
           ]
           name "back_right_leg_b"
           boundingObject DEF leg_b Mesh {
-            url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/leg_b.dae"
+            url "../../pidog_description/meshes/leg_b.dae"
           }
           physics Physics {
             density -1
@@ -636,12 +636,12 @@ PROTO PiDog [
               translation 0.000000 0.000000 0.008000
               children [
                 DEF tail_visual CadShape {
-                  url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/tail.dae"
+                  url "../../pidog_description/meshes/tail.dae"
                 }
               ]
               name "tail"
               boundingObject DEF tail Mesh {
-                url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/tail.dae"
+                url "../../pidog_description/meshes/tail.dae"
               }
               physics Physics {
                 density -1
@@ -677,7 +677,7 @@ PROTO PiDog [
         rotation -0.357396 0.357412 0.862858 1.717723
         children [
           DEF neck1_visual CadShape {
-            url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck1.dae"
+            url "../../pidog_description/meshes/neck1.dae"
           }
           HingeJoint {
             jointParameters HingeJointParameters {
@@ -706,7 +706,7 @@ PROTO PiDog [
                   translation 0.006000 -0.001000 0.012500
                   children [
                     DEF neck2_visual CadShape {
-                      url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck2.dae"
+                      url "../../pidog_description/meshes/neck2.dae"
                     }
                     HingeJoint {
                       jointParameters HingeJointParameters {
@@ -735,7 +735,7 @@ PROTO PiDog [
                             translation 0.011000 0.000000 -0.000000
                             children [
                               DEF neck3_visual CadShape {
-                                url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck3.dae"
+                                url "../../pidog_description/meshes/neck3.dae"
                               }
                               HingeJoint {
                                 jointParameters HingeJointParameters {
@@ -764,18 +764,18 @@ PROTO PiDog [
                                       translation 0.025000 0.000000 0.015000
                                       children [
                                         DEF head_visual CadShape {
-                                          url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/head.dae"
+                                          url "../../pidog_description/meshes/head.dae"
                                         }
                                         Solid {
                                           translation 0.000000 0.000000 0.036000
                                           children [
                                             DEF eyes_visual CadShape {
-                                              url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/eyes.dae"
+                                              url "../../pidog_description/meshes/eyes.dae"
                                             }
                                           ]
                                           name "eyes"
                                           boundingObject DEF eyes Mesh {
-                                            url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/eyes.dae"
+                                            url "../../pidog_description/meshes/eyes.dae"
                                           }
                                           physics Physics {
                                             density -1
@@ -790,7 +790,7 @@ PROTO PiDog [
                                       ]
                                       name "head"
                                       boundingObject DEF head Mesh {
-                                        url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/head.dae"
+                                        url "../../pidog_description/meshes/head.dae"
                                       }
                                       physics Physics {
                                         density -1
@@ -819,7 +819,7 @@ PROTO PiDog [
                             ]
                             name "neck3"
                             boundingObject DEF neck3 Mesh {
-                              url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck3.dae"
+                              url "../../pidog_description/meshes/neck3.dae"
                             }
                             physics Physics {
                               density -1
@@ -848,7 +848,7 @@ PROTO PiDog [
                   ]
                   name "neck2"
                   boundingObject DEF neck2 Mesh {
-                    url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck2.dae"
+                    url "../../pidog_description/meshes/neck2.dae"
                   }
                   physics Physics {
                     density -1
@@ -877,7 +877,7 @@ PROTO PiDog [
         ]
         name "neck1"
         boundingObject DEF neck1 Mesh {
-          url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/neck1.dae"
+          url "../../pidog_description/meshes/neck1.dae"
         }
         physics Physics {
           density -1
@@ -892,7 +892,7 @@ PROTO PiDog [
     ]
     name IS name
     boundingObject DEF body Mesh {
-      url "/home/joel/distrobox/ros2-ubuntu/pidog_ws/src/pidog_ros2/pidog_description/meshes/body.dae"
+      url "../../pidog_description/meshes/body.dae"
     }
     physics Physics {
       density -1
