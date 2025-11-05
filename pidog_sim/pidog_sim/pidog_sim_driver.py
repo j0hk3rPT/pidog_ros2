@@ -39,10 +39,10 @@ class PiDogSimDriver:
 
         self.joint_states = [0.0] * 12
 
+        # Use the webots_node provided by the framework (don't create new node!)
+        self.__node = webots_node
 
-        rclpy.init(args=None)
-        self.__node = rclpy.create_node('pidog_sim_driver')
-        # Create subscription on the existing node (NO rclpy.init, NO extra node)
+        # Create subscription for motor commands
         self.__node.create_subscription(JointState, 'motor_pos',
                                         self.__cmd_pos_callback, 1)
 
