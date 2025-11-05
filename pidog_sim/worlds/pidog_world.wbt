@@ -45,7 +45,7 @@ PiDog {
   customData      ""
   supervisor      FALSE
   synchronization TRUE
-  selfCollision   FALSE
+  selfCollision   TRUE
   motorPID          20 0 0
   motorMaxVelocity  10.0
   motorMaxTorque    0.3

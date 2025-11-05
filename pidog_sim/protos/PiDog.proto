@@ -13,7 +13,7 @@ PROTO PiDog [
   field  SFString    customData      ""       # Is `Robot.customData`.
   field  SFBool      supervisor      FALSE    # Is `Robot.supervisor`.
   field  SFBool      synchronization TRUE     # Is `Robot.synchronization`.
-  field  SFBool      selfCollision   FALSE    # Is `Robot.selfCollision`.
+  field  SFBool      selfCollision   TRUE     # Is `Robot.selfCollision`.
   field SFVec3f motorPID          20 0 0     # (P, I, D)
   field SFFloat motorMaxVelocity  10.0       # rad/s
   field SFFloat motorMaxTorque    0.3       # N·m
