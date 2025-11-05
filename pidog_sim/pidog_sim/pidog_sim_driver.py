@@ -35,16 +35,21 @@ class PiDogSimDriver:
 
         self.joint_states = [0.0] * 12
 
-        # Store webots_node for later use - it IS the ROS node
+        # Store webots_node - it should have a 'robot' and potentially other attributes
         self.node = webots_node
 
-        # Create subscription for motor commands from gait generator
-        self.node.createSubscription(JointState, 'motor_pos', self.__cmd_pos_callback)
+        # Debug: print available attributes to find the right API
+        print(f"WebotsNode attributes: {[attr for attr in dir(webots_node) if not attr.startswith('_')]}")
 
-        # Create publisher for joint states
-        self.joint_pub = self.node.createPublisher(JointState, 'joint_states')
-
-        print("PiDogSimDriver initialized.")
+        # Try to access the underlying ROS node if it exists
+        try:
+            # Many webots plugins use webots_node as a ROS node directly
+            self.node.create_subscription(JointState, 'motor_pos', self.__cmd_pos_callback, 1)
+            self.joint_pub = self.node.create_publisher(JointState, 'joint_states', 1)
+            print("PiDogSimDriver initialized with subscriptions.")
+        except AttributeError as e:
+            print(f"Subscription creation failed: {e}")
+            print("Running without subscriptions - will use zero positions.")
 
     def __cmd_pos_callback(self, msg):
         """Callback to receive motor position commands from gait generator."""
