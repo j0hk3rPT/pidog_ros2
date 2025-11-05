@@ -16,8 +16,8 @@ WorldInfo {
       coulombFriction 1.5
       bounce 0
       bounceVelocity 0
-      softERP 0.3
-      softCFM 0.0001
+      softERP 0.2
+      softCFM 0.001
       maxContactJoints 10
     }
     ContactProperties {
@@ -55,7 +55,7 @@ PiDog {
   supervisor      FALSE
   synchronization TRUE
   selfCollision   TRUE
-  motorPID          20 0 1
+  motorPID          10 0 2
   motorMaxVelocity  7.0
   motorMaxTorque    0.137
   motorMinPosition -2.00
