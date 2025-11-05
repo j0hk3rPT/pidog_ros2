@@ -143,7 +143,7 @@ PROTO PiDog [
                     }
                   }
                   Solid {
-                    translation 0.076000 -0.008000 0.001000
+                    translation 0.072000 -0.008000 0.001000
                     rotation 0.000000 1.000000 0.000000 3.141500
                     children [
                       DEF acrylic_visual CadShape {
@@ -289,7 +289,7 @@ PROTO PiDog [
                     }
                   }
                   Solid {
-                    translation 0.076000 -0.008000 0.001000
+                    translation 0.072000 -0.008000 0.001000
                     rotation 0.000000 1.000000 0.000000 3.141500
                     children [
                       USE acrylic_visual
@@ -425,7 +425,7 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.076000 -0.008000 -0.001000
+                    translation -0.080000 -0.008000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
@@ -583,7 +583,7 @@ PROTO PiDog [
                     ]
                   }
                   Solid {
-                    translation -0.076000 -0.008000 -0.001000
+                    translation -0.080000 -0.008000 -0.001000
                     children [
                       USE acrylic_visual
                     ]
