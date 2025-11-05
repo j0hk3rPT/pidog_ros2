@@ -32,6 +32,7 @@ The following packages have been installed in your container:
 - `xvfb` - Virtual framebuffer for headless X server
 - `libgl1`, `libgl1-mesa-dri` - OpenGL libraries
 - `libglu1-mesa` - OpenGL utility library
+- `libsndio7.0` - Audio library required by Webots
 - Various X11 libraries for Webots GUI components
 - `mesa-utils` - OpenGL testing utilities
 
@@ -152,6 +153,7 @@ RUN apt-get update && apt-get install -y \
     libgl1 \
     libgl1-mesa-dri \
     libglu1-mesa \
+    libsndio7.0 \
     libxkbcommon-x11-0 \
     libxcb-icccm4 \
     libxcb-image0 \

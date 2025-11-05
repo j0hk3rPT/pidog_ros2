@@ -13,6 +13,25 @@ echo "Webots Docker Setup for ROS 2"
 echo "========================================="
 echo ""
 
+# Check and install missing libraries
+echo "Checking for required libraries..."
+MISSING_LIBS=()
+
+if ! ldconfig -p | grep -q "libsndio.so.7"; then
+    MISSING_LIBS+=("libsndio7.0")
+fi
+
+if [ ${#MISSING_LIBS[@]} -gt 0 ]; then
+    echo "Installing missing libraries: ${MISSING_LIBS[*]}"
+    apt-get update -qq
+    apt-get install -y -qq "${MISSING_LIBS[@]}"
+    echo "✓ Libraries installed successfully"
+else
+    echo "✓ All required libraries present"
+fi
+
+echo ""
+
 # Set environment variables
 echo "Setting environment variables..."
 export DISPLAY=:99
