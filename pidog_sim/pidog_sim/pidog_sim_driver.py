@@ -40,20 +40,20 @@ class PiDogSimDriver:
         self.joint_states = [0.0] * 12
 
 
-        # Use the webots_node instead of creating a new one
-        self.__node = webots_node
+        # Store the webots_node (which is the ROS 2 node wrapper)
+        self.__robot_node = webots_node
 
-        # Create subscription
-        self.__node.create_subscription(JointState, 'motor_pos',
-                                        self.__cmd_pos_callback, 1)
+        # Create subscription using the correct WebotsNode API
+        webots_node.createSubscription(JointState, 'motor_pos',
+                                       self.__cmd_pos_callback)
 
         qos_profile = QoSProfile(depth=10)
-        self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
-        self.broadcaster = TransformBroadcaster(self.__node, qos=qos_profile)
+        self.joint_pub = webots_node.createPublisher(JointState, 'joint_states')
+        self.broadcaster = TransformBroadcaster(webots_node, qos=qos_profile)
         # Timer not needed - step() is called by Webots driver framework
         # self.timer = self.__node.create_timer(1/30, self.update)
 
-        self.__node.get_logger().info("PiDogSimDriver initialized.")
+        webots_node.getLogger().info("PiDogSimDriver initialized.")
 
     def __cmd_pos_callback(self, msg: Float32):
         self.joint_states = msg.position
