@@ -7,7 +7,6 @@ from tf2_ros import TransformBroadcaster, TransformStamped
 class PiDogSimDriver:
     def init(self, webots_node, properties):
         self.__robot = webots_node.robot
-        self.__robot_node = webots_node
 
         self.__motor_0  = self.__robot.getDevice('body_to_front_left_leg_b')
         self.__motor_1  = self.__robot.getDevice('front_left_leg_b_to_a')
@@ -40,18 +39,26 @@ class PiDogSimDriver:
 
         self.joint_states = [0.0] * 12
 
-        # Create subscription using standard ROS 2 Node API
-        # webots_node has a 'robot' attribute (Webots Robot) and acts as a ROS 2 node
-        webots_node.create_subscription(JointState, 'motor_pos',
+
+        rclpy.init(args=None)
+        self.__node = rclpy.create_node('pidog_sim_driver')
+        # Create subscription on the existing node (NO rclpy.init, NO extra node)
+        self.__node.create_subscription(JointState, 'motor_pos',
                                         self.__cmd_pos_callback, 1)
 
-        print("PiDogSimDriver initialized successfully")
+        qos_profile = QoSProfile(depth=10)
+        self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
+        self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
+        self.timer = self.__node.create_timer(1/30, self.update)
 
-    def __cmd_pos_callback(self, msg):
+        self.__node.get_logger().info("PiDogSimDriver initialized.")
+
+    def __cmd_pos_callback(self, msg: Float32):
         self.joint_states = msg.position
 
     def step(self):
-        # The Webots driver framework handles spinning the node
-        # We just need to apply motor commands here
+        rclpy.spin_once(self.__node, timeout_sec=0)
+        # The driver spins the executor; just apply your control here
+
         for i, m in enumerate(self.motor_list):
             m.setPosition(self.joint_states[i])
