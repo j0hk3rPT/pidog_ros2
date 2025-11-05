@@ -116,9 +116,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0 0.0"/>
+      <origin xyz="0.0 -0.005 0.0" rpy="0.0 0 0.0"/>
       <geometry>
-        <mesh filename="package://pidog_description/meshes/acrylic.dae"/>
+        <sphere radius="0.008"/>
       </geometry>
     </collision>
     <inertial>
@@ -257,9 +257,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0 0.0"/>
+      <origin xyz="0.0 -0.005 0.0" rpy="0.0 0 0.0"/>
       <geometry>
-        <mesh filename="package://pidog_description/meshes/acrylic.dae"/>
+        <sphere radius="0.008"/>
       </geometry>
     </collision>
     <inertial>
@@ -398,9 +398,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0 0.0"/>
+      <origin xyz="0.0 -0.005 0.0" rpy="0.0 0 0.0"/>
       <geometry>
-        <mesh filename="package://pidog_description/meshes/acrylic.dae"/>
+        <sphere radius="0.008"/>
       </geometry>
     </collision>
     <inertial>
@@ -539,9 +539,9 @@
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0.0 0.0 0.0" rpy="0.0 0 0.0"/>
+      <origin xyz="0.0 -0.005 0.0" rpy="0.0 0 0.0"/>
       <geometry>
-        <mesh filename="package://pidog_description/meshes/acrylic.dae"/>
+        <sphere radius="0.008"/>
       </geometry>
     </collision>
     <inertial>
@@ -877,41 +877,45 @@
     <origin xyz="0.0 0.0 0.036" rpy="0 0.0 0"/>
   </joint>
 
-  <!-- Gazebo-specific settings for improved contact dynamics -->
+  <!-- Gazebo-specific settings for sphere paw contacts -->
   <gazebo reference="back_right_acrylic">
-    <mu1>1.5</mu1>
-    <mu2>1.5</mu2>
-    <kp>10000000.0</kp>
-    <kd>1000.0</kd>
-    <minDepth>0.0001</minDepth>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>5000000.0</kp>
+    <kd>500.0</kd>
+    <minDepth>0.0</minDepth>
     <maxVel>0.01</maxVel>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_right_acrylic">
-    <mu1>1.5</mu1>
-    <mu2>1.5</mu2>
-    <kp>10000000.0</kp>
-    <kd>1000.0</kd>
-    <minDepth>0.0001</minDepth>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>5000000.0</kp>
+    <kd>500.0</kd>
+    <minDepth>0.0</minDepth>
     <maxVel>0.01</maxVel>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="back_left_acrylic">
-    <mu1>1.5</mu1>
-    <mu2>1.5</mu2>
-    <kp>10000000.0</kp>
-    <kd>1000.0</kd>
-    <minDepth>0.0001</minDepth>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>5000000.0</kp>
+    <kd>500.0</kd>
+    <minDepth>0.0</minDepth>
     <maxVel>0.01</maxVel>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_left_acrylic">
-    <mu1>1.5</mu1>
-    <mu2>1.5</mu2>
-    <kp>10000000.0</kp>
-    <kd>1000.0</kd>
-    <minDepth>0.0001</minDepth>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <kp>5000000.0</kp>
+    <kd>500.0</kd>
+    <minDepth>0.0</minDepth>
     <maxVel>0.01</maxVel>
+    <material>Gazebo/Grey</material>
   </gazebo>
 
 </robot>
