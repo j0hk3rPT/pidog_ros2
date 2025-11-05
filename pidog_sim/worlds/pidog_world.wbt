@@ -37,7 +37,7 @@ CircleArena {
 }
 
 PiDog {
-  translation     0 0 0.18
+  translation     0 0 0.11
   rotation        0 0 1 0
   name            "PiDog"
   controller      "<extern>"
