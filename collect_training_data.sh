@@ -41,8 +41,11 @@ echo ""
 echo "✋ Press Ctrl+C in the data collection terminal when done to save data"
 echo ""
 
-# Wait a moment for user to read
-sleep 2
+# Wait for simulation to stabilize
+echo "⏳ Waiting 5 seconds for robot to stabilize..."
+sleep 5
+echo "✅ Starting data collection!"
+echo ""
 
 # Cycle through each gait
 for i in "${!GAITS[@]}"; do
