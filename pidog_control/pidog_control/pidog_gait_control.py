@@ -73,12 +73,16 @@ class PiDogGaitControl(Node):
 
 
 def main():
+    rclpy.init()
+    node = PiDogGaitControl()
+
     try:
-        with rclpy.init():
-            node = PiDogGaitControl()
-            rclpy.spin(node)
+        rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == "__main__":
