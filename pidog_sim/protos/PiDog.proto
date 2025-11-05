@@ -152,14 +152,7 @@ PROTO PiDog [
                     ]
                     name "back_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject Transform {
-                      translation 0.000 0.012 -0.008
-                      children [
-                        DEF acrylic Sphere {
-                          radius 0.008
-                        }
-                      ]
-                    }
+                    boundingObject USE acrylic_visual
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -296,14 +289,7 @@ PROTO PiDog [
                     ]
                     name "front_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject Transform {
-                      translation 0.000 0.012 -0.008
-                      children [
-                        Sphere {
-                          radius 0.008
-                        }
-                      ]
-                    }
+                    boundingObject USE acrylic_visual
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -431,14 +417,7 @@ PROTO PiDog [
                     ]
                     name "back_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject Transform {
-                      translation 0.000 0.012 -0.008
-                      children [
-                        Sphere {
-                          radius 0.008
-                        }
-                      ]
-                    }
+                    boundingObject USE acrylic_visual
                     physics Physics {
                       density -1
                       mass 0.003160
@@ -589,14 +568,7 @@ PROTO PiDog [
                     ]
                     name "front_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject Transform {
-                      translation 0.000 0.012 -0.008
-                      children [
-                        Sphere {
-                          radius 0.008
-                        }
-                      ]
-                    }
+                    boundingObject USE acrylic_visual
                     physics Physics {
                       density -1
                       mass 0.003160
