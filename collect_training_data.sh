@@ -62,8 +62,21 @@ for i in "${!GAITS[@]}"; do
     # Show progress bar
     for ((sec=1; sec<=DURATION; sec++)); do
         PROGRESS=$((sec * 50 / DURATION))
-        BAR=$(printf "%-50s" "#" | sed "s/ /#/g" | cut -c1-$PROGRESS)
-        SPACES=$(printf "%-50s" " " | cut -c1-$((50-PROGRESS)))
+        REMAINING=$((50 - PROGRESS))
+
+        # Ensure valid ranges for cut command
+        if [ $PROGRESS -gt 0 ]; then
+            BAR=$(printf "%-50s" "#" | sed "s/ /#/g" | cut -c1-$PROGRESS)
+        else
+            BAR=""
+        fi
+
+        if [ $REMAINING -gt 0 ]; then
+            SPACES=$(printf "%-50s" " " | cut -c1-$REMAINING)
+        else
+            SPACES=""
+        fi
+
         printf "\r[%s%s] %2d/%2ds" "$BAR" "$SPACES" "$sec" "$DURATION"
         sleep 1
     done
