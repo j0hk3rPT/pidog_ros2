@@ -35,18 +35,16 @@ CircleArena {
 PiDog {
   translation     0 0 0.1
   rotation        0 0 1 0
-  name            "PiDog"  # Is `Robot.name`.
-  controller      "<extern>"   # Is `Robot.controller`.
-  controllerUrl   "ipc://1234:PiDog"
-  controllerArgs  []       # Is `Robot.controllerArgs`.
-  customData      ""       # Is `Robot.customData`.
-  supervisor      FALSE    # Is `Robot.supervisor`.
-  synchronization TRUE     # Is `Robot.synchronization`.
-  selfCollision   TRUE    # Is `Robot.selfCollision`.
-  motorPID          20 0 0     # (P, I, D)
-  motorMaxVelocity  10.0       # rad/s
-  motorMaxTorque    0.3       # N·m
-  motorMinPosition -1.57      # rad
-  motorMaxPosition  1.57      # rad
-  
+  name            "PiDog"
+  controller      "<extern>"
+  controllerArgs  []
+  customData      ""
+  supervisor      FALSE
+  synchronization TRUE
+  selfCollision   TRUE
+  motorPID          20 0 0
+  motorMaxVelocity  10.0
+  motorMaxTorque    0.3
+  motorMinPosition -1.57
+  motorMaxPosition  1.57
 }
