@@ -152,8 +152,13 @@ PROTO PiDog [
                     ]
                     name "back_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject DEF acrylic Sphere {
-                      radius 0.008
+                    boundingObject Transform {
+                      translation 0.010 -0.012 0.000
+                      children [
+                        DEF acrylic Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -291,8 +296,13 @@ PROTO PiDog [
                     ]
                     name "front_right_acrylic"
                     contactMaterial "paw"
-                    boundingObject Sphere {
-                      radius 0.008
+                    boundingObject Transform {
+                      translation 0.010 -0.012 0.000
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -421,8 +431,13 @@ PROTO PiDog [
                     ]
                     name "back_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject Sphere {
-                      radius 0.008
+                    boundingObject Transform {
+                      translation -0.010 -0.012 0.000
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
@@ -574,8 +589,13 @@ PROTO PiDog [
                     ]
                     name "front_left_acrylic"
                     contactMaterial "paw"
-                    boundingObject Sphere {
-                      radius 0.008
+                    boundingObject Transform {
+                      translation -0.010 -0.012 0.000
+                      children [
+                        Sphere {
+                          radius 0.008
+                        }
+                      ]
                     }
                     physics Physics {
                       density -1
