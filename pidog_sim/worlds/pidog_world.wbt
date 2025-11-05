@@ -7,15 +7,17 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/project
 
 WorldInfo {
   title "PIDOG WORLD — pkg pidog_sim/worlds/pidog_world.wbt"
-  basicTimeStep 32
+  basicTimeStep 64
+  optimalThreadCount 4
   contactProperties [
     ContactProperties {
       material1 "default"
       material2 "default"
       coulombFriction 0.8
       bounce 0
-      softERP 0.2
-      softCFM 0.001
+      softERP 0.1
+      softCFM 0.01
+      maxContactJoints 10
     }
   ]
 }
