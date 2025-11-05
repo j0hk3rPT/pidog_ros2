@@ -33,7 +33,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'frequency': 30,
-                'default_gait': 'walk_forward'
+                'default_gait': 'stand'
             }]
         ),
 
