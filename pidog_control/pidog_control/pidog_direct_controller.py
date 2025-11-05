@@ -30,14 +30,14 @@ class PiDogDirectController(Node):
             'neck1_to_motor_9', 'neck2_to_motor_10', 'neck3_to_motor_11'
         ]
 
-        # Initial positions: tilt head back for stability
+        # Initial positions: tilt head back slightly for stability
         initial_positions = [
             0.0, 0.0,  # front_left leg
             0.0, 0.0,  # front_right leg
             0.0, 0.0,  # back_left leg
             0.0, 0.0,  # back_right leg
             0.0,       # tail
-            -0.3, -0.3, -0.3  # neck joints (tilt head back)
+            -0.15, -0.15, -0.15  # neck joints (tilt head back slightly)
         ]
 
         self.motors = []
