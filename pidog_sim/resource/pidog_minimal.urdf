@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<robot name="PiDog">
+    <!-- Minimal URDF - no plugin, webots_ros2_driver handles motors automatically -->
+</robot>
