@@ -14,7 +14,7 @@ PROTO PiDog [
   field  SFBool      supervisor      FALSE    # Is `Robot.supervisor`.
   field  SFBool      synchronization TRUE     # Is `Robot.synchronization`.
   field  SFBool      selfCollision   TRUE     # Is `Robot.selfCollision`.
-  field SFVec3f motorPID          10 0 2     # (P, I, D) - reduced P, increased D
+  field SFVec3f motorPID          5 0 3      # (P, I, D) - low P, high D for stability
   field SFFloat motorMaxVelocity  7.0       # rad/s (real servo: 0.15s/60° at 6V)
   field SFFloat motorMaxTorque    0.137     # N·m (real servo: 1.4 kg·cm at 6V)
   field SFFloat motorMinPosition -2.00      # rad (±115°, real servo: 180°±10°)
@@ -153,7 +153,7 @@ PROTO PiDog [
                     name "back_right_acrylic"
                     contactMaterial "paw"
                     boundingObject Transform {
-                      translation 0.010 0.012 -0.008
+                      translation 0.000 0.012 -0.008
                       children [
                         DEF acrylic Sphere {
                           radius 0.008
@@ -297,7 +297,7 @@ PROTO PiDog [
                     name "front_right_acrylic"
                     contactMaterial "paw"
                     boundingObject Transform {
-                      translation 0.010 0.012 -0.008
+                      translation 0.000 0.012 -0.008
                       children [
                         Sphere {
                           radius 0.008
@@ -432,7 +432,7 @@ PROTO PiDog [
                     name "back_left_acrylic"
                     contactMaterial "paw"
                     boundingObject Transform {
-                      translation -0.010 0.012 -0.008
+                      translation 0.000 0.012 -0.008
                       children [
                         Sphere {
                           radius 0.008
@@ -590,7 +590,7 @@ PROTO PiDog [
                     name "front_left_acrylic"
                     contactMaterial "paw"
                     boundingObject Transform {
-                      translation -0.010 0.012 -0.008
+                      translation 0.000 0.012 -0.008
                       children [
                         Sphere {
                           radius 0.008

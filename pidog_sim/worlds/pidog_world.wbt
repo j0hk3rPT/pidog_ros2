@@ -55,7 +55,7 @@ PiDog {
   supervisor      FALSE
   synchronization TRUE
   selfCollision   TRUE
-  motorPID          10 0 2
+  motorPID          5 0 3
   motorMaxVelocity  7.0
   motorMaxTorque    0.137
   motorMinPosition -2.00
