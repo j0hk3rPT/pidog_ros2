@@ -5,7 +5,7 @@ data_files = []
 data_files.append(('share/ament_index/resource_index/packages', ['resource/' + package_name]))
 data_files.append(('share/' + package_name + '/launch', ['launch/pidog_launch.py']))
 data_files.append(('share/' + package_name + '/worlds', ['worlds/pidog_world.wbt']))
-data_files.append(('share/' + package_name + '/resource', ['resource/pidog_world.urdf']))
+data_files.append(('share/' + package_name + '/resource', ['resource/pidog_world.urdf', 'resource/pidog_minimal.urdf']))
 data_files.append(('share/' + package_name + '/protos', ['protos/PiDog.proto']))
 data_files.append(('share/' + package_name + '/pidog_sim', ['pidog_sim/pidog_sim_driver.py']))
 data_files.append(('share/' + package_name, ['package.xml']))

@@ -10,40 +10,27 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     package_dir = get_package_share_directory('pidog_sim')
-    world_description_path = os.path.join(package_dir, 'resource', 'pidog_world.urdf')
-    robot_description_path = os.path.join(package_dir, 'resource', 'pidog_world.urdf')
+    robot_description_path = os.path.join(package_dir, 'resource', 'pidog_minimal.urdf')
 
-    with open(robot_description_path) as f:
-        robot_description = f.read()
-
+    # Read URDF content as string (not path!)
+    with open(robot_description_path, 'r') as urdf_file:
+        robot_description_content = urdf_file.read()
 
     webots = WebotsLauncher(
         world=os.path.join(package_dir, 'worlds', 'pidog_world.wbt'),
-
     )
 
-    my_robot_driver = WebotsController(
-        robot_name='PiDog',
-        parameters=[
-            {'robot_description': world_description_path},
-        ],
+    # Direct controller node (runs as external ROS2 node, connects to Webots)
+    direct_controller = Node(
+        package='pidog_control',
+        executable='pidog_direct_controller',
+        name='pidog_direct_controller',
+        output='screen'
     )
 
     return LaunchDescription([
         webots,
-        my_robot_driver,
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[{'use_sim_time': True, 'robot_description': robot_description}],
-            arguments=[robot_description]),
-        Node(
-            package='pidog_control',
-            executable='pidog_gait_control',
-            name='pidog_gait_control',
-            output='screen'),
+        direct_controller,
         launch.actions.RegisterEventHandler(
             event_handler=launch.event_handlers.OnProcessExit(
                 target_action=webots,

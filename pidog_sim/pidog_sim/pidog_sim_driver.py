@@ -1,64 +1,58 @@
-import rclpy
-from std_msgs.msg import Float32, Float32MultiArray
-from rclpy.qos import QoSProfile
-from sensor_msgs.msg import JointState
-from tf2_ros import TransformBroadcaster, TransformStamped
-
 class PiDogSimDriver:
+    """Minimal Webots driver for PiDog robot - receives commands via ROS topics."""
+
     def init(self, webots_node, properties):
+        """Initialize the driver with webots_node."""
+        print("=" * 60)
+        print("PiDogSimDriver.init() called!")
+        print(f"webots_node type: {type(webots_node)}")
+        print(f"webots_node attributes: {[attr for attr in dir(webots_node) if not attr.startswith('_')]}")
+        print("=" * 60)
+
         self.__robot = webots_node.robot
 
-        self.__motor_0  = self.__robot.getDevice('body_to_front_left_leg_b')
-        self.__motor_1  = self.__robot.getDevice('front_left_leg_b_to_a')
-        
-        self.__motor_2  = self.__robot.getDevice('body_to_front_right_leg_b')
-        self.__motor_3  = self.__robot.getDevice('front_right_leg_b_to_a')
-        
-        self.__motor_4  = self.__robot.getDevice('body_to_back_left_leg_b')
-        self.__motor_5  = self.__robot.getDevice('back_left_leg_b_to_a')
-        
-        self.__motor_6  = self.__robot.getDevice('body_to_back_right_leg_b')
-        self.__motor_7  = self.__robot.getDevice('back_right_leg_b_to_a')
-    
-        self.__motor_8  = self.__robot.getDevice('motor_8_to_tail')
+        # Get all motor devices
+        motor_names = [
+            'body_to_front_left_leg_b', 'front_left_leg_b_to_a',
+            'body_to_front_right_leg_b', 'front_right_leg_b_to_a',
+            'body_to_back_left_leg_b', 'back_left_leg_b_to_a',
+            'body_to_back_right_leg_b', 'back_right_leg_b_to_a',
+            'motor_8_to_tail',
+            'neck1_to_motor_9', 'neck2_to_motor_10', 'neck3_to_motor_11'
+        ]
 
-        self.__motor_9  = self.__robot.getDevice('neck1_to_motor_9')
-        self.__motor_10 = self.__robot.getDevice('neck2_to_motor_10')
-        self.__motor_11 = self.__robot.getDevice('neck3_to_motor_11')
+        self.motor_list = []
+        for name in motor_names:
+            motor = self.__robot.getDevice(name)
+            if motor is None:
+                raise RuntimeError(f"Missing motor device: {name}")
+            self.motor_list.append(motor)
+            motor.setPosition(0.0)  # Initialize to zero
 
-        self.motor_list = [self.__motor_0, self.__motor_1, self.__motor_2, self.__motor_3,
-                  self.__motor_4, self.__motor_5, self.__motor_6, self.__motor_7,
-                  self.__motor_8, self.__motor_9, self.__motor_10, self.__motor_11]
+        # Stand position (degrees to radians)
+        import math
+        stand_angles_deg = [0, 45, 0, 45, 0, 45, 0, 45, 0, 0, 0, 0]
+        self.joint_states = [angle * math.pi / 180.0 for angle in stand_angles_deg]
 
-        # Safety: set a non-zero speed for position control
-        for m in self.motor_list:
-            if m is None:
-                raise RuntimeError("Missing motor device — check names in the PROTO/WBT.")
-            # m.setVelocity(1.0)
-            m.setPosition(0.0)
+        # Store webots_node for ROS operations
+        self.node = webots_node
 
-        self.joint_states = [0.0] * 12
+        # Try to create ROS subscription
+        try:
+            from sensor_msgs.msg import JointState
+            self.node.create_subscription(JointState, 'motor_pos', self.__cmd_pos_callback, 1)
+            print("✓ Successfully created subscription to /motor_pos")
+        except Exception as e:
+            print(f"✗ Could not create subscription: {e}")
+            print("  Driver will use stand position only")
 
+        print("PiDogSimDriver initialized successfully!")
 
-        rclpy.init(args=None)
-        self.__node = rclpy.create_node('pidog_sim_driver')
-        # Create subscription on the existing node (NO rclpy.init, NO extra node)
-        self.__node.create_subscription(JointState, 'motor_pos',
-                                        self.__cmd_pos_callback, 1)
-
-        qos_profile = QoSProfile(depth=10)
-        self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
-        self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
-        self.timer = self.__node.create_timer(1/30, self.update)
-
-        self.__node.get_logger().info("PiDogSimDriver initialized.")
-
-    def __cmd_pos_callback(self, msg: Float32):
-        self.joint_states = msg.position
+    def __cmd_pos_callback(self, msg):
+        """Callback to receive motor position commands from gait generator."""
+        self.joint_states = list(msg.position)
 
     def step(self):
-        rclpy.spin_once(self.__node, timeout_sec=0)
-        # The driver spins the executor; just apply your control here
-        
-        for i, m in enumerate(self.motor_list):
-            m.setPosition(self.joint_states[i])
+        """Called every simulation step - apply motor commands."""
+        for i, motor in enumerate(self.motor_list):
+            motor.setPosition(self.joint_states[i])

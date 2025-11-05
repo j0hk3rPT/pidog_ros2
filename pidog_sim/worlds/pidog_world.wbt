@@ -7,22 +7,17 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/project
 
 WorldInfo {
   title "PIDOG WORLD — pkg pidog_sim/worlds/pidog_world.wbt"
-  basicTimeStep 4 
-  linearDamping 0.01     # try 0.01–0.05
-  angularDamping 0.02    # try 0.02–0.08
-
-  # contactProperties [
-  #   ContactProperties {
-  #   material1 "default"
-  #   material2 "default"
-  #   coulombFriction 0.6   # 0.6–1.2 typical
-  #   bounce 0
-  #   softERP 0.2           # 0.1–0.4 = “softer” but stable contacts
-  #   softCFM 1e-4          # 1e-5–1e-3; start 1e-4
-  #   maxContactJoints 20   # raises the “10 deepest” cap, but don’t go crazy
-  # }
-  #  ]
-
+  basicTimeStep 16
+  contactProperties [
+    ContactProperties {
+      material1 "default"
+      material2 "default"
+      coulombFriction 0.8
+      bounce 0
+      softERP 0.2
+      softCFM 1e-4
+    }
+  ]
 }
 
 Viewpoint {
@@ -40,18 +35,16 @@ CircleArena {
 PiDog {
   translation     0 0 0.1
   rotation        0 0 1 0
-  name            "PiDog"  # Is `Robot.name`.
-  controller      "<extern>"   # Is `Robot.controller`.
-  controllerUrl   "ipc://1234:PiDog"
-  controllerArgs  []       # Is `Robot.controllerArgs`.
-  customData      ""       # Is `Robot.customData`.
-  supervisor      FALSE    # Is `Robot.supervisor`.
-  synchronization TRUE     # Is `Robot.synchronization`.
-  selfCollision   TRUE    # Is `Robot.selfCollision`.
-  motorPID          20 0 0     # (P, I, D)
-  motorMaxVelocity  10.0       # rad/s
-  motorMaxTorque    0.3       # N·m
-  motorMinPosition -1.57      # rad
-  motorMaxPosition  1.57      # rad
-  
+  name            "PiDog"
+  controller      "<extern>"
+  controllerArgs  []
+  customData      ""
+  supervisor      FALSE
+  synchronization TRUE
+  selfCollision   TRUE
+  motorPID          20 0 0
+  motorMaxVelocity  10.0
+  motorMaxTorque    0.3
+  motorMinPosition -1.57
+  motorMaxPosition  1.57
 }

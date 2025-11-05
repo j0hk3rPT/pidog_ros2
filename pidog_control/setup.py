@@ -20,7 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'pidog_gait_control = pidog_control.pidog_gait_control:main'
+            'pidog_gait_control = pidog_control.pidog_gait_control:main',
+            'pidog_webots_bridge = pidog_control.pidog_webots_bridge:main',
+            'pidog_direct_controller = pidog_control.pidog_direct_controller:main'
         ],
     },
 )
