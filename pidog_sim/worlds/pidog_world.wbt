@@ -20,6 +20,16 @@ WorldInfo {
       softCFM 0.0001
       maxContactJoints 10
     }
+    ContactProperties {
+      material1 "paw"
+      material2 "default"
+      coulombFriction 2.8
+      bounce 0
+      bounceVelocity 0
+      softERP 0.3
+      softCFM 0.0001
+      maxContactJoints 10
+    }
   ]
 }
 
