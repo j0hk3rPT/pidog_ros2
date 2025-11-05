@@ -98,6 +98,30 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
     )
 
+    # Load joint_state_broadcaster
+    load_joint_state_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_state_broadcaster'],
+        output='screen',
+    )
+
+    # Load position_controller
+    load_position_controller = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['position_controller'],
+        output='screen',
+    )
+
+    # Standing pose publisher to hold robot up
+    standing_pose_publisher = Node(
+        package=resources_package,
+        executable='standing_pose_publisher',
+        name='standing_pose_publisher',
+        output='screen',
+    )
+
     return LaunchDescription([
         use_sim_time_launch_arg,
         use_rviz_arg,
@@ -105,4 +129,7 @@ def generate_launch_description():
         rviz,
         gazebo,
         spawn,
+        load_joint_state_broadcaster,
+        load_position_controller,
+        standing_pose_publisher,
     ])

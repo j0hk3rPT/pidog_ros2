@@ -918,30 +918,124 @@
     <material>Gazebo/Grey</material>
   </gazebo>
 
-  <!-- Joint position holding - make servos hold their position -->
+  <!-- ros2_control - Active position control for all joints -->
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+
+    <!-- Back Right Leg -->
+    <joint name="body_to_back_right_leg_b">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="back_right_leg_b_to_a">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <!-- Front Right Leg -->
+    <joint name="body_to_from_right_leg_b">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_right_leg_b_to_a">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <!-- Back Left Leg -->
+    <joint name="body_to_back_left_leg_b">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="back_left_leg_b_to_a">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <!-- Front Left Leg -->
+    <joint name="body_to_front_left_leg_b">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="front_left_leg_b_to_a">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- Gazebo plugin for ros2_control -->
+  <gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <!-- Strong PID gains for each joint to simulate servo holding torque -->
   <gazebo reference="body_to_back_right_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="back_right_leg_b_to_a">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="body_to_from_right_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="front_right_leg_b_to_a">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="body_to_back_left_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="back_left_leg_b_to_a">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="body_to_front_left_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
   <gazebo reference="front_left_leg_b_to_a">
     <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
   </gazebo>
 
 </robot>
