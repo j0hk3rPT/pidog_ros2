@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Gait Generator ROS2 Node
 

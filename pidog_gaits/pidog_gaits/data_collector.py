@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Data Collector for Neural Network Training
 

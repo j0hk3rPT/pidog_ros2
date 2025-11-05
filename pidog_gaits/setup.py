@@ -13,6 +13,12 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        # Install scripts to lib/pidog_gaits for ROS 2 launch compatibility
+        (os.path.join('lib', package_name), [
+            'pidog_gaits/gait_generator_node.py',
+            'pidog_gaits/data_collector.py',
+            'pidog_gaits/nn_controller.py',
+        ]),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
