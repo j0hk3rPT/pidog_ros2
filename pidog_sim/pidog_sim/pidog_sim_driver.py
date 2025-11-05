@@ -40,16 +40,18 @@ class PiDogSimDriver:
         self.joint_states = [0.0] * 12
 
 
-        rclpy.init(args=None)
-        self.__node = rclpy.create_node('pidog_sim_driver')
-        # Create subscription on the existing node (NO rclpy.init, NO extra node)
+        # Use the webots_node instead of creating a new one
+        self.__node = webots_node
+
+        # Create subscription
         self.__node.create_subscription(JointState, 'motor_pos',
                                         self.__cmd_pos_callback, 1)
 
         qos_profile = QoSProfile(depth=10)
         self.joint_pub = self.__node.create_publisher(JointState, 'joint_states', qos_profile)
-        self.broadcaster = TransformBroadcaster(self, qos=qos_profile)
-        self.timer = self.__node.create_timer(1/30, self.update)
+        self.broadcaster = TransformBroadcaster(self.__node, qos=qos_profile)
+        # Timer not needed - step() is called by Webots driver framework
+        # self.timer = self.__node.create_timer(1/30, self.update)
 
         self.__node.get_logger().info("PiDogSimDriver initialized.")
 
