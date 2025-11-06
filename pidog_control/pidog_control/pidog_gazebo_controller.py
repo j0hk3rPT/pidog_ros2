@@ -56,9 +56,9 @@ class PiDogGazeboController(Node):
             10
         )
 
-        # Startup delay to allow physics to fully settle after spawn
-        # Longer delay ensures robot touches ground and stabilizes naturally
-        self.startup_delay = 5.0  # seconds - increased for better settling
+        # Extended startup delay to allow complete physics settling
+        # Robot must fully stabilize before any control is applied
+        self.startup_delay = 15.0  # seconds - very long to ensure zero oscillation
         self.start_time = self.get_clock().now()
         self.controller_active = False
 

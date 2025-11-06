@@ -134,7 +134,7 @@
     <origin xyz="0.0405 -0.06685 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="back_right_leg_b_to_motor_0" type="fixed">
@@ -149,7 +149,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
 
   </joint>
     <joint name="back_right_leg_a_to_motor_1" type="fixed">
@@ -275,7 +275,7 @@
     <origin xyz="0.0405 0.05315 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="front_right_leg_b_to_motor_2" type="fixed">
@@ -290,7 +290,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
 
   </joint>
     <joint name="front_right_leg_a_to_motor_3" type="fixed">
@@ -416,7 +416,7 @@
     <origin xyz="-0.0405 -0.06685 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="back_left_leg_b_to_motor_4" type="fixed">
@@ -431,7 +431,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="back_left_leg_a_to_acrylic" type="fixed">
@@ -557,7 +557,7 @@
     <origin xyz="-0.0405 0.05315 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="front_left_leg_b_to_motor_6" type="fixed">
@@ -572,7 +572,7 @@
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
     <limit effort="10.0" lower="-1.57" upper="1.57" velocity="10.0"/>
-    <dynamics damping="5.0" friction="0.5"/>
+    <dynamics damping="10.0" friction="1.0"/>
   </joint>
 
   <joint name="front_left_leg_a_to_acrylic" type="fixed">
@@ -1004,9 +1004,9 @@
       <robot_param>robot_description</robot_param>
       <robot_param_node>robot_state_publisher</robot_param_node>
       <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
-      <!-- Very low proportional gain to prevent oscillations -->
+      <!-- Ultra-minimal proportional gain - almost passive control -->
       <!-- This is applied ON TOP of PID gains in YAML -->
-      <position_proportional_gain>5.0</position_proportional_gain>
+      <position_proportional_gain>1.0</position_proportional_gain>
     </plugin>
   </gazebo>
 

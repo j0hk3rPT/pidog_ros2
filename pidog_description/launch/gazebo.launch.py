@@ -123,11 +123,12 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Load position_controller
+    # Load position_controller with delay to allow physics settling
+    # Wait 10 seconds before activating controller
     load_position_controller = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['position_controller'],
+        arguments=['position_controller', '--inactive'],  # Start inactive!
         output='screen',
     )
 
