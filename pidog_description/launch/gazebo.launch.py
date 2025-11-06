@@ -114,6 +114,14 @@ def generate_launch_description():
         output='screen',
     )
 
+    # Bridge clock from Gazebo to ROS 2
+    clock_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        output='screen',
+    )
+
     # Gazebo controller to hold robot in standing pose
     gazebo_controller = Node(
         package='pidog_control',
@@ -128,6 +136,7 @@ def generate_launch_description():
         robot_state_publisher,
         rviz,
         gazebo,
+        clock_bridge,  # Add clock bridge before spawning robot
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
