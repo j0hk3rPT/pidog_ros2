@@ -1,0 +1,41 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    position_controller:
+      type: position_controllers/JointGroupPositionController
+
+position_controller:
+  ros__parameters:
+    joints:
+      - body_to_back_right_leg_b
+      - back_right_leg_b_to_a
+      - body_to_from_right_leg_b
+      - front_right_leg_b_to_a
+      - body_to_back_left_leg_b
+      - back_left_leg_b_to_a
+      - body_to_front_left_leg_b
+      - front_left_leg_b_to_a
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+
+    # Strong PID gains to simulate servo holding torque (1.4kg·cm)
+    # High P gain for strong position holding
+    # Moderate D gain to prevent oscillation
+    gains:
+      body_to_back_right_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      back_right_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      body_to_from_right_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      front_right_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      body_to_back_left_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      back_left_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      body_to_front_left_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      front_left_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
