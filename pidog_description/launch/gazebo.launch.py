@@ -96,6 +96,10 @@ def generate_launch_description():
             ]),
         ]),
         condition=IfCondition(use_rviz),
+        launch_arguments=dict(
+            gui='false',  # Disable joint_state_publisher_gui - use Gazebo's joint states
+            use_sim_time=use_sim_time,
+        ).items(),
     )
 
     # Load joint_state_broadcaster
