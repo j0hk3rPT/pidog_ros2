@@ -922,6 +922,7 @@
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
       <plugin>ign_ros2_control/IgnitionSystem</plugin>
+      <param name="position_proportional_gain">100.0</param>
     </hardware>
 
     <!-- Back Right Leg -->
