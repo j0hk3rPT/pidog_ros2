@@ -1,4 +1,4 @@
-"""Launch file for demonstrating gaits with Webots simulator."""
+"""Launch file for demonstrating gaits with Gazebo simulator."""
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
@@ -10,22 +10,22 @@ import os
 
 def generate_launch_description():
     """
-    Launch Webots simulator with gait generator.
+    Launch Gazebo simulator with gait generator.
 
     This demonstrates the traditional (non-neural network) gaits.
     """
 
-    pidog_sim_dir = get_package_share_directory('pidog_sim')
+    pidog_description_dir = get_package_share_directory('pidog_description')
 
     return LaunchDescription([
-        # Launch Webots simulator
+        # Launch Gazebo simulator
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(pidog_sim_dir, 'launch', 'pidog_launch.py')
+                os.path.join(pidog_description_dir, 'launch', 'gazebo.launch.py')
             )
         ),
 
-        # Launch gait generator (replaces the simple sit controller)
+        # Launch gait generator (replaces the simple controller)
         Node(
             package='pidog_gaits',
             executable='gait_generator',

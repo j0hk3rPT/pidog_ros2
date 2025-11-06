@@ -10,18 +10,18 @@ import os
 
 def generate_launch_description():
     """
-    Launch Webots + Gait Generator + Data Collector.
+    Launch Gazebo + Gait Generator + Data Collector.
 
     This collects training data by running various gaits and recording the joint angles.
     """
 
-    pidog_sim_dir = get_package_share_directory('pidog_sim')
+    pidog_description_dir = get_package_share_directory('pidog_description')
 
     return LaunchDescription([
-        # Launch Webots simulator
+        # Launch Gazebo simulator
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(pidog_sim_dir, 'launch', 'pidog_launch.py')
+                os.path.join(pidog_description_dir, 'launch', 'gazebo.launch.py')
             )
         ),
 

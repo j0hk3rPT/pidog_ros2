@@ -24,9 +24,6 @@ setup(
             'pidog_gazebo_controller = pidog_control.pidog_gazebo_controller:main',
             'simple_walk_gazebo = pidog_control.simple_walk_gazebo:main',
             'simple_walk_v2 = pidog_control.simple_walk_v2:main',
-            # Legacy Webots controllers (deprecated)
-            'pidog_webots_bridge = pidog_control.pidog_webots_bridge:main',
-            'pidog_direct_controller = pidog_control.pidog_direct_controller:main'
         ],
     },
 )

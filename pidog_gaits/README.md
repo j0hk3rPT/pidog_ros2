@@ -50,7 +50,7 @@ ros2 launch pidog_gaits gait_demo.launch.py
 ```
 
 This will:
-- Launch Webots simulator
+- Launch Gazebo simulator
 - Start the gait generator (default: stand pose)
 
 To switch gaits, in another terminal:
@@ -192,7 +192,7 @@ By using this system, you'll learn:
 ### Data collection fails
 - Ensure gait_generator is running
 - Check topic: `ros2 topic echo /motor_pos`
-- Verify Webots is running
+- Verify Gazebo is running
 
 ## 📈 Advanced: Next Steps
 

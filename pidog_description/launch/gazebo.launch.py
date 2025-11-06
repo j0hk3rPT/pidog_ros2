@@ -65,7 +65,7 @@ def generate_launch_description():
                 '-name', 'Robot.urdf',
                 '-x', '0.0',
                 '-y', '0.0',
-                '-z', '0.055',  # Precise height for standing pose (5.5cm)
+                '-z', '0.12',  # Spawn higher to prevent ground penetration (12cm)
                 '-topic', '/robot_description',
                 # Set initial joint positions to standing pose (symmetric!)
                 '-J', 'body_to_back_right_leg_b', '0.0',

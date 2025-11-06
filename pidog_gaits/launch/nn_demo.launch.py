@@ -10,18 +10,18 @@ import os
 
 def generate_launch_description():
     """
-    Launch Webots simulator with neural network controller.
+    Launch Gazebo simulator with neural network controller.
 
     This uses the trained model to generate gaits.
     """
 
-    pidog_sim_dir = get_package_share_directory('pidog_sim')
+    pidog_description_dir = get_package_share_directory('pidog_description')
 
     return LaunchDescription([
-        # Launch Webots simulator
+        # Launch Gazebo simulator
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(pidog_sim_dir, 'launch', 'pidog_launch.py')
+                os.path.join(pidog_description_dir, 'launch', 'gazebo.launch.py')
             )
         ),
 

@@ -27,6 +27,7 @@ setup(
         'console_scripts': [
             'gait_generator = pidog_gaits.gait_generator_node:main',
             'data_collector = pidog_gaits.data_collector:main',
+            'data_collector_enhanced = pidog_gaits.data_collector_enhanced:main',
             'nn_controller = pidog_gaits.nn_controller:main',
         ],
     },
