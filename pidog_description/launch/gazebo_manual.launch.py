@@ -126,9 +126,15 @@ def generate_launch_description():
         output='screen',
     )
 
-    # NOTE: pidog_gazebo_controller is NOT included here
-    # This allows manual control via direct topic publishing
-    # To enable automatic standing pose, add the controller back
+    # Simple walk controller for Gazebo
+    # Listens on /gait_command topic for commands like "walk" or "stand"
+    simple_walk_controller = Node(
+        package='pidog_control',
+        executable='simple_walk_gazebo',
+        name='simple_walk_gazebo',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+    )
 
     return LaunchDescription([
         use_sim_time_launch_arg,
@@ -140,5 +146,5 @@ def generate_launch_description():
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
-        # gazebo_controller,  # Commented out for manual control
+        simple_walk_controller,  # Add simple walk controller
     ])
