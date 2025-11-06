@@ -921,7 +921,7 @@
   <!-- ros2_control - Active position control for all joints -->
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
 
     <!-- Back Right Leg -->
@@ -999,7 +999,7 @@
 
   <!-- Gazebo plugin for ros2_control -->
   <gazebo>
-    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
       <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
     </plugin>
   </gazebo>

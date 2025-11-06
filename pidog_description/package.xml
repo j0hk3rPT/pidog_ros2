@@ -14,9 +14,9 @@
   <depend>geometry_msgs</depend>
 
   <!-- Gazebo dependencies -->
-  <depend>ros_gz_sim</depend>
-  <depend>ros_gz_bridge</depend>
-  <depend>gz_ros2_control</depend>
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros2_control</depend>
+  <depend>gazebo_msgs</depend>
 
   <!-- ros2_control -->
   <depend>controller_manager</depend>
