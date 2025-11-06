@@ -32,20 +32,20 @@ position_controller:
       - position
       - velocity
 
-    # Servo-like PID gains for responsive position control
+    # Balanced PID gains for stable servo-like control
     # Joint damping: 0.2, friction: 0.4 (low damping, fast response like servos)
     # Physics: World solver with CFM=0.0 (stiff contacts) for stable ground
-    # High P for fast servo response, moderate D for stability
+    # Moderate P for responsive servo without oscillation, good D for damping
     # Small I for steady-state correction
     gains:
-      body_to_back_right_leg_b: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      back_right_leg_b_to_a: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_front_right_leg_b: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      front_right_leg_b_to_a: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_back_left_leg_b: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      back_left_leg_b_to_a: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_front_left_leg_b: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      front_left_leg_b_to_a: {p: 20.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      body_to_back_right_leg_b: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      back_right_leg_b_to_a: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_right_leg_b: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      front_right_leg_b_to_a: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      body_to_back_left_leg_b: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      back_left_leg_b_to_a: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_left_leg_b: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
+      front_left_leg_b_to_a: {p: 10.0, d: 1.5, i: 0.1, i_clamp: 0.5}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
