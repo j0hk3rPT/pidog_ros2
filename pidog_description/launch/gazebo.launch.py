@@ -54,7 +54,7 @@ def generate_launch_description():
     )
 
     # Spawn with initial joint positions matching standing pose
-    # This prevents the robot from falling during controller startup
+    # Height calculated from leg kinematics: 0.055m = body center height with knees bent at -0.8 rad
     spawn = Node(
             package='ros_gz_sim',
             executable='create',
@@ -62,7 +62,7 @@ def generate_launch_description():
                 '-name', 'Robot.urdf',
                 '-x', '0.0',
                 '-y', '0.0',
-                '-z', '0.11',  # Adjusted height for standing pose
+                '-z', '0.055',  # Precise height for standing pose (5.5cm)
                 '-topic', '/robot_description',
                 # Set initial joint positions to standing pose
                 '-J', 'body_to_back_right_leg_b', '0.0',

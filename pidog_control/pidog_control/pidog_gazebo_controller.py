@@ -53,8 +53,9 @@ class PiDogGazeboController(Node):
             10
         )
 
-        # Startup delay to allow physics to settle after spawn
-        self.startup_delay = 2.0  # seconds
+        # Startup delay to allow physics to fully settle after spawn
+        # Longer delay ensures robot touches ground and stabilizes naturally
+        self.startup_delay = 5.0  # seconds - increased for better settling
         self.start_time = self.get_clock().now()
         self.controller_active = False
 
@@ -63,7 +64,8 @@ class PiDogGazeboController(Node):
 
         self.get_logger().info('PiDog Gazebo Controller started')
         self.get_logger().info(f'Waiting {self.startup_delay}s for physics to settle...')
-        self.get_logger().info(f'Commanding standing pose: {self.standing_pose}')
+        self.get_logger().info('Robot will remain passive until fully stable on ground')
+        self.get_logger().info(f'Target standing pose: {self.standing_pose}')
 
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
