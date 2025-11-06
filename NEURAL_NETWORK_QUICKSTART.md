@@ -29,7 +29,7 @@ pip3 install torch torchvision matplotlib numpy
 cd /home/user/pidog_ros2
 
 # Source ROS2 (adjust for your ROS2 distribution)
-source /opt/ros/humble/setup.bash  # or foxy, galactic, etc.
+source /opt/ros/jazzy/setup.bash  # or humble, etc.
 
 # Build
 colcon build --packages-select pidog_gaits
@@ -246,7 +246,7 @@ pip3 install torch matplotlib numpy
 
 ### "colcon command not found"
 ```bash
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 ```
 
 ---

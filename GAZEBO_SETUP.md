@@ -290,7 +290,7 @@ To add custom gait patterns:
 - [Gazebo Documentation](https://gazebosim.org/docs)
 - [ros2_control Documentation](https://control.ros.org/)
 - [PiDog Hardware Specs](https://github.com/sunfounder/pidog)
-- [ROS 2 Humble Documentation](https://docs.ros.org/en/humble/)
+- [ROS 2 Jazzy Documentation](https://docs.ros.org/en/jazzy/)
 
 ## License
 
