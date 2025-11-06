@@ -70,7 +70,7 @@ def generate_launch_description():
                 # Set initial joint positions to standing pose (symmetric!)
                 '-J', 'body_to_back_right_leg_b', '0.0',
                 '-J', 'back_right_leg_b_to_a', '-0.8',   # Right: negative = down
-                '-J', 'body_to_from_right_leg_b', '0.0',
+                '-J', 'body_to_front_right_leg_b', '0.0',
                 '-J', 'front_right_leg_b_to_a', '-0.8',  # Right: negative = down
                 '-J', 'body_to_back_left_leg_b', '0.0',
                 '-J', 'back_left_leg_b_to_a', '0.8',     # Left: positive = down (axis flipped!)

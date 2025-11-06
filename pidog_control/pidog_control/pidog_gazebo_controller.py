@@ -26,7 +26,7 @@ class PiDogGazeboController(Node):
         self.joint_names = [
             'body_to_back_right_leg_b',
             'back_right_leg_b_to_a',
-            'body_to_from_right_leg_b',
+            'body_to_front_right_leg_b',
             'front_right_leg_b_to_a',
             'body_to_back_left_leg_b',
             'back_left_leg_b_to_a',

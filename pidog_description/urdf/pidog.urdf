@@ -133,8 +133,8 @@
     <child  link="back_right_leg_b"/>
     <origin xyz="0.0405 -0.06685 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="back_right_leg_b_to_motor_0" type="fixed">
@@ -148,8 +148,8 @@
     <child  link="back_right_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
 
   </joint>
     <joint name="back_right_leg_a_to_motor_1" type="fixed">
@@ -269,13 +269,13 @@
     </inertial>
   </link>
 
-  <joint name="body_to_from_right_leg_b" type="revolute">
+  <joint name="body_to_front_right_leg_b" type="revolute">
     <parent link="body"/>
     <child  link="front_right_leg_b"/>
     <origin xyz="0.0405 0.05315 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="front_right_leg_b_to_motor_2" type="fixed">
@@ -289,8 +289,8 @@
     <child  link="front_right_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
 
   </joint>
     <joint name="front_right_leg_a_to_motor_3" type="fixed">
@@ -415,8 +415,8 @@
     <child  link="back_left_leg_b"/>
     <origin xyz="-0.0405 -0.06685 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="back_left_leg_b_to_motor_4" type="fixed">
@@ -430,8 +430,8 @@
     <child  link="back_left_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="back_left_leg_a_to_acrylic" type="fixed">
@@ -556,8 +556,8 @@
     <child  link="front_left_leg_b"/>
     <origin xyz="-0.0405 0.05315 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="front_left_leg_b_to_motor_6" type="fixed">
@@ -571,8 +571,8 @@
     <child  link="front_left_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
   <joint name="front_left_leg_a_to_acrylic" type="fixed">
@@ -642,8 +642,8 @@
     <child  link="tail"/>
     <origin xyz="0 0 0.008" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.2" friction="0.4"/>
   </joint>
 
 
@@ -824,7 +824,7 @@
     <child  link="motor_9"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 0.01 0.015" rpy="1.57075 0.785375 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint>  
@@ -841,7 +841,7 @@
     <child  link="motor_10"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 -0.021 -0.003" rpy="-1.57075 0 3.1415"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint>  
@@ -858,7 +858,7 @@
     <child  link="motor_11"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0.0265 0.0 -0.0125" rpy="0 1.57075 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint> 
@@ -943,7 +943,7 @@
     </joint>
 
     <!-- Front Right Leg -->
-    <joint name="body_to_from_right_leg_b">
+    <joint name="body_to_front_right_leg_b">
       <command_interface name="position">
         <param name="min">-1.57</param>
         <param name="max">1.57</param>
@@ -1054,7 +1054,7 @@
     <implicitSpringDamper>true</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
   </gazebo>
-  <gazebo reference="body_to_from_right_leg_b">
+  <gazebo reference="body_to_front_right_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
   </gazebo>
@@ -1108,7 +1108,7 @@
     </joint>
 
     <!-- Front Right Leg Joints -->
-    <joint name="body_to_from_right_leg_b">
+    <joint name="body_to_front_right_leg_b">
       <command_interface name="position">
         <param name="min">-1.57</param>
         <param name="max">1.57</param>

@@ -251,10 +251,10 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 
 ## Physics Configuration
 
-**Current Tuned Parameters** (optimized for stability):
+**Current Tuned Parameters** (optimized for realistic servo simulation):
 
 **Joint Parameters**:
-- Leg joints: effort=0.35 Nm, damping=0.7, friction=1.0
+- Leg joints: effort=0.35 Nm, velocity=7.5 rad/s (430°/s), damping=0.2, friction=0.4
 - Neck joints: effort=0.14 Nm, damping=0.3, friction=0.5, stiffness=50.0
 - Tail joint: effort=0.35 Nm
 
@@ -266,9 +266,9 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 - Solver iterations: 150
 
 **PID Controller Gains** (50 Hz update rate):
-- P=5.0 (moderate responsiveness)
-- D=1.0 (damping for stiff contacts)
-- I=0.05 (minimal steady-state correction)
+- P=20.0 (high gain for fast servo response)
+- D=2.0 (moderate damping for stability)
+- I=0.1 (small integral for steady-state correction)
 
 **Troubleshooting Instability**:
 1. Check PID gains in `pidog_description/config/pidog_controllers.yaml`
