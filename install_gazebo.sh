@@ -11,13 +11,21 @@ echo "============================================"
 UBUNTU_VERSION=$(lsb_release -rs)
 echo "Detected Ubuntu version: $UBUNTU_VERSION"
 
+# Update package list first
+echo "Updating package list..."
+sudo apt-get update
+
+# Ensure curl is available for downloading GPG key
+echo "Installing curl if needed..."
+sudo apt-get install -y curl
+
 # Add Gazebo repository
 echo "Adding Gazebo repository..."
-sudo wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+sudo curl -sSL https://packages.osrfoundation.org/gazebo.gpg -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 
-# Update package list
-echo "Updating package list..."
+# Update package list again after adding repository
+echo "Updating package list with new repository..."
 sudo apt-get update
 
 # Install Gazebo Harmonic (package names for Ubuntu 24.04)
