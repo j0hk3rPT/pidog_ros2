@@ -56,9 +56,9 @@ class PiDogGazeboController(Node):
             10
         )
 
-        # Extended startup delay to allow complete physics settling
-        # Robot must fully stabilize before any control is applied
-        self.startup_delay = 15.0  # seconds - very long to ensure zero oscillation
+        # Startup delay to allow physics settling before control
+        # Shorter delay now that gains are properly tuned
+        self.startup_delay = 3.0  # seconds - enough for settling
         self.start_time = self.get_clock().now()
         self.controller_active = False
 

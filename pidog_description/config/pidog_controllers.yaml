@@ -27,16 +27,16 @@ position_controller:
       - position
       - velocity
 
-    # Ultra-minimal PID gains - almost passive
-    # Absolute minimum P to barely hold position
-    # Very low D to allow natural settling
-    # Zero I to prevent any accumulation
+    # Balanced PID gains - strong enough for walking, gentle enough for stability
+    # Moderate P for responsive control without oscillation
+    # Higher D for smooth damping and stability
+    # Minimal I to help reach target without windup
     gains:
-      body_to_back_right_leg_b: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      back_right_leg_b_to_a: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      body_to_from_right_leg_b: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      front_right_leg_b_to_a: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      body_to_back_left_leg_b: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      back_left_leg_b_to_a: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      body_to_front_left_leg_b: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
-      front_left_leg_b_to_a: {p: 1.0, d: 2.0, i: 0.0, i_clamp: 0.0}
+      body_to_back_right_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      back_right_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      body_to_from_right_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      front_right_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      body_to_back_left_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      back_left_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      body_to_front_left_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      front_left_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
