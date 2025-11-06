@@ -54,7 +54,10 @@ def generate_launch_description():
     )
 
     # Spawn with initial joint positions matching standing pose
-    # Height calculated from leg kinematics: 0.055m = body center height with knees bent at -0.8 rad
+    # Height calculated from leg kinematics: 0.055m = body center height with knees bent at 0.8 rad
+    # IMPORTANT: Left legs have flipped joint axes due to 180° rotation in URDF
+    # Right legs: negative angle bends knee DOWN
+    # Left legs: positive angle bends knee DOWN
     spawn = Node(
             package='ros_gz_sim',
             executable='create',
@@ -64,15 +67,15 @@ def generate_launch_description():
                 '-y', '0.0',
                 '-z', '0.055',  # Precise height for standing pose (5.5cm)
                 '-topic', '/robot_description',
-                # Set initial joint positions to standing pose
+                # Set initial joint positions to standing pose (symmetric!)
                 '-J', 'body_to_back_right_leg_b', '0.0',
-                '-J', 'back_right_leg_b_to_a', '-0.8',
+                '-J', 'back_right_leg_b_to_a', '-0.8',   # Right: negative = down
                 '-J', 'body_to_from_right_leg_b', '0.0',
-                '-J', 'front_right_leg_b_to_a', '-0.8',
+                '-J', 'front_right_leg_b_to_a', '-0.8',  # Right: negative = down
                 '-J', 'body_to_back_left_leg_b', '0.0',
-                '-J', 'back_left_leg_b_to_a', '-0.8',
+                '-J', 'back_left_leg_b_to_a', '0.8',     # Left: positive = down (axis flipped!)
                 '-J', 'body_to_front_left_leg_b', '0.0',
-                '-J', 'front_left_leg_b_to_a', '-0.8',
+                '-J', 'front_left_leg_b_to_a', '0.8',    # Left: positive = down (axis flipped!)
             ],
             output='screen',
     )

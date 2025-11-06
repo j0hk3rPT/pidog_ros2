@@ -27,16 +27,16 @@ position_controller:
       - position
       - velocity
 
-    # Ultra-low PID gains for maximum stability at startup
-    # Very low P to prevent aggressive correction forces
-    # High D for damping without oscillation
-    # Minimal I to avoid integral windup
+    # Extremely low PID gains for rock-solid stability
+    # Minimal P to prevent any aggressive forces
+    # Moderate D for smooth damping
+    # Near-zero I to prevent integral windup
     gains:
-      body_to_back_right_leg_b: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      back_right_leg_b_to_a: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      body_to_from_right_leg_b: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      front_right_leg_b_to_a: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      body_to_back_left_leg_b: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      back_left_leg_b_to_a: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      body_to_front_left_leg_b: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
-      front_left_leg_b_to_a: {p: 20.0, d: 30.0, i: 0.1, i_clamp: 1.0}
+      body_to_back_right_leg_b: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      back_right_leg_b_to_a: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      body_to_from_right_leg_b: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      front_right_leg_b_to_a: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      body_to_back_left_leg_b: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      back_left_leg_b_to_a: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      body_to_front_left_leg_b: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}
+      front_left_leg_b_to_a: {p: 10.0, d: 15.0, i: 0.01, i_clamp: 0.5}

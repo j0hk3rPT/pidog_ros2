@@ -39,8 +39,8 @@ class SimpleWalkNode(Node):
         self.step_height = 0.3  # radians - moderate knee lift
         self.shoulder_swing = 0.3  # radians - moderate shoulder swing
 
-        # Standing pose
-        self.stand_pose = [0.0, -0.8, 0.0, -0.8, 0.0, -0.8, 0.0, -0.8]
+        # Standing pose - left legs have flipped axes (positive = down)
+        self.stand_pose = [0.0, -0.8, 0.0, -0.8, 0.0, +0.8, 0.0, +0.8]
 
         # Timer for publishing at 50Hz
         self.timer = self.create_timer(0.02, self.update)

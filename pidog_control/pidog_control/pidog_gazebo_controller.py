@@ -34,12 +34,15 @@ class PiDogGazeboController(Node):
             'front_left_leg_b_to_a',
         ]
 
-        # Standing pose: shoulders straight (0), knees bent (-0.8 rad = ~45°)
+        # Standing pose: shoulders straight (0), knees bent (~45°)
+        # NOTE: Left legs have flipped joint axes (rpy="0 1.57 3.1415" in URDF)
+        # Right legs: negative angle bends knee DOWN
+        # Left legs: positive angle bends knee DOWN
         self.standing_pose = [
-            0.0, -0.8,  # Back Right
-            0.0, -0.8,  # Front Right
-            0.0, -0.8,  # Back Left
-            0.0, -0.8,  # Front Left
+            0.0, -0.8,  # Back Right: shoulder 0°, knee -45° (down)
+            0.0, -0.8,  # Front Right: shoulder 0°, knee -45° (down)
+            0.0, +0.8,  # Back Left: shoulder 0°, knee +45° (down, axis flipped!)
+            0.0, +0.8,  # Front Left: shoulder 0°, knee +45° (down, axis flipped!)
         ]
 
         # Current commanded position

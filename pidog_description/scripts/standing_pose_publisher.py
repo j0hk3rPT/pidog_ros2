@@ -23,12 +23,14 @@ class StandingPosePublisher(Node):
         # Standing pose: legs spread out and bent to lift body
         # Joint order: BR_shoulder, BR_knee, FR_shoulder, FR_knee,
         #              BL_shoulder, BL_knee, FL_shoulder, FL_knee
-        # Shoulders at 0 (straight out), knees at -0.8 rad (~45 deg down)
+        # NOTE: Left legs have flipped joint axes (180° rotation in URDF)
+        # Right legs: negative angle = knee down
+        # Left legs: positive angle = knee down
         self.standing_pose = [
-            0.0, -0.8,  # Back Right leg
-            0.0, -0.8,  # Front Right leg
-            0.0, -0.8,  # Back Left leg
-            0.0, -0.8,  # Front Left leg
+            0.0, -0.8,  # Back Right leg (shoulder 0°, knee down)
+            0.0, -0.8,  # Front Right leg (shoulder 0°, knee down)
+            0.0, +0.8,  # Back Left leg (shoulder 0°, knee down, axis flipped!)
+            0.0, +0.8,  # Front Left leg (shoulder 0°, knee down, axis flipped!)
         ]
 
         # Publish at 50Hz to maintain position
