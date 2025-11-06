@@ -27,15 +27,15 @@ position_controller:
       - position
       - velocity
 
-    # Strong PID gains to simulate servo holding torque (1.4kg·cm)
-    # High P gain for strong position holding
-    # Moderate D gain to prevent oscillation
+    # Heavily damped PID gains to prevent oscillation and spasming
+    # Lower P gain with very high D gain for critical damping
+    # Minimal I gain to avoid integral windup
     gains:
-      body_to_back_right_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      back_right_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      body_to_from_right_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      front_right_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      body_to_back_left_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      back_left_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      body_to_front_left_leg_b: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
-      front_left_leg_b_to_a: {p: 1000.0, d: 50.0, i: 10.0, i_clamp: 10.0}
+      body_to_back_right_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      back_right_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_from_right_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      front_right_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_back_left_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      back_left_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_front_left_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      front_left_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
