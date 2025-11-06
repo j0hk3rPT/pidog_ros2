@@ -76,6 +76,10 @@ def generate_launch_description():
                 '-J', 'back_left_leg_b_to_a', '0.8',     # Left: positive = down (axis flipped!)
                 '-J', 'body_to_front_left_leg_b', '0.0',
                 '-J', 'front_left_leg_b_to_a', '0.8',    # Left: positive = down (axis flipped!)
+                '-J', 'motor_8_to_tail', '0.0',          # Tail neutral
+                '-J', 'neck1_to_motor_9', '0.0',         # Head neutral
+                '-J', 'neck2_to_motor_10', '0.0',
+                '-J', 'neck3_to_motor_11', '0.0',
             ],
             output='screen',
     )

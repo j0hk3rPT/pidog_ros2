@@ -32,6 +32,10 @@ class PiDogGazeboController(Node):
             'back_left_leg_b_to_a',
             'body_to_front_left_leg_b',
             'front_left_leg_b_to_a',
+            'motor_8_to_tail',
+            'neck1_to_motor_9',
+            'neck2_to_motor_10',
+            'neck3_to_motor_11',
         ]
 
         # Standing pose: shoulders straight (0), knees bent (~45°)
@@ -43,6 +47,8 @@ class PiDogGazeboController(Node):
             0.0, -0.8,  # Front Right: shoulder 0°, knee -45° (down)
             0.0, +0.8,  # Back Left: shoulder 0°, knee +45° (down, axis flipped!)
             0.0, +0.8,  # Front Left: shoulder 0°, knee +45° (down, axis flipped!)
+            0.0,        # Tail: neutral straight
+            0.0, 0.0, 0.0,  # Head/neck: neutral straight forward
         ]
 
         # Current commanded position
