@@ -1,31 +1,31 @@
 #!/bin/bash
-# Install Gazebo Classic 11 and ros2_control for ROS 2 Humble
+# Install Gazebo Harmonic for ROS 2 Humble on Ubuntu 24.04
 
 set -e
 
 echo "============================================"
-echo "Installing Gazebo Classic for ROS 2 Humble"
+echo "Installing Gazebo Harmonic for Ubuntu 24.04"
 echo "============================================"
+
+# Detect Ubuntu version
+UBUNTU_VERSION=$(lsb_release -rs)
+echo "Detected Ubuntu version: $UBUNTU_VERSION"
 
 # Update package list
 echo "Updating package list..."
 sudo apt-get update
 
-# Install Gazebo Classic 11 (the version bundled with ROS 2 Humble)
-echo "Installing Gazebo Classic 11..."
-sudo apt-get install -y gazebo
+# Install Gazebo Harmonic (for Ubuntu 24.04)
+echo "Installing Gazebo Harmonic..."
+sudo apt-get install -y gz-harmonic
 
-# Install ROS 2 Gazebo packages (Classic, not the new gz-sim)
-echo "Installing ROS 2 Gazebo Classic packages..."
+# Install ROS 2 - Gazebo bridge
+echo "Installing ROS 2 Gazebo bridge..."
 sudo apt-get install -y \
-    ros-humble-gazebo-ros-pkgs \
-    ros-humble-gazebo-ros \
-    ros-humble-gazebo-msgs \
-    ros-humble-gazebo-plugins
-
-# Install gazebo_ros2_control
-echo "Installing gazebo_ros2_control..."
-sudo apt-get install -y ros-humble-gazebo-ros2-control
+    ros-humble-ros-gzharmonic \
+    ros-humble-ros-gz-bridge \
+    ros-humble-ros-gz-sim \
+    ros-humble-ros-gz-interfaces
 
 # Install ros2_control packages
 echo "Installing ros2_control..."
@@ -52,13 +52,13 @@ echo "Installation complete!"
 echo "============================================"
 echo ""
 echo "Installed versions:"
-gazebo --version
+gz sim --version
 echo ""
 echo "To use Gazebo with PiDog:"
 echo "  1. Source your ROS 2 workspace: source ~/pidog_ros2/install/setup.bash"
 echo "  2. Launch simulation: ros2 launch pidog_description gazebo.launch.py"
 echo ""
 echo "Verify installation with:"
-echo "  ros2 pkg list | grep gazebo"
+echo "  ros2 pkg list | grep ros_gz"
 echo "  ros2 pkg list | grep ros2_control"
 echo ""
