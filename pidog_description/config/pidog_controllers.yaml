@@ -27,16 +27,15 @@ position_controller:
       - position
       - velocity
 
-    # Tuned PID gains for stable movement in Gazebo
-    # P gain: Strong enough to track position, not so high it oscillates
-    # D gain: High damping to prevent overshoot and jitter
-    # I gain: Small integral for steady-state error correction
+    # Heavily damped PID gains to prevent oscillation and spasming
+    # Lower P gain with very high D gain for critical damping
+    # Minimal I gain to avoid integral windup
     gains:
-      body_to_back_right_leg_b: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      back_right_leg_b_to_a: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      body_to_from_right_leg_b: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      front_right_leg_b_to_a: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      body_to_back_left_leg_b: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      back_left_leg_b_to_a: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      body_to_front_left_leg_b: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
-      front_left_leg_b_to_a: {p: 100.0, d: 20.0, i: 1.0, i_clamp: 5.0}
+      body_to_back_right_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      back_right_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_from_right_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      front_right_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_back_left_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      back_left_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      body_to_front_left_leg_b: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
+      front_left_leg_b_to_a: {p: 50.0, d: 50.0, i: 0.5, i_clamp: 2.0}
