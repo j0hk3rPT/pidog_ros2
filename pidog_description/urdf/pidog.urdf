@@ -922,7 +922,6 @@
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
       <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-      <param name="position_proportional_gain">100.0</param>
     </hardware>
 
     <!-- Back Right Leg -->
@@ -1004,6 +1003,7 @@
       <robot_param>robot_description</robot_param>
       <robot_param_node>robot_state_publisher</robot_param_node>
       <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
+      <position_proportional_gain>2.0</position_proportional_gain>
     </plugin>
   </gazebo>
 
