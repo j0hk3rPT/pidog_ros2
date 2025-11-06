@@ -1003,7 +1003,9 @@
       <robot_param>robot_description</robot_param>
       <robot_param_node>robot_state_publisher</robot_param_node>
       <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
-      <position_proportional_gain>50.0</position_proportional_gain>
+      <!-- Very low proportional gain to prevent oscillations -->
+      <!-- This is applied ON TOP of PID gains in YAML -->
+      <position_proportional_gain>5.0</position_proportional_gain>
     </plugin>
   </gazebo>
 
