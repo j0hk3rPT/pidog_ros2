@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 50  # Hz - matches typical R/C servo PWM rate
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -32,19 +32,20 @@ position_controller:
       - position
       - velocity
 
-    # Balanced PID gains - strong enough for walking, gentle enough for stability
-    # Moderate P for responsive control without oscillation
-    # Higher D for smooth damping and stability
-    # Minimal I to help reach target without windup
+    # Minimal PID gains for R/C servos with internal control
+    # R/C servos have their own PID - we just send position commands
+    # Low P: servo does the work, we just guide
+    # Low D: servo has built-in damping
+    # Zero I: servo handles steady-state error
     gains:
-      body_to_back_right_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      back_right_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      body_to_from_right_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      front_right_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      body_to_back_left_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      back_left_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      body_to_front_left_leg_b: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
-      front_left_leg_b_to_a: {p: 15.0, d: 20.0, i: 0.5, i_clamp: 1.0}
+      body_to_back_right_leg_b: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      back_right_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      body_to_from_right_leg_b: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      front_right_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      body_to_back_left_leg_b: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      back_left_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      body_to_front_left_leg_b: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
+      front_left_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.0, i_clamp: 0.0}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
