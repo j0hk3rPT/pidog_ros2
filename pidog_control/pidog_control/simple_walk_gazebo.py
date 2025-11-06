@@ -86,52 +86,41 @@ class SimpleWalkNode(Node):
         Calculate joint angles for walking gait.
 
         Uses a simple trotting pattern:
-        - Diagonal legs move together
-        - Phase 0-π: BR+FL lift, BL+FR on ground
-        - Phase π-2π: BL+FR lift, BR+FL on ground
+        - Diagonal legs move together (BR+FL, BL+FR)
+        - Phase 0-π: BR+FL lift and swing forward, BL+FR on ground and push backward
+        - Phase π-2π: BL+FR lift and swing forward, BR+FL on ground and push backward
+
+        Shoulder motion creates forward propulsion:
+        - When lifting: shoulder swings forward (recovery stroke)
+        - When on ground: shoulder swings backward (power stroke)
 
         Joint order: [BR_shoulder, BR_knee, FR_shoulder, FR_knee,
                       BL_shoulder, BL_knee, FL_shoulder, FL_knee]
         """
-        # Back Right (0, 1)
+        # For diagonal pair BR+FL (phase 0-π lift, π-2π ground)
+        # Shoulder: swings backward→forward during lift, forward→backward during ground
+        # Using -cos(phase) gives: phase=0→forward, phase=π→backward, phase=2π→forward
+        br_shoulder = -self.shoulder_swing * math.cos(phase)
+        fl_shoulder = -self.shoulder_swing * math.cos(phase)
+
+        # For diagonal pair BL+FR (phase 0-π ground, π-2π lift)
+        # Shoulder: phase shifted by π from BR+FL
+        bl_shoulder = -self.shoulder_swing * math.cos(phase + math.pi)
+        fr_shoulder = -self.shoulder_swing * math.cos(phase + math.pi)
+
+        # Knee movements: lift during first half of leg's cycle
+        # BR and FL lift during phase 0-π
         if 0 <= phase < math.pi:
-            # Lifting phase
-            br_shoulder = self.shoulder_swing * math.sin(phase)
             br_knee = -0.8 + self.step_height * math.sin(phase)
-        else:
-            # Ground phase
-            br_shoulder = self.shoulder_swing * math.sin(phase)
-            br_knee = -0.8
-
-        # Front Right (2, 3) - opposite to back right
-        if 0 <= phase < math.pi:
-            # Ground phase
-            fr_shoulder = -self.shoulder_swing * math.sin(phase + math.pi)
-            fr_knee = -0.8
-        else:
-            # Lifting phase
-            fr_shoulder = -self.shoulder_swing * math.sin(phase + math.pi)
-            fr_knee = -0.8 + self.step_height * math.sin(phase - math.pi)
-
-        # Back Left (4, 5) - opposite to back right
-        if 0 <= phase < math.pi:
-            # Ground phase
-            bl_shoulder = -self.shoulder_swing * math.sin(phase + math.pi)
-            bl_knee = -0.8
-        else:
-            # Lifting phase
-            bl_shoulder = -self.shoulder_swing * math.sin(phase + math.pi)
-            bl_knee = -0.8 + self.step_height * math.sin(phase - math.pi)
-
-        # Front Left (6, 7) - same as back right
-        if 0 <= phase < math.pi:
-            # Lifting phase
-            fl_shoulder = self.shoulder_swing * math.sin(phase)
             fl_knee = -0.8 + self.step_height * math.sin(phase)
+            bl_knee = -0.8  # On ground
+            fr_knee = -0.8  # On ground
         else:
-            # Ground phase
-            fl_shoulder = self.shoulder_swing * math.sin(phase)
-            fl_knee = -0.8
+            # BL and FR lift during phase π-2π
+            br_knee = -0.8  # On ground
+            fl_knee = -0.8  # On ground
+            bl_knee = -0.8 + self.step_height * math.sin(phase - math.pi)
+            fr_knee = -0.8 + self.step_height * math.sin(phase - math.pi)
 
         return [
             br_shoulder, br_knee,  # Back Right

@@ -2,7 +2,13 @@
 
 ## What Was Fixed
 
+### Issue 1: Missing Walk Controller Node
 The `gazebo_manual.launch.py` file was missing the `simple_walk_gazebo` node, which is responsible for generating walking gaits. This node has now been added to the launch file.
+
+### Issue 2: Incorrect Shoulder Movement (Bug Fix)
+The walking gait had a critical bug where all shoulder joints were moving in sync, causing the robot to just bounce up and down without any forward motion. The shoulder movements have been corrected to create proper push/pull motion:
+- When a leg is on the ground: shoulder swings backward (power stroke, pushes robot forward)
+- When a leg is lifting: shoulder swings forward (recovery stroke, prepares for next step)
 
 ## How to Use
 
