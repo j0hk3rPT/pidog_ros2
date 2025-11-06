@@ -2,7 +2,8 @@
 <sdf version="1.8">
   <world name="pidog_world">
 
-    <!-- Physics settings optimized for stability with position control -->
+    <!-- Physics settings optimized to fix position control jitter -->
+    <!-- Based on gazebo_ros2_control known issues and best practices -->
     <physics name="1ms" type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_factor>1.0</real_time_factor>
@@ -14,10 +15,14 @@
           <sor>1.3</sor>
         </solver>
         <constraints>
-          <cfm>0.0</cfm>
+          <!-- CFM stabilizes intermittent contacts (feet touching ground) -->
+          <cfm>0.00001</cfm>
+          <!-- ERP around 0.2 is stable for ground contact -->
           <erp>0.2</erp>
-          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
-          <contact_surface_layer>0.001</contact_surface_layer>
+          <!-- Reduced to prevent jitter from repeated contact make/break -->
+          <contact_max_correcting_vel>0.01</contact_max_correcting_vel>
+          <!-- Increased to prevent jittering at contact points -->
+          <contact_surface_layer>0.01</contact_surface_layer>
         </constraints>
       </ode>
     </physics>
