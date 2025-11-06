@@ -32,12 +32,12 @@ class SimpleWalkNode(Node):
             10
         )
 
-        # Gait parameters
+        # Gait parameters - conservative values for stability
         self.gait_active = False
         self.phase = 0.0
-        self.frequency = 0.5  # Hz - how fast to walk (slower for stability)
-        self.step_height = 0.6  # radians - how high to lift knee (increased from 0.3)
-        self.shoulder_swing = 0.5  # radians - how much to swing shoulder (increased from 0.2)
+        self.frequency = 0.3  # Hz - slow walk for stability
+        self.step_height = 0.3  # radians - moderate knee lift
+        self.shoulder_swing = 0.3  # radians - moderate shoulder swing
 
         # Standing pose
         self.stand_pose = [0.0, -0.8, 0.0, -0.8, 0.0, -0.8, 0.0, -0.8]
