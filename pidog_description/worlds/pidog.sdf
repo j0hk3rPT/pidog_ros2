@@ -10,19 +10,20 @@
       <real_time_update_rate>1000</real_time_update_rate>
       <ode>
         <solver>
-          <type>quick</type>
-          <iters>50</iters>
+          <type>world</type><!-- Changed from 'quick' for better accuracy -->
+          <iters>150</iters><!-- Increased from 50 for better convergence -->
           <sor>1.3</sor>
         </solver>
         <constraints>
           <!-- CFM stabilizes intermittent contacts (feet touching ground) -->
-          <cfm>0.00001</cfm>
+          <!-- Increased for softer contacts to reduce jitter -->
+          <cfm>0.001</cfm>
           <!-- ERP around 0.2 is stable for ground contact -->
           <erp>0.2</erp>
           <!-- Reduced to prevent jitter from repeated contact make/break -->
-          <contact_max_correcting_vel>0.01</contact_max_correcting_vel>
-          <!-- Increased to prevent jittering at contact points -->
-          <contact_surface_layer>0.01</contact_surface_layer>
+          <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+          <!-- Reduced for small robot - was 10mm, now 1mm -->
+          <contact_surface_layer>0.001</contact_surface_layer>
         </constraints>
       </ode>
     </physics>
@@ -56,15 +57,17 @@
           <surface>
             <friction>
               <ode>
-                <mu>0.8</mu>
-                <mu2>0.8</mu2>
+                <mu>1.0</mu>
+                <mu2>1.0</mu2>
               </ode>
             </friction>
             <contact>
               <ode>
-                <kp>1000000000000000.0</kp><!-- 1e15 for stable contact -->
-                <kd>10000000000000.0</kd><!-- 1e13 for damping -->
-                <min_depth>0.001</min_depth>
+                <!-- Reduced from 1e15 to prevent excessive stiffness and jitter -->
+                <!-- For small robots, softer contact is more stable -->
+                <kp>10000000.0</kp><!-- 1e7 - more reasonable for small robot -->
+                <kd>100.0</kd><!-- Moderate damping -->
+                <min_depth>0.0005</min_depth>
                 <max_vel>0.1</max_vel>
               </ode>
             </contact>

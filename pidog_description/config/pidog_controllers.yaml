@@ -32,20 +32,22 @@ position_controller:
       - position
       - velocity
 
-    # Tuned PID gains for stable position control
-    # Now with proper effort limits (0.25 Nm) and joint damping (0.7)
-    # Reduced P to prevent oscillation with higher effort available
-    # Low D since joint damping provides physical damping
-    # Small I to handle steady-state error without overshoot
+    # Tuned PID gains for stable position control with optimized physics
+    # Effort: 0.35 Nm (3.6 kg·cm) - well above real servo 1.6 kg·cm
+    # Joint damping: 0.5 - balanced for stability
+    # Physics: World solver with CFM=0.001 for soft contacts
+    # Moderate P for responsiveness without oscillation
+    # Very low D since joint damping + soft contacts provide physical damping
+    # Small I for steady-state without overshoot
     gains:
-      body_to_back_right_leg_b: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      back_right_leg_b_to_a: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      body_to_from_right_leg_b: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      front_right_leg_b_to_a: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      body_to_back_left_leg_b: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      back_left_leg_b_to_a: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      body_to_front_left_leg_b: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
-      front_left_leg_b_to_a: {p: 6.0, d: 0.5, i: 0.2, i_clamp: 0.5}
+      body_to_back_right_leg_b: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      back_right_leg_b_to_a: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      body_to_from_right_leg_b: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      front_right_leg_b_to_a: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      body_to_back_left_leg_b: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      back_left_leg_b_to_a: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      body_to_front_left_leg_b: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
+      front_left_leg_b_to_a: {p: 8.0, d: 0.3, i: 0.1, i_clamp: 0.3}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
