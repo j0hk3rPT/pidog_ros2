@@ -53,10 +53,16 @@ class PiDogGazeboController(Node):
             10
         )
 
+        # Startup delay to allow physics to settle after spawn
+        self.startup_delay = 2.0  # seconds
+        self.start_time = self.get_clock().now()
+        self.controller_active = False
+
         # Publish standing pose at 50Hz
         self.timer = self.create_timer(0.02, self.publish_position)
 
         self.get_logger().info('PiDog Gazebo Controller started')
+        self.get_logger().info(f'Waiting {self.startup_delay}s for physics to settle...')
         self.get_logger().info(f'Commanding standing pose: {self.standing_pose}')
 
     def motor_callback(self, msg):
@@ -67,6 +73,15 @@ class PiDogGazeboController(Node):
 
     def publish_position(self):
         """Publish current position to ros2_control."""
+        # Check if startup delay has passed
+        if not self.controller_active:
+            elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
+            if elapsed < self.startup_delay:
+                return  # Don't publish yet
+            else:
+                self.controller_active = True
+                self.get_logger().info('Controller now active - publishing commands')
+
         msg = Float64MultiArray()
         msg.data = self.current_position
         self.position_pub.publish(msg)
