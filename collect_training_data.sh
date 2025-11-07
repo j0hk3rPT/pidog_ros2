@@ -62,11 +62,11 @@ for i in "${!GAITS[@]}"; do
 
     # Reset robot pose in Gazebo (physically moves robot upright)
     echo "  🔄 Resetting robot pose in Gazebo..."
-    gz service -s /world/pidog_world/control \
-        --reqtype gz.msgs.WorldControl \
+    gz service -s /world/pidog_world/set_pose \
+        --reqtype gz.msgs.Pose \
         --reptype gz.msgs.Boolean \
         --timeout 2000 \
-        --req 'reset: {model_only: true}' &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
+        --req "name: 'Robot.urdf', position: {x: 0.0, y: 0.0, z: 0.12}, orientation: {x: 0, y: 0, z: 0, w: 1}" &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
     sleep 2
 
     # Send stand command to initialize pose
