@@ -32,20 +32,20 @@ position_controller:
       - position
       - velocity
 
-    # Balanced PID gains - strong tracking with damping to prevent oscillation
-    # Effort limits: 0.15 Nm (matches real SF006FM servo: 0.127-0.137 Nm)
+    # Aggressive PID gains for low-torque servos
+    # Effort limits: 0.2 Nm (real servo: 0.127-0.137 Nm stall + headroom for dynamics)
     # Joint damping: 0.1, friction: 0.1 in URDF (low friction for efficient servos)
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
     gains:
-      body_to_back_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      back_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_front_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      front_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_back_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      back_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_front_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      front_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_back_right_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      back_right_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      body_to_front_right_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      front_right_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      body_to_back_left_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      back_left_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      body_to_front_left_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      front_left_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
