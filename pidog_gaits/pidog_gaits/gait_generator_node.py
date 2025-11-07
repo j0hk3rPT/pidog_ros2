@@ -100,23 +100,45 @@ class GaitGeneratorNode(Node):
         return gaits
 
     def _create_poses(self):
-        """Create static poses."""
+        """Create static poses - use IK for consistency."""
         poses = {}
 
-        # Stand pose - neutral standing position
-        stand_coords = [[0, 80], [0, 80], [0, 80], [0, 80]]
+        # Generate stand pose from IK to match walking gait calculations
+        # Standing height: y=0 (neutral), z=80mm (from walk_gait.py Z_ORIGIN)
+        from .inverse_kinematics import LegIK
+        stand_coords = [
+            [0, 80],  # FL: neutral position
+            [0, 80],  # FR: neutral position
+            [0, 80],  # BL: neutral position
+            [0, 80],  # BR: neutral position
+        ]
         poses['stand'] = LegIK.legs_coords_to_angles(stand_coords)
 
-        # Sit pose - back legs bent, front legs straight
-        sit_coords = [[0, 80], [0, 80], [30, 60], [30, 60]]
+        # Sit pose - sitting with rear up, front down (using IK)
+        sit_coords = [
+            [30, 65],   # FL: forward 30mm, lower 65mm
+            [30, 65],   # FR: forward 30mm, lower 65mm
+            [-20, 90],  # BL: back 20mm, higher 90mm
+            [-20, 90],  # BR: back 20mm, higher 90mm
+        ]
         poses['sit'] = LegIK.legs_coords_to_angles(sit_coords)
 
-        # Lie pose - all legs bent
-        lie_coords = [[20, 40], [20, 40], [20, 40], [20, 40]]
+        # Lie pose - legs splayed out, body low (using IK)
+        lie_coords = [
+            [40, 60],   # FL: splayed out, low
+            [40, 60],   # FR: splayed out, low
+            [40, 60],   # BL: splayed out, low
+            [40, 60],   # BR: splayed out, low
+        ]
         poses['lie'] = LegIK.legs_coords_to_angles(lie_coords)
 
-        # Stretch pose - legs extended forward
-        stretch_coords = [[40, 70], [40, 70], [-20, 90], [-20, 90]]
+        # Stretch pose - front legs forward, back legs back (using IK)
+        stretch_coords = [
+            [40, 75],   # FL: forward, medium height
+            [40, 75],   # FR: forward, medium height
+            [-40, 85],  # BL: back, higher
+            [-40, 85],  # BR: back, higher
+        ]
         poses['stretch'] = LegIK.legs_coords_to_angles(stretch_coords)
 
         return poses
@@ -200,9 +222,9 @@ class GaitGeneratorNode(Node):
         # Store current angles for next transition
         self.current_angles = leg_angles.copy()
 
-        # Convert degrees to radians and publish
+        # Publish angles (already in radians from inverse_kinematics)
         # 8 leg angles + 4 zeros for tail/head
-        angles_rad = [angle * (pi / 180.0) for angle in leg_angles]
+        angles_rad = leg_angles.copy()
         angles_rad.extend([0.0, 0.0, 0.0, 0.0])  # motors 8-11 (tail, head)
 
         self.joint_state.position = angles_rad

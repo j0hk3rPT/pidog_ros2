@@ -133,8 +133,8 @@
     <child  link="back_right_leg_b"/>
     <origin xyz="0.0405 -0.06685 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="back_right_leg_b_to_motor_0" type="fixed">
@@ -148,8 +148,8 @@
     <child  link="back_right_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
 
   </joint>
     <joint name="back_right_leg_a_to_motor_1" type="fixed">
@@ -269,13 +269,13 @@
     </inertial>
   </link>
 
-  <joint name="body_to_from_right_leg_b" type="revolute">
+  <joint name="body_to_front_right_leg_b" type="revolute">
     <parent link="body"/>
     <child  link="front_right_leg_b"/>
     <origin xyz="0.0405 0.05315 -0.009" rpy="0 1.57 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="front_right_leg_b_to_motor_2" type="fixed">
@@ -289,8 +289,8 @@
     <child  link="front_right_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
 
   </joint>
     <joint name="front_right_leg_a_to_motor_3" type="fixed">
@@ -415,8 +415,8 @@
     <child  link="back_left_leg_b"/>
     <origin xyz="-0.0405 -0.06685 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="back_left_leg_b_to_motor_4" type="fixed">
@@ -430,8 +430,8 @@
     <child  link="back_left_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="back_left_leg_a_to_acrylic" type="fixed">
@@ -556,8 +556,8 @@
     <child  link="front_left_leg_b"/>
     <origin xyz="-0.0405 0.05315 -0.009" rpy="0 1.57 3.1415"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="front_left_leg_b_to_motor_6" type="fixed">
@@ -571,8 +571,8 @@
     <child  link="front_left_leg_a"/>
     <origin xyz="0.047 0 0.0095" rpy="0 0 1.57"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
   <joint name="front_left_leg_a_to_acrylic" type="fixed">
@@ -642,8 +642,8 @@
     <child  link="tail"/>
     <origin xyz="0 0 0.008" rpy="0 0 0"/>
     <axis xyz="0 0 1"/>
-    <limit effort="0.35" lower="-1.57" upper="1.57" velocity="7.0"/>
-    <dynamics damping="0.7" friction="1.0"/>
+    <limit effort="1.5" lower="-1.57" upper="1.57" velocity="7.5"/>
+    <dynamics damping="0.5" friction="0.5"/>
   </joint>
 
 
@@ -824,7 +824,7 @@
     <child  link="motor_9"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 0.01 0.015" rpy="1.57075 0.785375 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint>  
@@ -841,7 +841,7 @@
     <child  link="motor_10"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 -0.021 -0.003" rpy="-1.57075 0 3.1415"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint>  
@@ -858,7 +858,7 @@
     <child  link="motor_11"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0.0265 0.0 -0.0125" rpy="0 1.57075 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.0"/>
+      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.3" friction="0.5" stiffness="50.0"/>
   </joint> 
@@ -878,11 +878,12 @@
   </joint>
 
   <!-- Gazebo-specific settings for sphere paw contacts -->
+  <!-- Reduced stiffness to prevent bouncing - more realistic for compliant contact -->
   <gazebo reference="back_right_acrylic">
     <mu1>0.8</mu1>
     <mu2>0.8</mu2>
-    <kp>1000000000000000.0</kp><!-- 1e15 for stable ground contact -->
-    <kd>10000000000000.0</kd><!-- 1e13 for stable damping -->
+    <kp>1000000.0</kp><!-- 1e6 - reasonable stiffness, prevents numerical instability -->
+    <kd>100.0</kd><!-- Moderate damping to absorb impacts -->
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
@@ -891,8 +892,8 @@
   <gazebo reference="front_right_acrylic">
     <mu1>0.8</mu1>
     <mu2>0.8</mu2>
-    <kp>1000000000000000.0</kp>
-    <kd>10000000000000.0</kd>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
@@ -901,8 +902,8 @@
   <gazebo reference="back_left_acrylic">
     <mu1>0.8</mu1>
     <mu2>0.8</mu2>
-    <kp>1000000000000000.0</kp>
-    <kd>10000000000000.0</kd>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
@@ -911,8 +912,8 @@
   <gazebo reference="front_left_acrylic">
     <mu1>0.8</mu1>
     <mu2>0.8</mu2>
-    <kp>1000000000000000.0</kp>
-    <kd>10000000000000.0</kd>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
@@ -943,7 +944,7 @@
     </joint>
 
     <!-- Front Right Leg -->
-    <joint name="body_to_from_right_leg_b">
+    <joint name="body_to_front_right_leg_b">
       <command_interface name="position">
         <param name="min">-1.57</param>
         <param name="max">1.57</param>
@@ -1039,9 +1040,8 @@
       <robot_param>robot_description</robot_param>
       <robot_param_node>robot_state_publisher</robot_param_node>
       <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
-      <!-- Moderate proportional gain for responsive control -->
-      <!-- This is applied ON TOP of PID gains in YAML -->
-      <position_proportional_gain>3.0</position_proportional_gain>
+      <!-- Reduced gain to prevent oscillation - multiplies YAML PID gains -->
+      <position_proportional_gain>1.0</position_proportional_gain>
     </plugin>
   </gazebo>
 
@@ -1054,7 +1054,7 @@
     <implicitSpringDamper>true</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
   </gazebo>
-  <gazebo reference="body_to_from_right_leg_b">
+  <gazebo reference="body_to_front_right_leg_b">
     <implicitSpringDamper>true</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
   </gazebo>
@@ -1077,99 +1077,6 @@
   <gazebo reference="front_left_leg_b_to_a">
     <implicitSpringDamper>true</implicitSpringDamper>
     <provideFeedback>true</provideFeedback>
-  </gazebo>
-
-  <!-- ===============================================================================================================
-  ========================================== ROS2 CONTROL CONFIGURATION ============================================
-  =============================================================================================================== -->
-
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>
-
-    <!-- Back Right Leg Joints -->
-    <joint name="body_to_back_right_leg_b">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="back_right_leg_b_to_a">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <!-- Front Right Leg Joints -->
-    <joint name="body_to_from_right_leg_b">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="front_right_leg_b_to_a">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <!-- Back Left Leg Joints -->
-    <joint name="body_to_back_left_leg_b">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="back_left_leg_b_to_a">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <!-- Front Left Leg Joints -->
-    <joint name="body_to_front_left_leg_b">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="front_left_leg_b_to_a">
-      <command_interface name="position">
-        <param name="min">-1.57</param>
-        <param name="max">1.57</param>
-      </command_interface>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-  </ros2_control>
-
-  <!-- Gazebo plugin for ros2_control -->
-  <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>$(find pidog_description)/config/pidog_controllers.yaml</parameters>
-    </plugin>
   </gazebo>
 
 </robot>

@@ -13,7 +13,7 @@ position_controller:
     joints:
       - body_to_back_right_leg_b
       - back_right_leg_b_to_a
-      - body_to_from_right_leg_b
+      - body_to_front_right_leg_b
       - front_right_leg_b_to_a
       - body_to_back_left_leg_b
       - back_left_leg_b_to_a
@@ -32,20 +32,20 @@ position_controller:
       - position
       - velocity
 
-    # Tuned PID gains for stable position control
-    # Joint damping: 0.7, friction: 1.0 for jitter reduction
-    # Physics: World solver with CFM=0.0 (stiff contacts) for stable ground
-    # Moderate P for responsiveness, increased D for damping with stiff contacts
-    # Small I for steady-state correction
+    # Balanced PID gains - strong tracking with damping to prevent oscillation
+    # Effort limits: 1.5 Nm (sufficient for movement)
+    # Joint damping: 0.5, friction: 0.5 in URDF
+    # Contact stiffness: 1e6 (soft contact to prevent bouncing)
+    # position_proportional_gain: 1.0 (no amplification)
     gains:
-      body_to_back_right_leg_b: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      back_right_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      body_to_from_right_leg_b: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      front_right_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      body_to_back_left_leg_b: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      back_left_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      body_to_front_left_leg_b: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
-      front_left_leg_b_to_a: {p: 5.0, d: 1.0, i: 0.05, i_clamp: 0.2}
+      body_to_back_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      back_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      front_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_back_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      back_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      front_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}

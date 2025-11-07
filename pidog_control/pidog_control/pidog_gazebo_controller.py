@@ -26,7 +26,7 @@ class PiDogGazeboController(Node):
         self.joint_names = [
             'body_to_back_right_leg_b',
             'back_right_leg_b_to_a',
-            'body_to_from_right_leg_b',
+            'body_to_front_right_leg_b',
             'front_right_leg_b_to_a',
             'body_to_back_left_leg_b',
             'back_left_leg_b_to_a',
@@ -80,9 +80,17 @@ class PiDogGazeboController(Node):
 
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
-        if len(msg.position) == len(self.joint_names):
-            self.current_position = list(msg.position)
+        # Gait generator publishes 12 motors (8 legs + 4 head/tail)
+        # Motor mapping (from URDF): motor_0,1=BR, motor_2,3=FR, motor_4,5=BL, motor_6,7=FL
+        # Controller needs: BR, FR, BL, FL (same order!)
+        if len(msg.position) >= len(self.joint_names):
+            # No remapping needed - gait and controller use same order
+            self.current_position = list(msg.position[:8])
             self.get_logger().debug('Received new joint positions from gait controller')
+        else:
+            self.get_logger().warn(
+                f'Received {len(msg.position)} positions but need at least {len(self.joint_names)}'
+            )
 
     def publish_position(self):
         """Publish current position to ros2_control."""
