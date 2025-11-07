@@ -31,22 +31,20 @@ position_controller:
       - position
       - velocity
 
-    # PID gains - ALL SERVOS IDENTICAL (SunFounder SF006FM 9g Digital Servo)
-    # All 12 servos use same hardware, same control parameters
-    # Joint damping: 0.01, friction: 0.2 in URDF
-    # Contact stiffness: 1e6 (soft contact to prevent bouncing)
-    # position_proportional_gain: 1.0 (no amplification)
+    # PID gains - Conservative values to prevent 12-joint system instability
+    # With 12 joints + 3-joint neck chain, aggressive gains cause physics explosions
+    # Start with very low gains and tune up if needed
     gains:
-      body_to_back_right_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      back_right_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      body_to_front_right_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      front_right_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      body_to_back_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      back_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      body_to_front_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      front_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      # Tail and neck use SAME gains as legs (all identical servos)
-      motor_8_to_tail: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck1_to_motor_9: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck2_to_motor_10: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck3_to_motor_11: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      body_to_back_right_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      back_right_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      body_to_front_right_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      front_right_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      body_to_back_left_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      back_left_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      body_to_front_left_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      front_left_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
+      # Tail and neck (serial chain needs even more conservative gains)
+      motor_8_to_tail: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
+      neck1_to_motor_9: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
+      neck2_to_motor_10: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
+      neck3_to_motor_11: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
