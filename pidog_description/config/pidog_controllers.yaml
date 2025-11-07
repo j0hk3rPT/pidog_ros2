@@ -33,7 +33,7 @@ position_controller:
       - velocity
 
     # Balanced PID gains - strong tracking with damping to prevent oscillation
-    # Effort limits: 1.5 Nm (sufficient for movement)
+    # Effort limits: 0.15 Nm (matches real SF006FM servo: 0.127-0.137 Nm)
     # Joint damping: 0.5, friction: 0.5 in URDF
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
