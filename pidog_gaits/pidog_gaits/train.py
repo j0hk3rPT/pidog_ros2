@@ -15,7 +15,7 @@ import argparse
 import os
 from datetime import datetime
 
-from neural_network import GaitNet, GaitNetLarge, load_dataset, count_parameters
+from neural_network import GaitNet, GaitNetLarge, GaitNetSimpleLSTM, GaitNetLSTM, load_dataset, count_parameters
 
 
 def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='cpu', save_dir='./models'):
@@ -176,8 +176,9 @@ def plot_training_history(history, save_path='training_history.png'):
 def main():
     parser = argparse.ArgumentParser(description='Train PiDog Gait Neural Network')
     parser.add_argument('--data', type=str, required=True, help='Path to training data (.npz file)')
-    parser.add_argument('--model', type=str, default='simple', choices=['simple', 'large'],
-                        help='Model architecture (simple or large)')
+    parser.add_argument('--model', type=str, default='simple',
+                        choices=['simple', 'large', 'simple_lstm', 'lstm'],
+                        help='Model architecture: simple, large, simple_lstm (recommended), or lstm')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
@@ -217,8 +218,14 @@ def main():
     print(f"\nCreating model: {args.model}")
     if args.model == 'simple':
         model = GaitNet()
-    else:
+    elif args.model == 'large':
         model = GaitNetLarge()
+    elif args.model == 'simple_lstm':
+        model = GaitNetSimpleLSTM()
+    elif args.model == 'lstm':
+        model = GaitNetLSTM()
+    else:
+        raise ValueError(f"Unknown model type: {args.model}")
 
     # Train model
     history = train_model(

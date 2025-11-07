@@ -16,7 +16,7 @@ import numpy as np
 from math import pi
 import os
 
-from .neural_network import GaitNet, GaitNetLarge
+from .neural_network import GaitNet, GaitNetLarge, GaitNetSimpleLSTM, GaitNetLSTM
 
 
 class NNControllerNode(Node):
@@ -32,7 +32,7 @@ class NNControllerNode(Node):
 
         # Parameters
         self.declare_parameter('model_path', './models/best_model.pth')
-        self.declare_parameter('model_type', 'simple')  # 'simple' or 'large'
+        self.declare_parameter('model_type', 'simple')  # 'simple', 'large', 'simple_lstm', or 'lstm'
         self.declare_parameter('frequency', 30)  # Hz
         self.declare_parameter('device', 'cpu')
 
@@ -98,6 +98,10 @@ class NNControllerNode(Node):
             model = GaitNet()
         elif model_type == 'large':
             model = GaitNetLarge()
+        elif model_type == 'simple_lstm':
+            model = GaitNetSimpleLSTM()
+        elif model_type == 'lstm':
+            model = GaitNetLSTM()
         else:
             raise ValueError(f"Unknown model type: {model_type}")
 
@@ -132,7 +136,7 @@ class NNControllerNode(Node):
         Use neural network to predict joint angles.
 
         Returns:
-            list: 8 joint angles in radians
+            list: 12 joint angles in radians (8 legs + 4 head/tail for balance)
         """
         # Get current gait features
         gait_features = self.gait_info[self.current_gait]
@@ -162,11 +166,8 @@ class NNControllerNode(Node):
         now = self.get_clock().now()
         self.joint_state.header.stamp = now.to_msg()
 
-        # Get predicted angles from neural network
-        leg_angles_rad = self.predict_angles()
-
-        # Add zeros for tail and head (motors 8-11)
-        all_angles = leg_angles_rad + [0.0, 0.0, 0.0, 0.0]
+        # Get predicted angles from neural network (all 12 motors)
+        all_angles = self.predict_angles()
 
         self.joint_state.position = all_angles
         self.joint_pub.publish(self.joint_state)

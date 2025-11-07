@@ -7,7 +7,7 @@ from gait parameters (type, direction, turn, phase).
 Architecture:
     Input: [gait_type, direction, turn, phase] (4 features)
     Hidden: Multiple fully-connected layers with ReLU activation
-    Output: [8 joint angles] in radians
+    Output: [12 joint angles] in radians (8 legs + 4 head/tail for balance)
 """
 
 import torch
@@ -22,15 +22,15 @@ class GaitNet(nn.Module):
     the mapping: gait_params -> joint_angles
     """
 
-    def __init__(self, input_size=4, output_size=8, hidden_sizes=[128, 256, 128]):
+    def __init__(self, input_size=4, output_size=12, hidden_sizes=[128, 256, 128]):
         """
         Initialize the network.
 
         Args:
             input_size (int): Number of input features (default: 4)
                 [gait_type, direction, turn, phase]
-            output_size (int): Number of outputs (default: 8)
-                [8 joint angles]
+            output_size (int): Number of outputs (default: 12)
+                [8 leg angles + 4 head/tail angles for balance]
             hidden_sizes (list): Sizes of hidden layers
         """
         super(GaitNet, self).__init__()
@@ -70,7 +70,7 @@ class GaitNetLarge(nn.Module):
     Use this if the simple model doesn't learn well enough.
     """
 
-    def __init__(self, input_size=4, output_size=8):
+    def __init__(self, input_size=4, output_size=12):
         super(GaitNetLarge, self).__init__()
 
         self.network = nn.Sequential(
@@ -112,7 +112,7 @@ class GaitDataset(torch.utils.data.Dataset):
 
         Args:
             inputs: NumPy array of shape (N, 4) - input features
-            outputs: NumPy array of shape (N, 8) - target joint angles
+            outputs: NumPy array of shape (N, 12) - target joint angles (8 legs + 4 head/tail)
         """
         self.inputs = torch.FloatTensor(inputs)
         self.outputs = torch.FloatTensor(outputs)
@@ -156,20 +156,20 @@ class GaitNetLSTM(nn.Module):
     - Temporal dependencies in gaits
     - Velocity information
 
-    Input: [gait_cmd (4), joint_pos (8), joint_vel (8)] = 20 features
+    Input: [gait_cmd (4), joint_pos (12), joint_vel (12)] = 28 features
     LSTM: 128 hidden units
-    Output: 8 joint angles
+    Output: 12 joint angles (8 legs + 4 head/tail)
     """
 
-    def __init__(self, input_size=20, hidden_size=128, output_size=8, num_layers=1):
+    def __init__(self, input_size=28, hidden_size=128, output_size=12, num_layers=1):
         """
         Initialize LSTM network.
 
         Args:
-            input_size (int): Size of input features (4 + 8 + 8 = 20 by default)
-                [gait_type, direction, turn, phase, 8 joint positions, 8 joint velocities]
+            input_size (int): Size of input features (4 + 12 + 12 = 28 by default)
+                [gait_type, direction, turn, phase, 12 joint positions, 12 joint velocities]
             hidden_size (int): Number of LSTM hidden units
-            output_size (int): Number of outputs (8 joint angles)
+            output_size (int): Number of outputs (12 joint angles: 8 legs + 4 head/tail)
             num_layers (int): Number of LSTM layers
         """
         super(GaitNetLSTM, self).__init__()
@@ -236,10 +236,10 @@ class GaitNetSimpleLSTM(nn.Module):
     Good for initial training before adding full state feedback.
     Input: [gait_type, direction, turn, phase] = 4 features
     LSTM: 64 hidden units
-    Output: 8 joint angles
+    Output: 12 joint angles (8 legs + 4 head/tail for balance)
     """
 
-    def __init__(self, input_size=4, hidden_size=64, output_size=8):
+    def __init__(self, input_size=4, hidden_size=64, output_size=12):
         super(GaitNetSimpleLSTM, self).__init__()
 
         self.hidden_size = hidden_size
@@ -317,12 +317,12 @@ if __name__ == '__main__':
     print("\n" + "=" * 60)
     print("GaitNetLSTM (Full State Feedback)")
     print("=" * 60)
-    model_lstm = GaitNetLSTM(input_size=20)  # 4 + 8 + 8
+    model_lstm = GaitNetLSTM(input_size=28)  # 4 + 12 + 12
     print(model_lstm)
     print(f"\nTotal parameters: {count_parameters(model_lstm):,}")
 
     # Test with full state
-    dummy_input_full = torch.randn(10, 20)  # gait(4) + pos(8) + vel(8)
+    dummy_input_full = torch.randn(10, 28)  # gait(4) + pos(12) + vel(12)
     output_full, hidden_full = model_lstm(dummy_input_full)
     print(f"\nInput shape: {dummy_input_full.shape}")
     print(f"Output shape: {output_full.shape}")
