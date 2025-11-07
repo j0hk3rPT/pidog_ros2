@@ -1079,4 +1079,22 @@
     <provideFeedback>true</provideFeedback>
   </gazebo>
 
+  <!-- Tail and neck joints need implicit spring damper for stability -->
+  <gazebo reference="motor_8_to_tail">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo reference="neck1_to_motor_9">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo reference="neck2_to_motor_10">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo reference="neck3_to_motor_11">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+
 </robot>
