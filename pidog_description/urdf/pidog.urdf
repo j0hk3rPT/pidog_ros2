@@ -824,7 +824,7 @@
     <child  link="motor_9"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 0.01 0.015" rpy="1.57075 0.785375 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
+      <limit effort="0.5" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.01" friction="0.2"/>
   </joint>  
@@ -841,7 +841,7 @@
     <child  link="motor_10"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0 -0.021 -0.003" rpy="-1.57075 0 3.1415"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
+      <limit effort="0.5" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.01" friction="0.2"/>
   </joint>  
@@ -858,7 +858,7 @@
     <child  link="motor_11"/>
     <!-- <origin xyz="0 -0.0025 0.0125" rpy="0 0 0"/> -->
     <origin xyz="0.0265 0.0 -0.0125" rpy="0 1.57075 0"/>
-      <limit effort="0.14" lower="-1.57" upper="1.57" velocity="7.5"/>
+      <limit effort="0.5" lower="-1.57" upper="1.57" velocity="7.5"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="0.01" friction="0.2"/>
   </joint> 

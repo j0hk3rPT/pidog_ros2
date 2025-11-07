@@ -47,8 +47,8 @@ position_controller:
       back_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       body_to_front_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       front_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      # Head and tail gains (lighter load, use same gains as legs for consistency)
-      motor_8_to_tail: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck1_to_motor_9: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck2_to_motor_10: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      neck3_to_motor_11: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      # Head and tail gains (lighter load, reduced gains to prevent overshoot)
+      motor_8_to_tail: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
+      neck1_to_motor_9: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
+      neck2_to_motor_10: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
+      neck3_to_motor_11: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
