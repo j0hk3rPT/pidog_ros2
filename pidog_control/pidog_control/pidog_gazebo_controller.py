@@ -39,19 +39,23 @@ class PiDogGazeboController(Node):
             # 'neck3_to_motor_11',
         ]
 
-        # Standing pose: shoulders straight (0), knees bent (~45°)
+        # Standing pose: MUST MATCH IK-generated stand pose from gait_generator
+        # IK stand pose: shoulders=±1.208 rad, knees=±0.180 rad
+        # This matches the spawn position in gazebo.launch.py
         # NOTE: Left legs have flipped joint axes (rpy="0 1.57 3.1415" in URDF)
-        # Right legs: negative angle bends knee DOWN
-        # Left legs: positive angle bends knee DOWN
+        # Right legs: negative shoulder, positive knee
+        # Left legs: positive shoulder, negative knee
         self.standing_pose = [
-            0.0, -0.8,  # Back Right: shoulder 0°, knee -45° (down)
-            0.0, -0.8,  # Front Right: shoulder 0°, knee -45° (down)
-            0.0, +0.8,  # Back Left: shoulder 0°, knee +45° (down, axis flipped!)
-            0.0, +0.8,  # Front Left: shoulder 0°, knee +45° (down, axis flipped!)
+            -1.208, +0.180,  # Back Right: shoulder -1.208, knee +0.180
+            -1.208, +0.180,  # Front Right: shoulder -1.208, knee +0.180
+            +1.208, -0.180,  # Back Left: shoulder +1.208, knee -0.180 (axis flipped!)
+            +1.208, -0.180,  # Front Left: shoulder +1.208, knee -0.180 (axis flipped!)
             # Temporarily disable head/tail
             # 0.0,        # Tail: neutral straight
             # 0.0, 0.0, 0.0,  # Head/neck: neutral straight forward
         ]
+
+        self.get_logger().info(f"Target standing pose: {self.standing_pose}")
 
         # Current commanded position
         self.current_position = self.standing_pose.copy()
@@ -76,7 +80,6 @@ class PiDogGazeboController(Node):
         self.get_logger().info('PiDog Gazebo Controller started')
         self.get_logger().info(f'Waiting {self.startup_delay}s for physics to settle...')
         self.get_logger().info('Robot will remain passive until fully stable on ground')
-        self.get_logger().info(f'Target standing pose: {self.standing_pose}')
 
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
