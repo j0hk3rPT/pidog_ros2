@@ -33,7 +33,8 @@ position_controller:
       - velocity
 
     # Aggressive PID gains for low-torque servos
-    # Effort limits: 0.2 Nm (real servo: 0.127-0.137 Nm stall + headroom for dynamics)
+    # Effort limits: 0.5 Nm (allows full range of motion with margin)
+    # Real servo: 0.127-0.137 Nm stall, but need ~3-4x for dynamics + acceleration
     # Joint damping: 0.01, friction: 0.01 in URDF (very low - matches efficient servo gearboxes)
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
