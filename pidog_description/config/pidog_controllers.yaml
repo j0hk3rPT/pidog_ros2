@@ -10,6 +10,7 @@ controller_manager:
 
 position_controller:
   ros__parameters:
+    # DIAGNOSTIC: Only control 8 leg joints (disable neck/tail to test if they cause crash)
     joints:
       - body_to_back_right_leg_b
       - back_right_leg_b_to_a
@@ -19,10 +20,11 @@ position_controller:
       - back_left_leg_b_to_a
       - body_to_front_left_leg_b
       - front_left_leg_b_to_a
-      - motor_8_to_tail
-      - neck1_to_motor_9
-      - neck2_to_motor_10
-      - neck3_to_motor_11
+      # Disabled for testing:
+      # - motor_8_to_tail
+      # - neck1_to_motor_9
+      # - neck2_to_motor_10
+      # - neck3_to_motor_11
 
     command_interfaces:
       - position
