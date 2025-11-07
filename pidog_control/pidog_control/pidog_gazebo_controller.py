@@ -32,11 +32,10 @@ class PiDogGazeboController(Node):
             'back_left_leg_b_to_a',
             'body_to_front_left_leg_b',
             'front_left_leg_b_to_a',
-            # Temporarily disable head/tail to test
-            # 'motor_8_to_tail',
-            # 'neck1_to_motor_9',
-            # 'neck2_to_motor_10',
-            # 'neck3_to_motor_11',
+            'motor_8_to_tail',
+            'neck1_to_motor_9',
+            'neck2_to_motor_10',
+            'neck3_to_motor_11',
         ]
 
         # Standing pose: MUST MATCH IK-generated stand pose from gait_generator
@@ -50,9 +49,8 @@ class PiDogGazeboController(Node):
             -1.208, +0.180,  # Front Right: shoulder -1.208, knee +0.180
             +1.208, -0.180,  # Back Left: shoulder +1.208, knee -0.180 (axis flipped!)
             +1.208, -0.180,  # Front Left: shoulder +1.208, knee -0.180 (axis flipped!)
-            # Temporarily disable head/tail
-            # 0.0,        # Tail: neutral straight
-            # 0.0, 0.0, 0.0,  # Head/neck: neutral straight forward
+            0.0,             # Tail: neutral straight
+            0.0, 0.0, 0.0,   # Head/neck: neutral straight forward
         ]
 
         self.get_logger().info(f"Target standing pose: {self.standing_pose}")
@@ -84,11 +82,11 @@ class PiDogGazeboController(Node):
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
         # Gait generator publishes 12 motors (8 legs + 4 head/tail)
-        # Motor mapping (from URDF): motor_0,1=BR, motor_2,3=FR, motor_4,5=BL, motor_6,7=FL
-        # Controller needs: BR, FR, BL, FL (same order!)
+        # Motor mapping (from URDF): motor_0,1=BR, motor_2,3=FR, motor_4,5=BL, motor_6,7=FL, motor_8-11=tail/head
+        # Controller needs: BR, FR, BL, FL, tail, neck1, neck2, neck3 (same order!)
         if len(msg.position) >= len(self.joint_names):
             # No remapping needed - gait and controller use same order
-            self.current_position = list(msg.position[:8])
+            self.current_position = list(msg.position[:len(self.joint_names)])
             self.get_logger().debug('Received new joint positions from gait controller')
         else:
             self.get_logger().warn(
