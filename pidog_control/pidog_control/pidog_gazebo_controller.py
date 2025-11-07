@@ -87,10 +87,15 @@ class PiDogGazeboController(Node):
         if len(msg.position) >= len(self.joint_names):
             # No remapping needed - gait and controller use same order
             self.current_position = list(msg.position[:len(self.joint_names)])
-            self.get_logger().debug('Received new joint positions from gait controller')
+            # Only log first few messages to avoid spam
+            if not hasattr(self, '_msg_count'):
+                self._msg_count = 0
+            self._msg_count += 1
+            if self._msg_count <= 3:
+                self.get_logger().info(f'✓ Received {len(msg.position)} joint positions from gait generator')
         else:
             self.get_logger().warn(
-                f'Received {len(msg.position)} positions but need at least {len(self.joint_names)}'
+                f'✗ Received {len(msg.position)} positions but need {len(self.joint_names)}'
             )
 
     def publish_position(self):
