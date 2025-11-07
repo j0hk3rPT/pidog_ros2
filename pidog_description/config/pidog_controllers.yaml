@@ -19,10 +19,11 @@ position_controller:
       - back_left_leg_b_to_a
       - body_to_front_left_leg_b
       - front_left_leg_b_to_a
-      - motor_8_to_tail
-      - neck1_to_motor_9
-      - neck2_to_motor_10
-      - neck3_to_motor_11
+      # Temporarily disable head/tail to test if they break movement
+      # - motor_8_to_tail
+      # - neck1_to_motor_9
+      # - neck2_to_motor_10
+      # - neck3_to_motor_11
 
     command_interfaces:
       - position
@@ -31,11 +32,12 @@ position_controller:
       - position
       - velocity
 
-    # PID gains for realistic servo simulation
-    # Effort limits: 0.15 Nm (matches real servo: 0.127-0.137 Nm)
-    # Joint damping: 0.5, friction: 0.5 in URDF (realistic joint resistance)
+    # PID gains matching working commit 68d721c
+    # Effort limits: 0.5 Nm (legs/tail), 0.14 Nm (neck)
+    # Joint damping: 0.01, friction: 0.01 in URDF (low friction - worked with 8 joints)
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
+    # Testing if adding 4 head/tail joints causes movement issues
     gains:
       body_to_back_right_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       back_right_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
@@ -45,8 +47,8 @@ position_controller:
       back_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       body_to_front_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       front_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      # Head and tail gains (lighter load, more damping for stability)
-      motor_8_to_tail: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
-      neck1_to_motor_9: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
-      neck2_to_motor_10: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
-      neck3_to_motor_11: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      # Head and tail gains (disabled for testing)
+      # motor_8_to_tail: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      # neck1_to_motor_9: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      # neck2_to_motor_10: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      # neck3_to_motor_11: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}

@@ -23,6 +23,7 @@ class PiDogGazeboController(Node):
         )
 
         # Joint names (must match URDF and controller config)
+        # Temporarily using only 8 leg joints to test if head/tail break movement
         self.joint_names = [
             'body_to_back_right_leg_b',
             'back_right_leg_b_to_a',
@@ -32,10 +33,10 @@ class PiDogGazeboController(Node):
             'back_left_leg_b_to_a',
             'body_to_front_left_leg_b',
             'front_left_leg_b_to_a',
-            'motor_8_to_tail',
-            'neck1_to_motor_9',
-            'neck2_to_motor_10',
-            'neck3_to_motor_11',
+            # 'motor_8_to_tail',
+            # 'neck1_to_motor_9',
+            # 'neck2_to_motor_10',
+            # 'neck3_to_motor_11',
         ]
 
         # Standing pose: MUST MATCH IK-generated stand pose from gait_generator
@@ -49,8 +50,8 @@ class PiDogGazeboController(Node):
             -1.208, +0.180,  # Front Right: shoulder -1.208, knee +0.180
             +1.208, -0.180,  # Back Left: shoulder +1.208, knee -0.180 (axis flipped!)
             +1.208, -0.180,  # Front Left: shoulder +1.208, knee -0.180 (axis flipped!)
-            0.0,             # Tail: neutral straight
-            0.0, 0.0, 0.0,   # Head/neck: neutral straight forward
+            # 0.0,             # Tail: neutral straight
+            # 0.0, 0.0, 0.0,   # Head/neck: neutral straight forward
         ]
 
         self.get_logger().info(f"Target standing pose: {self.standing_pose}")
