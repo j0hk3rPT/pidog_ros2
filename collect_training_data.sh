@@ -60,18 +60,18 @@ for i in "${!GAITS[@]}"; do
     echo "[$NUM/$TOTAL_GAITS] Recording: $GAIT"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-    # Reset robot pose in Gazebo (physically moves robot upright)
-    echo "  🔄 Resetting robot pose in Gazebo..."
+    # Send stand command FIRST to set joint angles
+    echo "  📍 Setting stand pose..."
+    ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
+    sleep 1
+
+    # Then reset robot position in Gazebo (moves body upright)
+    echo "  🔄 Resetting robot position in Gazebo..."
     gz service -s /world/pidog_world/set_pose \
         --reqtype gz.msgs.Pose \
         --reptype gz.msgs.Boolean \
         --timeout 2000 \
         --req "name: 'Robot.urdf', position: {x: 0.0, y: 0.0, z: 0.12}, orientation: {x: 0, y: 0, z: 0, w: 1}" &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
-    sleep 2
-
-    # Send stand command to initialize pose
-    echo "  📍 Setting stand pose..."
-    ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
     sleep 2
 
     # Send gait command

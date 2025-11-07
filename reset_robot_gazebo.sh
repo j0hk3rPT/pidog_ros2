@@ -5,7 +5,11 @@
 
 set -e
 
-echo "🔄 Resetting robot pose in Gazebo..."
+echo "📍 Setting stand pose..."
+ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
+sleep 1
+
+echo "🔄 Resetting robot position in Gazebo..."
 
 # Use set_pose service to reset robot position and orientation
 # Position: x=0, y=0, z=0.12 (same as spawn height)
