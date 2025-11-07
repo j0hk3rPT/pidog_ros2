@@ -7,12 +7,12 @@ set -e
 
 echo "🔄 Resetting robot pose in Gazebo..."
 
-# Reset the entire world (world name is "pidog_world" from pidog.sdf)
+# Reset only model poses (NOT 'all: true' which deletes entities!)
 gz service -s /world/pidog_world/control \
     --reqtype gz.msgs.WorldControl \
     --reptype gz.msgs.Boolean \
     --timeout 2000 \
-    --req 'reset: {all: true}'
+    --req 'reset: {model_only: true}'
 
 if [ $? -eq 0 ]; then
     echo "✅ Robot reset complete!"

@@ -66,7 +66,7 @@ for i in "${!GAITS[@]}"; do
         --reqtype gz.msgs.WorldControl \
         --reptype gz.msgs.Boolean \
         --timeout 2000 \
-        --req 'reset: {all: true}' &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
+        --req 'reset: {model_only: true}' &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
     sleep 2
 
     # Send stand command to initialize pose

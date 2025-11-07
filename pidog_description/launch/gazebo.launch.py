@@ -53,11 +53,12 @@ def generate_launch_description():
         launch_arguments=dict(gz_args=f'-r {world_file} --verbose').items(),
     )
 
-    # Spawn with initial joint positions matching standing pose
-    # Height calculated from leg kinematics: 0.055m = body center height with knees bent at 0.8 rad
+    # Spawn with initial joint positions EXACTLY matching IK-generated stand pose
+    # Stand pose from IK: shoulders=±1.208 rad, knees=±0.180 rad
+    # This prevents violent transitions when gait_generator starts
     # IMPORTANT: Left legs have flipped joint axes due to 180° rotation in URDF
-    # Right legs: negative angle bends knee DOWN
-    # Left legs: positive angle bends knee DOWN
+    # Right legs: negative shoulder/positive knee
+    # Left legs: positive shoulder/negative knee
     spawn = Node(
             package='ros_gz_sim',
             executable='create',
@@ -67,17 +68,17 @@ def generate_launch_description():
                 '-y', '0.0',
                 '-z', '0.12',  # Spawn higher to prevent ground penetration (12cm)
                 '-topic', '/robot_description',
-                # Set initial joint positions to standing pose (symmetric!)
-                '-J', 'body_to_back_right_leg_b', '0.0',
-                '-J', 'back_right_leg_b_to_a', '-0.8',   # Right: negative = down
-                '-J', 'body_to_front_right_leg_b', '0.0',
-                '-J', 'front_right_leg_b_to_a', '-0.8',  # Right: negative = down
-                '-J', 'body_to_back_left_leg_b', '0.0',
-                '-J', 'back_left_leg_b_to_a', '0.8',     # Left: positive = down (axis flipped!)
-                '-J', 'body_to_front_left_leg_b', '0.0',
-                '-J', 'front_left_leg_b_to_a', '0.8',    # Left: positive = down (axis flipped!)
-                '-J', 'motor_8_to_tail', '0.0',          # Tail neutral
-                '-J', 'neck1_to_motor_9', '0.0',         # Head neutral
+                # Set initial joint positions to IK-generated stand pose
+                '-J', 'body_to_back_right_leg_b', '-1.208',   # BR shoulder
+                '-J', 'back_right_leg_b_to_a', '0.180',       # BR knee
+                '-J', 'body_to_front_right_leg_b', '-1.208',  # FR shoulder
+                '-J', 'front_right_leg_b_to_a', '0.180',      # FR knee
+                '-J', 'body_to_back_left_leg_b', '1.208',     # BL shoulder (flipped)
+                '-J', 'back_left_leg_b_to_a', '-0.180',       # BL knee (flipped)
+                '-J', 'body_to_front_left_leg_b', '1.208',    # FL shoulder (flipped)
+                '-J', 'front_left_leg_b_to_a', '-0.180',      # FL knee (flipped)
+                '-J', 'motor_8_to_tail', '0.0',               # Tail neutral
+                '-J', 'neck1_to_motor_9', '0.0',              # Head neutral
                 '-J', 'neck2_to_motor_10', '0.0',
                 '-J', 'neck3_to_motor_11', '0.0',
             ],
