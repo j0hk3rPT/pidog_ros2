@@ -10,13 +10,13 @@
       <real_time_update_rate>1000</real_time_update_rate>
       <ode>
         <solver>
-          <type>world</type><!-- Changed from 'quick' for better accuracy -->
-          <iters>150</iters><!-- Increased from 50 for better convergence -->
+          <type>world</type><!-- Dantzig direct solver for accuracy -->
+          <iters>300</iters><!-- Increased for 12-joint stability (3-joint neck chain) -->
           <sor>1.3</sor>
         </solver>
         <constraints>
-          <!-- CFM close to 0 for stable ground contact (Gazebo tutorial recommendation) -->
-          <cfm>0.0</cfm>
+          <!-- CFM slightly increased for 12-joint stability (prevents over-stiff constraints) -->
+          <cfm>1e-5</cfm>
           <!-- ERP around 0.2 is stable for ground contact -->
           <erp>0.2</erp>
           <!-- Moderate correcting velocity to prevent instability -->
