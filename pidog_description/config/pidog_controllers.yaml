@@ -31,11 +31,9 @@ position_controller:
       - position
       - velocity
 
-    # PID gains matching working commit 68d721c + removed stiffness from neck joints
-    # Effort limits: 0.5 Nm (legs/tail), 0.14 Nm (neck)
-    # Joint damping: 0.01, friction: 0.01 in URDF (low friction - worked with 8 joints)
-    # Removed stiffness parameter from neck joints (was causing instability)
-    # All joints now use same PID gains for consistency
+    # PID gains - ALL SERVOS IDENTICAL (SunFounder SF006FM 9g Digital Servo)
+    # All 12 servos use same hardware, same control parameters
+    # Joint damping: 0.01, friction: 0.2 in URDF
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
     gains:
@@ -47,8 +45,8 @@ position_controller:
       back_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       body_to_front_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
       front_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
-      # Head and tail gains (lighter load, reduced gains to prevent overshoot)
-      motor_8_to_tail: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
-      neck1_to_motor_9: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
-      neck2_to_motor_10: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
-      neck3_to_motor_11: {p: 5.0, d: 2.5, i: 0.2, i_clamp: 0.5}
+      # Tail and neck use SAME gains as legs (all identical servos)
+      motor_8_to_tail: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      neck1_to_motor_9: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      neck2_to_motor_10: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      neck3_to_motor_11: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
