@@ -17,19 +17,23 @@ echo "⏱️  Recording $DURATION seconds per gait"
 echo ""
 
 # List of gaits to record
+# NOTE: If certain gaits cause the robot to fall, you can:
+#   1. Comment them out here temporarily
+#   2. Collect them separately with manual monitoring
+#   3. Adjust duration to reduce fall risk
 GAITS=(
-    "walk_forward"
-    "walk_backward"
-    "walk_left"
-    "walk_right"
-    "trot_forward"
-    "trot_backward"
-    "trot_left"
-    "trot_right"
-    "stand"
-    "sit"
-    "lie"
-    "stretch"
+    "stand"          # Static pose - stable
+    "walk_forward"   # Usually stable
+    "walk_backward"  # Usually stable
+    "walk_left"      # May cause instability
+    "walk_right"     # May cause instability
+    "trot_forward"   # Usually stable
+    "trot_backward"  # May cause instability
+    "trot_left"      # May cause instability
+    "trot_right"     # May cause instability
+    "sit"            # Static pose - stable
+    "lie"            # Static pose - stable
+    "stretch"        # Static pose - stable
 )
 
 TOTAL_GAITS=${#GAITS[@]}
@@ -56,8 +60,16 @@ for i in "${!GAITS[@]}"; do
     echo "[$NUM/$TOTAL_GAITS] Recording: $GAIT"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+    # Reset to stand pose first (prevents accumulated errors)
+    if [ "$GAIT" != "stand" ]; then
+        echo "  🔄 Resetting to stand pose..."
+        ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
+        sleep 3
+    fi
+
     # Send gait command
     ros2 topic pub /gait_command std_msgs/msg/String "data: '$GAIT'" --once
+    sleep 1  # Brief delay for gait to initialize
 
     # Show progress bar
     for ((sec=1; sec<=DURATION; sec++)); do
