@@ -100,24 +100,41 @@ class GaitGeneratorNode(Node):
         return gaits
 
     def _create_poses(self):
-        """Create static poses."""
+        """Create static poses using proven angles from SunFounder PiDog."""
         poses = {}
 
-        # Stand pose - neutral standing position
-        stand_coords = [[0, 80], [0, 80], [0, 80], [0, 80]]
-        poses['stand'] = LegIK.legs_coords_to_angles(stand_coords)
+        # Sit pose - tested and working angles from SunFounder (in radians)
+        # Format: [FL_shoulder, FL_knee, FR_shoulder, FR_knee, BL_shoulder, BL_knee, BR_shoulder, BR_knee]
+        poses['sit'] = [
+            0.524,  1.047,   # FL: 30°, 60°
+            -0.524, -1.047,  # FR: -30°, -60°
+            1.396,  -0.785,  # BL: 80°, -45°
+            -1.396,  0.785,  # BR: -80°, 45°
+        ]
 
-        # Sit pose - back legs bent, front legs straight
-        sit_coords = [[0, 80], [0, 80], [30, 60], [30, 60]]
-        poses['sit'] = LegIK.legs_coords_to_angles(sit_coords)
+        # Stand pose - neutral standing (shoulders less bent than sit)
+        poses['stand'] = [
+            0.0,  0.524,   # FL: 0°, 30°
+            0.0, -0.524,   # FR: 0°, -30°
+            0.0,  0.524,   # BL: 0°, 30°
+            0.0, -0.524,   # BR: 0°, -30°
+        ]
 
-        # Lie pose - all legs bent
-        lie_coords = [[20, 40], [20, 40], [20, 40], [20, 40]]
-        poses['lie'] = LegIK.legs_coords_to_angles(lie_coords)
+        # Lie pose - legs bent, body low
+        poses['lie'] = [
+            0.785, -0.785,   # FL: 45°, -45°
+            -0.785, 0.785,   # FR: -45°, 45°
+            0.785, -0.785,   # BL: 45°, -45°
+            -0.785, 0.785,   # BR: -45°, 45°
+        ]
 
-        # Stretch pose - legs extended forward
-        stretch_coords = [[40, 70], [40, 70], [-20, 90], [-20, 90]]
-        poses['stretch'] = LegIK.legs_coords_to_angles(stretch_coords)
+        # Stretch pose - legs extended
+        poses['stretch'] = [
+            0.698,  0.349,   # FL: 40°, 20°
+            -0.698, -0.349,  # FR: -40°, -20°
+            -0.349,  0.524,  # BL: -20°, 30°
+            0.349, -0.524,   # BR: 20°, -30°
+        ]
 
         return poses
 
