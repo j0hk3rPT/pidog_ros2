@@ -104,36 +104,37 @@ class GaitGeneratorNode(Node):
         poses = {}
 
         # Sit pose - tested and working angles from SunFounder (in radians)
-        # Format: [FL_shoulder, FL_knee, FR_shoulder, FR_knee, BL_shoulder, BL_knee, BR_shoulder, BR_knee]
+        # Motor mapping: motor_0,1=BR, motor_2,3=FR, motor_4,5=BL, motor_6,7=FL
+        # Format: [BR_shoulder, BR_knee, FR_shoulder, FR_knee, BL_shoulder, BL_knee, FL_shoulder, FL_knee]
         poses['sit'] = [
-            0.524,  1.047,   # FL: 30°, 60°
-            -0.524, -1.047,  # FR: -30°, -60°
-            1.396,  -0.785,  # BL: 80°, -45°
-            -1.396,  0.785,  # BR: -80°, 45°
+            0.524,  1.047,   # BR: 30°, 60°  (motor_0, motor_1)
+            -0.524, -1.047,  # FR: -30°, -60° (motor_2, motor_3)
+            1.396,  -0.785,  # BL: 80°, -45° (motor_4, motor_5)
+            -1.396,  0.785,  # FL: -80°, 45° (motor_6, motor_7)
         ]
 
         # Stand pose - neutral standing (shoulders less bent than sit)
         poses['stand'] = [
-            0.0,  0.524,   # FL: 0°, 30°
+            0.0,  0.524,   # BR: 0°, 30°
             0.0, -0.524,   # FR: 0°, -30°
             0.0,  0.524,   # BL: 0°, 30°
-            0.0, -0.524,   # BR: 0°, -30°
+            0.0, -0.524,   # FL: 0°, -30°
         ]
 
         # Lie pose - legs bent, body low
         poses['lie'] = [
-            0.785, -0.785,   # FL: 45°, -45°
+            0.785, -0.785,   # BR: 45°, -45°
             -0.785, 0.785,   # FR: -45°, 45°
             0.785, -0.785,   # BL: 45°, -45°
-            -0.785, 0.785,   # BR: -45°, 45°
+            -0.785, 0.785,   # FL: -45°, 45°
         ]
 
         # Stretch pose - legs extended
         poses['stretch'] = [
-            0.698,  0.349,   # FL: 40°, 20°
+            0.698,  0.349,   # BR: 40°, 20°
             -0.698, -0.349,  # FR: -40°, -20°
             -0.349,  0.524,  # BL: -20°, 30°
-            0.349, -0.524,   # BR: 20°, -30°
+            0.349, -0.524,   # FL: 20°, -30°
         ]
 
         return poses
