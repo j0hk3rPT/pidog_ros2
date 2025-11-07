@@ -322,9 +322,11 @@ gait_generator → /motor_pos → pidog_gazebo_controller → /position_controll
 
 ### Tuning Gait Parameters
 Edit parameters in `pidog_gaits/pidog_gaits/walk_gait.py` and `trot_gait.py`:
-- `stride_height` - Height of leg lift during step
-- `stride_length` - Forward/backward step distance
-- `swing_period` - Duration of swing phase
+- `LEG_STEP_HEIGHT` - Height of leg lift during step (mm)
+- `LEG_STEP_WIDTH` - Forward/backward step distance (mm)
+- `STEP_COUNT` - Number of steps per section (affects gait speed/smoothness)
+  - Walk: 6 steps × 8 sections = 48 frames (~1.6s per cycle at 30Hz)
+  - Trot: 10 steps × 2 sections = 20 frames (~0.67s per cycle at 30Hz)
 
 After editing, rebuild and test:
 ```bash
