@@ -62,7 +62,7 @@ for i in "${!GAITS[@]}"; do
 
     # Reset robot pose in Gazebo (physically moves robot upright)
     echo "  🔄 Resetting robot pose in Gazebo..."
-    gz service -s /world/pidog/control \
+    gz service -s /world/pidog_world/control \
         --reqtype gz.msgs.WorldControl \
         --reptype gz.msgs.Boolean \
         --timeout 2000 \

@@ -26,7 +26,7 @@ echo ""
 
 # Reset robot pose in Gazebo
 echo "🔄 Resetting robot pose in Gazebo..."
-gz service -s /world/pidog/control \
+gz service -s /world/pidog_world/control \
     --reqtype gz.msgs.WorldControl \
     --reptype gz.msgs.Boolean \
     --timeout 2000 \
