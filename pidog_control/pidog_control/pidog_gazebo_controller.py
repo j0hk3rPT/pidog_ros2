@@ -80,9 +80,15 @@ class PiDogGazeboController(Node):
 
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
-        if len(msg.position) == len(self.joint_names):
-            self.current_position = list(msg.position)
+        # Gait generator publishes 12 motors (8 legs + 4 head/tail)
+        # We only control the first 8 (leg joints)
+        if len(msg.position) >= len(self.joint_names):
+            self.current_position = list(msg.position[:8])  # Take only first 8 (legs)
             self.get_logger().debug('Received new joint positions from gait controller')
+        else:
+            self.get_logger().warn(
+                f'Received {len(msg.position)} positions but need at least {len(self.joint_names)}'
+            )
 
     def publish_position(self):
         """Publish current position to ros2_control."""
