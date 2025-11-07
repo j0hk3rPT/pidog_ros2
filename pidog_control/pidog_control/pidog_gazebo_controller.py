@@ -103,11 +103,10 @@ class PiDogGazeboController(Node):
         # Check if startup delay has passed
         if not self.controller_active:
             elapsed = (self.get_clock().now() - self.start_time).nanoseconds / 1e9
-            if elapsed < self.startup_delay:
-                return  # Don't publish yet
-            else:
+            if elapsed >= self.startup_delay:
                 self.controller_active = True
-                self.get_logger().info('Controller now active - publishing commands')
+                self.get_logger().info('Controller now active - accepting gait commands')
+            # During startup, keep publishing standing pose to prevent collapse
 
         msg = Float64MultiArray()
         msg.data = self.current_position
