@@ -2,10 +2,11 @@
 Inverse Kinematics for PiDog
 
 Converts [y, z] coordinates to joint angles using 2-link leg geometry.
+Includes head/tail control for balancing during locomotion.
 Based on SunFounder PiDog implementation.
 """
 
-from math import sqrt, acos, atan2, pi
+from math import sqrt, acos, atan2, pi, sin, cos
 
 
 class LegIK:
@@ -104,3 +105,173 @@ class LegIK:
         ]
 
         return controller_order_angles
+
+
+class HeadTailController:
+    """
+    Head and tail control for balancing and natural movement.
+
+    Based on SunFounder PiDog head_rpy_to_angle() implementation:
+    - 3 neck servos for yaw, roll, pitch control
+    - 1 tail servo for counterbalance
+    - Coupled pitch/roll control based on yaw angle
+    """
+
+    @classmethod
+    def neutral_pose(cls):
+        """Return neutral head/tail position: [tail, yaw, roll, pitch]"""
+        return [0.0, 0.0, 0.0, 0.0]
+
+    @classmethod
+    def head_rpy_to_angles(cls, yaw, roll, pitch, roll_comp=0.0, pitch_comp=0.0):
+        """
+        Convert head orientation (yaw, roll, pitch) to servo angles.
+
+        Implements SunFounder's coupled servo control where pitch and roll
+        servos blend based on yaw angle ratio for diagonal head orientation.
+
+        Args:
+            yaw (float): Head yaw angle in radians (-pi/2 to pi/2)
+            roll (float): Head roll angle in radians (-pi/2 to pi/2)
+            pitch (float): Head pitch angle in radians (-pi/4 to pi/6)
+            roll_comp (float): Roll compensation for balancing (radians)
+            pitch_comp (float): Pitch compensation for balancing (radians)
+
+        Returns:
+            list: [yaw_servo, roll_servo, pitch_servo] in radians
+        """
+        # Calculate yaw ratio (0 to 1 based on absolute yaw)
+        # SunFounder uses 90° max yaw, ratio = abs(yaw) / 90
+        yaw_rad_max = pi / 2  # 90 degrees
+        signed = -1.0 if yaw < 0 else 1.0
+        ratio = min(abs(yaw) / yaw_rad_max, 1.0)
+
+        # Coupled pitch/roll control (SunFounder algorithm):
+        # - Pitch servo blends: roll*ratio + pitch*(1-ratio) + pitch_comp
+        # - Roll servo blends: -(signed * (roll*(1-ratio) + pitch*ratio) + roll_comp)
+        pitch_servo = roll * ratio + pitch * (1.0 - ratio) + pitch_comp
+        roll_servo = -(signed * (roll * (1.0 - ratio) + pitch * ratio) + roll_comp)
+        yaw_servo = yaw
+
+        # Clamp to safe servo ranges (matching URDF limits: -1.57 to 1.57 rad)
+        yaw_servo = max(min(yaw_servo, 1.57), -1.57)
+        roll_servo = max(min(roll_servo, 1.57), -1.57)
+        pitch_servo = max(min(pitch_servo, 1.57), -1.57)
+
+        return [yaw_servo, roll_servo, pitch_servo]
+
+    @classmethod
+    def tail_angle_for_balance(cls, gait_phase, gait_type='walk'):
+        """
+        Calculate tail angle for counterbalancing during movement.
+
+        The tail moves opposite to the body's center of mass to maintain balance.
+
+        Args:
+            gait_phase (float): Current gait cycle phase (0.0 to 1.0)
+            gait_type (str): Gait type ('walk', 'trot', 'static')
+
+        Returns:
+            float: Tail servo angle in radians
+        """
+        if gait_type == 'static':
+            # Neutral position for static poses
+            return 0.0
+        elif gait_type == 'walk':
+            # Gentle side-to-side wag during walking (slower than leg movement)
+            # Phase shifted by 180° to counterbalance leg movement
+            tail_angle = 0.3 * sin(2.0 * pi * gait_phase + pi)
+        elif gait_type == 'trot':
+            # Faster wag for trotting (matches trot frequency)
+            tail_angle = 0.4 * sin(4.0 * pi * gait_phase + pi)
+        else:
+            tail_angle = 0.0
+
+        # Clamp to safe range
+        return max(min(tail_angle, 1.57), -1.57)
+
+    @classmethod
+    def head_compensation_for_walking(cls, gait_phase, gait_type='walk', direction='forward'):
+        """
+        Calculate head pitch/roll compensation to keep head level during walking.
+
+        When the body pitches forward/backward or rolls side-to-side during
+        walking, the head compensates to maintain level gaze.
+
+        Args:
+            gait_phase (float): Current gait cycle phase (0.0 to 1.0)
+            gait_type (str): Gait type ('walk', 'trot', 'static')
+            direction (str): Movement direction ('forward', 'backward', 'left', 'right')
+
+        Returns:
+            tuple: (yaw, roll, pitch, roll_comp, pitch_comp) in radians
+        """
+        if gait_type == 'static':
+            # Neutral head position for static poses
+            return (0.0, 0.0, 0.0, 0.0, 0.0)
+
+        # Base head orientation
+        yaw = 0.0  # Forward
+        roll = 0.0
+        pitch = 0.0
+
+        if gait_type == 'walk':
+            # Walking creates subtle pitch/roll oscillations
+            # Compensate to keep head level (SunFounder uses pitch_comp for sitting: -30°)
+
+            if direction in ['forward', 'backward']:
+                # Pitch compensation: body pitches down when front legs lift
+                # Compensate upward to keep head level
+                pitch_comp = 0.15 * sin(2.0 * pi * gait_phase)  # ±8.6°
+                roll_comp = 0.0
+            elif direction in ['left', 'right']:
+                # Roll compensation: body rolls when side legs lift
+                roll_comp = 0.15 * sin(2.0 * pi * gait_phase)
+                pitch_comp = 0.0
+            else:
+                pitch_comp = 0.0
+                roll_comp = 0.0
+
+        elif gait_type == 'trot':
+            # Trotting creates more pronounced oscillations
+            if direction in ['forward', 'backward']:
+                pitch_comp = 0.2 * sin(4.0 * pi * gait_phase)  # ±11.5°
+                roll_comp = 0.1 * sin(4.0 * pi * gait_phase + pi/2)  # Phase shifted
+            elif direction in ['left', 'right']:
+                roll_comp = 0.2 * sin(4.0 * pi * gait_phase)
+                pitch_comp = 0.1 * sin(4.0 * pi * gait_phase + pi/2)
+            else:
+                pitch_comp = 0.0
+                roll_comp = 0.0
+        else:
+            pitch_comp = 0.0
+            roll_comp = 0.0
+
+        return (yaw, roll, pitch, roll_comp, pitch_comp)
+
+    @classmethod
+    def get_head_tail_angles(cls, gait_phase, gait_type='walk', direction='forward'):
+        """
+        Get complete head and tail angles for a given gait phase.
+
+        Args:
+            gait_phase (float): Current gait cycle phase (0.0 to 1.0)
+            gait_type (str): Gait type ('walk', 'trot', 'static')
+            direction (str): Movement direction
+
+        Returns:
+            list: [tail_angle, yaw_servo, roll_servo, pitch_servo] in radians
+        """
+        # Get head compensation
+        yaw, roll, pitch, roll_comp, pitch_comp = cls.head_compensation_for_walking(
+            gait_phase, gait_type, direction
+        )
+
+        # Convert to servo angles
+        head_angles = cls.head_rpy_to_angles(yaw, roll, pitch, roll_comp, pitch_comp)
+
+        # Get tail angle
+        tail_angle = cls.tail_angle_for_balance(gait_phase, gait_type)
+
+        # Return in motor order: [tail, yaw, roll, pitch]
+        return [tail_angle] + head_angles

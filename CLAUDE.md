@@ -50,11 +50,35 @@ python3 -m pidog_gaits.pidog_gaits.train \
 ## Build and Development Commands
 
 ### Workspace Build
+
+**Standard rebuild** (recommended):
 ```bash
 ./rebuild.sh
-# Source workspace after build
 source install/setup.bash
 ```
+
+The rebuild script now performs thorough cleaning:
+- Removes `build/`, `install/`, `log/` directories
+- Cleans all Python bytecode cache (`__pycache__/`, `*.pyc`)
+- Removes setuptools artifacts (`*.egg-info`)
+- Verifies installation after build
+
+**Nuclear clean** (if changes still don't apply):
+```bash
+./clean_all.sh  # Most aggressive cleaning
+./rebuild.sh    # Rebuild from scratch
+source install/setup.bash
+```
+
+The nuclear clean script removes:
+- All build artifacts
+- All Python bytecode (including `.pyo`)
+- All setuptools artifacts
+- CMake cache files
+- Compiled libraries (`.so` files)
+- Test caches
+
+**Important:** Always restart any running ROS2 nodes after rebuilding for changes to take effect.
 
 ## Launch Commands
 

@@ -6,6 +6,7 @@ Adapted from SunFounder PiDog implementation.
 """
 
 from math import cos, pi
+from .inverse_kinematics import HeadTailController
 
 
 class Trot:
@@ -121,14 +122,21 @@ class Trot:
         """
         return self.Z_ORIGIN - (self.LEG_STEP_HEIGHT * step / (self.STEP_COUNT - 1))
 
-    def get_coords(self):
+    def get_coords(self, include_head_tail=False):
         """
         Generate complete trot cycle coordinates.
 
+        Args:
+            include_head_tail (bool): If True, also return head/tail angles
+
         Returns:
-            list: List of 4-leg coordinate sets for each timestep
-                  [[[y1,z1], [y2,z2], [y3,z3], [y4,z4]], ...]
-                  Total frames: SECTION_COUNT * STEP_COUNT
+            If include_head_tail=False:
+                list: List of 4-leg coordinate sets for each timestep
+                      [[[y1,z1], [y2,z2], [y3,z3], [y4,z4]], ...]
+                      Total frames: SECTION_COUNT * STEP_COUNT
+            If include_head_tail=True:
+                tuple: (leg_coords, head_tail_angles)
+                      where head_tail_angles = [[tail, yaw, roll, pitch], ...]
         """
         # Starting position for all legs
         origin_leg_coord = [
@@ -140,6 +148,11 @@ class Trot:
         ]
 
         leg_coords = []
+        head_tail_angles = [] if include_head_tail else None
+
+        # Determine gait direction for head compensation
+        direction = 'forward' if self.fb == self.FORWARD else 'backward'
+        total_frames = self.SECTION_COUNT * self.STEP_COUNT
 
         # Generate coordinates for each section and step
         for section in range(self.SECTION_COUNT):
@@ -167,5 +180,17 @@ class Trot:
 
                 origin_leg_coord = leg_coord
                 leg_coords.append([list(coord) for coord in leg_coord])
+
+                # Add head/tail angles if requested
+                if include_head_tail:
+                    frame_idx = section * self.STEP_COUNT + step
+                    gait_phase = frame_idx / max(total_frames - 1, 1)
+                    ht_angles = HeadTailController.get_head_tail_angles(
+                        gait_phase, gait_type='trot', direction=direction
+                    )
+                    head_tail_angles.append(ht_angles)
+
+        if include_head_tail:
+            return leg_coords, head_tail_angles
 
         return leg_coords

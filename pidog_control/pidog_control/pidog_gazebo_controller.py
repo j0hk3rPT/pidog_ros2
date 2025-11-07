@@ -22,7 +22,7 @@ class PiDogGazeboController(Node):
             10
         )
 
-        # Joint names (DIAGNOSTIC: Only 8 leg joints, no head/tail)
+        # All 12 joint names: 8 legs + 1 tail + 3 head/neck
         self.joint_names = [
             'body_to_back_right_leg_b',
             'back_right_leg_b_to_a',
@@ -32,19 +32,30 @@ class PiDogGazeboController(Node):
             'back_left_leg_b_to_a',
             'body_to_front_left_leg_b',
             'front_left_leg_b_to_a',
+            'motor_8_to_tail',
+            'neck1_to_motor_9',
+            'neck2_to_motor_10',
+            'neck3_to_motor_11',
         ]
 
-        # Standing pose (DIAGNOSTIC: Only 8 leg joints)
+        # Standing pose: 8 leg joints + 4 head/tail joints (all 12 motors)
         # IK stand pose: shoulders=±1.208 rad, knees=±0.180 rad
         # This matches the spawn position in gazebo.launch.py
         # NOTE: Left legs have flipped joint axes (rpy="0 1.57 3.1415" in URDF)
         # Right legs: negative shoulder, positive knee
         # Left legs: positive shoulder, negative knee
         self.standing_pose = [
+            # Leg joints (8)
             -1.208, +0.180,  # Back Right: shoulder -1.208, knee +0.180
             -1.208, +0.180,  # Front Right: shoulder -1.208, knee +0.180
             +1.208, -0.180,  # Back Left: shoulder +1.208, knee -0.180 (axis flipped!)
             +1.208, -0.180,  # Front Left: shoulder +1.208, knee -0.180 (axis flipped!)
+            # Tail joint (1) - neutral position
+            0.0,  # Tail centered
+            # Head/neck joints (3) - neutral position, head forward and level
+            0.0,  # Neck yaw (motor_9) - centered
+            0.0,  # Neck roll (motor_10) - level
+            0.0,  # Neck pitch (motor_11) - forward
         ]
 
         self.get_logger().info(f"Target standing pose: {self.standing_pose}")
@@ -75,17 +86,24 @@ class PiDogGazeboController(Node):
 
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
-        # DIAGNOSTIC: Only forward 8 leg joint commands (indices 0-7)
-        # Gait generator publishes 12 motors but controller only controls 8 legs
-        if len(msg.position) >= 8:
-            # Only take first 8 positions (legs only, skip head/tail)
-            self.current_position = list(msg.position[:8])
+        # Accept all 12 joint positions: 8 legs + 1 tail + 3 head/neck
+        if len(msg.position) >= 12:
+            # Use all 12 joint positions
+            self.current_position = list(msg.position[:12])
             # Only log first few messages to avoid spam
             if not hasattr(self, '_msg_count'):
                 self._msg_count = 0
             self._msg_count += 1
             if self._msg_count <= 3:
-                self.get_logger().info(f'✓ Received {len(msg.position)} joint positions from gait generator (using first 8 for legs)')
+                self.get_logger().info(f'✓ Received {len(msg.position)} joint positions from gait generator (using all 12)')
+        elif len(msg.position) >= 8:
+            # Backward compatibility: If only 8 positions sent, fill head/tail with neutral
+            self.current_position = list(msg.position[:8]) + [0.0, 0.0, 0.0, 0.0]
+            if not hasattr(self, '_msg_count'):
+                self._msg_count = 0
+            self._msg_count += 1
+            if self._msg_count <= 3:
+                self.get_logger().info(f'✓ Received {len(msg.position)} joint positions (padded to 12 with neutral head/tail)')
         else:
             self.get_logger().warn(
                 f'✗ Received {len(msg.position)} positions but need at least 8 for leg joints'
@@ -101,15 +119,19 @@ class PiDogGazeboController(Node):
                 self.get_logger().info('Controller now active - accepting gait commands')
             # During startup, keep publishing standing pose to prevent collapse
 
-        # DIAGNOSTIC: Log position array length (should be 8 leg joints)
+        # Log position array length (should be 12 joints: 8 legs + 1 tail + 3 head)
         if not hasattr(self, '_pos_log_count'):
             self._pos_log_count = 0
         self._pos_log_count += 1
         if self._pos_log_count <= 5 or self._pos_log_count % 100 == 0:
-            self.get_logger().info(f'Publishing {len(self.current_position)} leg joint values: {self.current_position[:4]}...')
+            self.get_logger().info(f'Publishing {len(self.current_position)} joint values (8 legs + 4 head/tail): legs={self.current_position[:4]}... tail/head={self.current_position[8:]}...')
 
         msg = Float64MultiArray()
-        msg.data = self.current_position
+        # Explicitly ensure we're publishing exactly 12 values as a proper list
+        msg.data = list(self.current_position) if len(self.current_position) == 12 else self.standing_pose
+        if len(msg.data) != 12:
+            self.get_logger().error(f'ERROR: Trying to publish {len(msg.data)} values instead of 12!')
+            msg.data = self.standing_pose  # Fallback to known good 12-value pose
         self.position_pub.publish(msg)
 
 

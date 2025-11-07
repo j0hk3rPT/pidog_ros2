@@ -10,7 +10,7 @@ controller_manager:
 
 position_controller:
   ros__parameters:
-    # DIAGNOSTIC: Only control 8 leg joints (disable neck/tail to test if they cause crash)
+    # All 12 joints: 8 legs + 1 tail + 3 head/neck for realistic balancing
     joints:
       - body_to_back_right_leg_b
       - back_right_leg_b_to_a
@@ -20,11 +20,10 @@ position_controller:
       - back_left_leg_b_to_a
       - body_to_front_left_leg_b
       - front_left_leg_b_to_a
-      # Disabled for testing:
-      # - motor_8_to_tail
-      # - neck1_to_motor_9
-      # - neck2_to_motor_10
-      # - neck3_to_motor_11
+      - motor_8_to_tail
+      - neck1_to_motor_9
+      - neck2_to_motor_10
+      - neck3_to_motor_11
 
     command_interfaces:
       - position
@@ -33,20 +32,21 @@ position_controller:
       - position
       - velocity
 
-    # PID gains - Conservative values to prevent 12-joint system instability
-    # With 12 joints + 3-joint neck chain, aggressive gains cause physics explosions
-    # Start with very low gains and tune up if needed
+    # PID gains - Realistic servo behavior matching SunFounder SF006FM specs
+    # Legs: Stronger tracking for weight-bearing joints
+    # Head/Tail: Softer control for smoother visual appearance and reduced oscillation
     gains:
-      body_to_back_right_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      back_right_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_front_right_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      front_right_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_back_left_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      back_left_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      body_to_front_left_leg_b: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      front_left_leg_b_to_a: {p: 5.0, d: 2.0, i: 0.1, i_clamp: 0.5}
-      # Tail and neck (serial chain needs even more conservative gains)
-      motor_8_to_tail: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
-      neck1_to_motor_9: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
-      neck2_to_motor_10: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
-      neck3_to_motor_11: {p: 3.0, d: 1.5, i: 0.05, i_clamp: 0.3}
+      # Leg joints - moderate gains for stable walking (P=8.0 matches real servo stiffness)
+      body_to_back_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      back_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      front_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_back_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      back_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      body_to_front_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      front_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
+      # Tail and neck - softer gains for smooth, natural movement
+      motor_8_to_tail: {p: 5.0, d: 2.0, i: 0.05, i_clamp: 0.3}
+      neck1_to_motor_9: {p: 6.0, d: 2.0, i: 0.05, i_clamp: 0.3}
+      neck2_to_motor_10: {p: 6.0, d: 2.0, i: 0.05, i_clamp: 0.3}
+      neck3_to_motor_11: {p: 6.0, d: 2.0, i: 0.05, i_clamp: 0.3}
