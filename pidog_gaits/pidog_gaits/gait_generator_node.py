@@ -200,9 +200,9 @@ class GaitGeneratorNode(Node):
         # Store current angles for next transition
         self.current_angles = leg_angles.copy()
 
-        # Convert degrees to radians and publish
+        # Publish angles (already in radians from inverse_kinematics)
         # 8 leg angles + 4 zeros for tail/head
-        angles_rad = [angle * (pi / 180.0) for angle in leg_angles]
+        angles_rad = leg_angles.copy()
         angles_rad.extend([0.0, 0.0, 0.0, 0.0])  # motors 8-11 (tail, head)
 
         self.joint_state.position = angles_rad
