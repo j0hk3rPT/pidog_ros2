@@ -22,7 +22,6 @@ echo ""
 #   2. Collect them separately with manual monitoring
 #   3. Adjust duration to reduce fall risk
 GAITS=(
-    "stand"          # Static pose - stable
     "walk_forward"   # Usually stable
     "walk_backward"  # Usually stable
     "walk_left"      # May cause instability
