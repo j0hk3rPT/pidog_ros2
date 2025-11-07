@@ -60,15 +60,15 @@ class LegIK:
         Args:
             leg_coords (list): List of 4 [y, z] coordinates, one per leg
                               [[y1, z1], [y2, z2], [y3, z3], [y4, z4]]
-                              Order: leg1 (left front), leg2 (right front),
-                                     leg3 (left back), leg4 (right back)
+                              Order: leg1 (FL), leg2 (FR), leg3 (BL), leg4 (BR)
 
         Returns:
-            list: 8 angles [a1, a2, a3, a4, a5, a6, a7, a8] in radians
-                  where (a1,a2) = leg1, (a3,a4) = leg2, etc.
-                  Format matches PiDog's motor order
+            list: 8 angles in controller order [BR, FR, BL, FL] in radians
+                  Format: [BR_shoulder, BR_knee, FR_shoulder, FR_knee,
+                           BL_shoulder, BL_knee, FL_shoulder, FL_knee]
         """
-        angles = []
+        # Generate angles in gait order: FL, FR, BL, BR
+        gait_order_angles = []
 
         for i, coord in enumerate(leg_coords):
             y, z = coord
@@ -76,15 +76,32 @@ class LegIK:
             y = -y
             leg_angle, foot_angle = cls.coord2angles(y, z)
 
-            # Adjust for leg mounting orientation
-            # SunFounder convention: foot_angle -= 90° (π/2 radians)
+            # Match SunFounder implementation exactly:
+            # 1. NO shoulder offset (alpha = angle2 + angle1, no subtraction)
+            # 2. foot_angle -= 90° (not π/2 - foot_angle)
+            # 3. Negate RIGHT legs (odd indices), not left legs
             foot_angle = foot_angle - (pi / 2)
 
-            # Right side legs (odd indices) are mirrored
-            if i % 2 != 0:
+            # SunFounder negates RIGHT side legs (odd indices: FR=1, BR=3)
+            # But our leg order is [FL=0, FR=1, BL=2, BR=3]
+            # AND our URDF has left legs with flipped axes (rpy="0 1.57 3.1415")
+            # So we need to negate RIGHT legs like SunFounder
+            if i % 2 != 0:  # Right legs (FR=1, BR=3)
                 leg_angle = -leg_angle
                 foot_angle = -foot_angle
 
-            angles.extend([leg_angle, foot_angle])
+            gait_order_angles.extend([leg_angle, foot_angle])
 
-        return angles
+        # Reorder from gait order [FL, FR, BL, BR] to controller order [BR, FR, BL, FL]
+        # gait_order_angles[0:2] = FL → controller[6:8]
+        # gait_order_angles[2:4] = FR → controller[2:4]
+        # gait_order_angles[4:6] = BL → controller[4:6]
+        # gait_order_angles[6:8] = BR → controller[0:2]
+        controller_order_angles = [
+            gait_order_angles[6], gait_order_angles[7],  # BR (from index 3)
+            gait_order_angles[2], gait_order_angles[3],  # FR (from index 1)
+            gait_order_angles[4], gait_order_angles[5],  # BL (from index 2)
+            gait_order_angles[0], gait_order_angles[1],  # FL (from index 0)
+        ]
+
+        return controller_order_angles

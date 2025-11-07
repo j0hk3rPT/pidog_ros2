@@ -100,42 +100,46 @@ class GaitGeneratorNode(Node):
         return gaits
 
     def _create_poses(self):
-        """Create static poses using proven angles from SunFounder PiDog."""
+        """Create static poses - use IK for consistency."""
         poses = {}
 
-        # Sit pose - tested and working angles from SunFounder (in radians)
-        # Motor mapping: motor_0,1=BR, motor_2,3=FR, motor_4,5=BL, motor_6,7=FL
-        # Format: [BR_shoulder, BR_knee, FR_shoulder, FR_knee, BL_shoulder, BL_knee, FL_shoulder, FL_knee]
-        poses['sit'] = [
-            0.524,  1.047,   # BR: 30°, 60°  (motor_0, motor_1)
-            -0.524, -1.047,  # FR: -30°, -60° (motor_2, motor_3)
-            1.396,  -0.785,  # BL: 80°, -45° (motor_4, motor_5)
-            -1.396,  0.785,  # FL: -80°, 45° (motor_6, motor_7)
+        # Generate stand pose from IK to match walking gait calculations
+        # Standing height: y=0 (neutral), z=80mm (from walk_gait.py Z_ORIGIN)
+        from .inverse_kinematics import LegIK
+        stand_coords = [
+            [0, 80],  # FL: neutral position
+            [0, 80],  # FR: neutral position
+            [0, 80],  # BL: neutral position
+            [0, 80],  # BR: neutral position
         ]
+        poses['stand'] = LegIK.legs_coords_to_angles(stand_coords)
 
-        # Stand pose - neutral standing (shoulders less bent than sit)
-        poses['stand'] = [
-            0.0,  0.524,   # BR: 0°, 30°
-            0.0, -0.524,   # FR: 0°, -30°
-            0.0,  0.524,   # BL: 0°, 30°
-            0.0, -0.524,   # FL: 0°, -30°
+        # Sit pose - sitting with rear up, front down (using IK)
+        sit_coords = [
+            [30, 65],   # FL: forward 30mm, lower 65mm
+            [30, 65],   # FR: forward 30mm, lower 65mm
+            [-20, 90],  # BL: back 20mm, higher 90mm
+            [-20, 90],  # BR: back 20mm, higher 90mm
         ]
+        poses['sit'] = LegIK.legs_coords_to_angles(sit_coords)
 
-        # Lie pose - legs bent, body low
-        poses['lie'] = [
-            0.785, -0.785,   # BR: 45°, -45°
-            -0.785, 0.785,   # FR: -45°, 45°
-            0.785, -0.785,   # BL: 45°, -45°
-            -0.785, 0.785,   # FL: -45°, 45°
+        # Lie pose - legs splayed out, body low (using IK)
+        lie_coords = [
+            [40, 60],   # FL: splayed out, low
+            [40, 60],   # FR: splayed out, low
+            [40, 60],   # BL: splayed out, low
+            [40, 60],   # BR: splayed out, low
         ]
+        poses['lie'] = LegIK.legs_coords_to_angles(lie_coords)
 
-        # Stretch pose - legs extended
-        poses['stretch'] = [
-            0.698,  0.349,   # BR: 40°, 20°
-            -0.698, -0.349,  # FR: -40°, -20°
-            -0.349,  0.524,  # BL: -20°, 30°
-            0.349, -0.524,   # FL: 20°, -30°
+        # Stretch pose - front legs forward, back legs back (using IK)
+        stretch_coords = [
+            [40, 75],   # FL: forward, medium height
+            [40, 75],   # FR: forward, medium height
+            [-40, 85],  # BL: back, higher
+            [-40, 85],  # BR: back, higher
         ]
+        poses['stretch'] = LegIK.legs_coords_to_angles(stretch_coords)
 
         return poses
 

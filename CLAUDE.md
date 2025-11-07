@@ -12,7 +12,7 @@ PiDog ROS2 is a quadruped robot simulation and control system with neural networ
 - Neural network training pipeline for learning gaits from demonstrations
 - Data collection system for imitation learning
 
-**Hardware**: 8 leg joints (2 per leg: shoulder/hip and knee) plus optional head/tail servos
+**Hardware**: 8 leg joints (2 per leg: shoulder/hip and knee) plus optional head(3)/tail(1) servos
 
 ## Docker Setup
 
@@ -39,12 +39,6 @@ source install/setup.bash
 # AMD ROCm GPU
 docker-compose --profile rocm run pidog-rocm
 
-# NVIDIA CUDA GPU
-docker-compose --profile cuda run pidog-cuda
-
-# CPU only
-docker-compose --profile cpu run pidog-cpu
-
 # Inside training container:
 python3 -m pidog_gaits.pidog_gaits.train \
     --data ./training_data/gait_data_*.npz \
@@ -57,48 +51,20 @@ python3 -m pidog_gaits.pidog_gaits.train \
 
 ### Workspace Build
 ```bash
-# Full rebuild (removes all build artifacts)
-./rebuild.sh full
-
-# Quick rebuild (only modified packages: pidog_gaits, pidog_sim)
 ./rebuild.sh
-
-# Build specific package
-colcon build --packages-select pidog_gaits
-colcon build --packages-select pidog_description
-
 # Source workspace after build
 source install/setup.bash
 ```
 
-### Running Tests
-```bash
-# Run Python linters
-ament_flake8 pidog_gaits/
-ament_pep257 pidog_gaits/
-
-# Run pytest (if tests exist)
-pytest pidog_gaits/test/
-```
-
 ## Launch Commands
 
-### Gazebo Simulation
+### Launch Commands (Choose ONE)
+
+**IMPORTANT**: Each launch file below includes Gazebo + controllers. Only run ONE at a time.
+
+#### 1. Traditional Gait Demo (Recommended for testing)
 ```bash
-# Launch Gazebo with PiDog robot and ros2_control
-ros2 launch pidog_description gazebo.launch.py
-
-# Launch with manual control
-ros2 launch pidog_description gazebo_manual.launch.py
-
-# Send gait commands (in another terminal)
-python3 send_gait_command.py walk
-python3 send_gait_command.py stand
-```
-
-### Traditional Gait Demo
-```bash
-# Launch with traditional gait generator (stand pose by default)
+# Launch Gazebo + gait generator (all-in-one)
 ros2 launch pidog_gaits gait_demo.launch.py
 
 # Send gait commands (in another terminal)
@@ -111,6 +77,29 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'sit'" --once
 - Walk: walk_forward, walk_backward, walk_left, walk_right
 - Trot: trot_forward, trot_backward, trot_left, trot_right
 - Static: stand, sit, lie, stretch
+
+#### 2. Manual/Testing (Gazebo only, no gait generator)
+```bash
+# Launch Gazebo with basic standing controller
+ros2 launch pidog_description gazebo.launch.py
+# Robot will stand in place, controlled by pidog_gazebo_controller
+```
+
+#### 3. Neural Network Demo
+```bash
+# Launch Gazebo + trained neural network controller
+ros2 launch pidog_gaits nn_demo.launch.py
+
+# Send gait commands same as traditional gaits
+ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
+```
+
+#### 4. Data Collection
+```bash
+# Launch Gazebo + gait generator + data collector
+ros2 launch pidog_gaits collect_data.launch.py
+# Automatically cycles through gaits and saves training data
+```
 
 ### Neural Network Workflow
 
@@ -251,29 +240,48 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 
 ## Physics Configuration
 
-**Current Tuned Parameters** (optimized for realistic servo simulation):
+**Current Tuned Parameters** (balanced for stable movement without bouncing):
 
 **Joint Parameters**:
-- Leg joints: effort=0.35 Nm, velocity=7.5 rad/s (430°/s), damping=0.5, friction=0.5
+- Leg joints: effort=1.5 Nm, velocity=7.5 rad/s (430°/s), damping=0.5, friction=0.5
 - Neck joints: effort=0.14 Nm, damping=0.3, friction=0.5, stiffness=50.0
-- Tail joint: effort=0.35 Nm
+- Tail joint: effort=1.5 Nm
 
 **Contact Physics** (Gazebo ODE):
-- Foot contact: kp=1e15, kd=1e13, mu1=0.8 (very stiff for stable ground)
+- Foot contact: kp=1e6, kd=100, mu1=0.8 (soft contact prevents bouncing)
 - Ground: kp=1e7, kd=100, mu=1.0
 - ODE Solver: type="world" (Dantzig direct solver)
 - ODE Constraints: CFM=0.0 (stiff contacts), ERP=0.2
 - Solver iterations: 150
 
 **PID Controller Gains** (50 Hz update rate):
-- P=10.0 (balanced gain for responsive servo without oscillation)
-- D=1.5 (good damping for stability)
+- P=8.0 (strong tracking without saturation)
+- D=2.5 (good damping prevents oscillation)
 - I=0.1 (small integral for steady-state correction)
+- position_proportional_gain=1.0 (no amplification)
 
-**Troubleshooting Instability**:
-1. Check PID gains in `pidog_description/config/pidog_controllers.yaml`
-2. Verify joint effort limits in `pidog_description/urdf/pidog.urdf`
-3. Review world physics in `pidog_description/worlds/pidog.sdf`
+**Design Philosophy**:
+- **Soft contacts** (kp=1e6 vs 1e15) → prevents bouncing/vibration
+- **Moderate effort limits** (1.5 Nm) → allows movement without overpowering physics
+- **Balanced PID** (P=8, D=2.5) → good tracking with damping
+
+**Troubleshooting**:
+- **Bouncing/vibration**: Reduce contact kp in URDF (currently 1e6)
+- **Weak/frozen joints**: Increase effort limits or PID P gain
+- **Asymmetry/wrong joint control**: Check for duplicate ros2_control blocks in URDF
+- **Motor index issues**: Verify inverse_kinematics.py outputs [BR, FR, BL, FL] order
+- **Oscillation**: Increase PID D gain or reduce P gain
+
+**Common Issues Fixed** (based on SunFounder reference implementation):
+- ⚠️ **Duplicate ros2_control blocks**: URDF must have only ONE ros2_control block (using gz_ros2_control-system for Gazebo Harmonic)
+- ⚠️ **Motor mapping**: inverse_kinematics.py outputs [BR, FR, BL, FL] order to match controller config
+- ⚠️ **IK transformations** (from SunFounder):
+  - `alpha = angle2 + angle1` (NO shoulder offset subtraction!)
+  - `foot_angle = beta - π/2` (NOT `π/2 - beta`!)
+  - Negate RIGHT legs (odd indices), not left legs
+- ⚠️ **Pose consistency**: ALL poses (stand, sit, lie, stretch) generated from IK using [y, z] coordinates
+- ⚠️ **Walking from stand**: Stand pose uses z=80mm (same as Z_ORIGIN in walk_gait.py)
+- ⚠️ **Gait parameters**: Walk/Trot match SunFounder exactly (LEG_STEP_HEIGHT=20mm, LEG_STEP_WIDTH=80mm, Z_ORIGIN=80mm)
 
 ## Common Workflows
 
@@ -287,6 +295,10 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 
 ### Debugging Simulation Issues
 ```bash
+# Quick diagnostics (run from workspace root)
+./debug_topics.sh
+
+# Manual checks:
 # Check if Gazebo is running
 gz sim -l
 
@@ -301,6 +313,11 @@ ros2 topic echo /motor_pos
 
 # Check ros2_control commands
 ros2 topic echo /position_controller/commands
+```
+
+**Control Flow**:
+```
+gait_generator → /motor_pos → pidog_gazebo_controller → /position_controller/commands → ros2_control → Gazebo joints
 ```
 
 ### Tuning Gait Parameters
