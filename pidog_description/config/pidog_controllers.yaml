@@ -39,14 +39,14 @@ position_controller:
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
     gains:
-      body_to_back_right_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      back_right_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      body_to_front_right_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      front_right_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      body_to_back_left_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      back_left_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      body_to_front_left_leg_b: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
-      front_left_leg_b_to_a: {p: 15.0, d: 3.0, i: 0.5, i_clamp: 1.0}
+      body_to_back_right_leg_b: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      back_right_leg_b_to_a: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      body_to_front_right_leg_b: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      front_right_leg_b_to_a: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      body_to_back_left_leg_b: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      back_left_leg_b_to_a: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      body_to_front_left_leg_b: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
+      front_left_leg_b_to_a: {p: 12.0, d: 4.0, i: 0.5, i_clamp: 1.0}
       # Head and tail gains (disabled for testing)
       # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
       # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}

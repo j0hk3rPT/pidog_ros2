@@ -880,40 +880,40 @@
   <!-- Gazebo-specific settings for sphere paw contacts -->
   <!-- Reduced stiffness to prevent bouncing - more realistic for compliant contact -->
   <gazebo reference="back_right_acrylic">
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
     <kp>1000000.0</kp><!-- 1e6 - reasonable stiffness, prevents numerical instability -->
-    <kd>100.0</kd><!-- Moderate damping to absorb impacts -->
+    <kd>500.0</kd><!-- Moderate damping to absorb impacts -->
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_right_acrylic">
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
     <kp>1000000.0</kp>
-    <kd>100.0</kd>
+    <kd>500.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="back_left_acrylic">
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
     <kp>1000000.0</kp>
-    <kd>100.0</kd>
+    <kd>500.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
   </gazebo>
 
   <gazebo reference="front_left_acrylic">
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
     <kp>1000000.0</kp>
-    <kd>100.0</kd>
+    <kd>500.0</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/Grey</material>
