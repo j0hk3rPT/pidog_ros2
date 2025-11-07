@@ -81,9 +81,21 @@ class PiDogGazeboController(Node):
     def motor_callback(self, msg):
         """Receive joint commands from gait generator."""
         # Gait generator publishes 12 motors (8 legs + 4 head/tail)
-        # We only control the first 8 (leg joints)
+        # Gait generator order: front_left, front_right, back_left, back_right
+        # Controller needs: back_right, front_right, back_left, front_left
         if len(msg.position) >= len(self.joint_names):
-            self.current_position = list(msg.position[:8])  # Take only first 8 (legs)
+            motors = msg.position[:8]  # Get first 8 leg motors
+            # Remap from gait order to controller order:
+            #   motors[0,1] = front_left  -> controller[6,7]
+            #   motors[2,3] = front_right -> controller[2,3]
+            #   motors[4,5] = back_left   -> controller[4,5]
+            #   motors[6,7] = back_right  -> controller[0,1]
+            self.current_position = [
+                motors[6], motors[7],  # back_right
+                motors[2], motors[3],  # front_right
+                motors[4], motors[5],  # back_left
+                motors[0], motors[1],  # front_left
+            ]
             self.get_logger().debug('Received new joint positions from gait controller')
         else:
             self.get_logger().warn(
