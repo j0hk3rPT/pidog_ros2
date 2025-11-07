@@ -50,7 +50,7 @@ class GaitGeneratorNode(Node):
 
         # Gait state
         self.current_gait = self.default_gait
-        self.gait_coords = []
+        self.gait_coords = None  # Initialize to None for static poses (will be set by gaits)
         self.frame_index = 0
 
         # Transition state for smooth gait switching
