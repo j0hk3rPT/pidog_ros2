@@ -24,10 +24,19 @@ sleep 5
 echo "✅ Starting!"
 echo ""
 
+# Reset robot pose in Gazebo
+echo "🔄 Resetting robot pose in Gazebo..."
+gz service -s /world/pidog/control \
+    --reqtype gz.msgs.WorldControl \
+    --reptype gz.msgs.Boolean \
+    --timeout 2000 \
+    --req 'reset: {all: true}' &>/dev/null || echo "⚠️  Gazebo reset failed, continuing..."
+sleep 2
+
 # Reset to stand first
-echo "🔄 Resetting to stand pose..."
+echo "📍 Setting stand pose..."
 ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
-sleep 3
+sleep 2
 
 # Start target gait
 echo "▶️  Starting gait: $GAIT_NAME"
