@@ -108,6 +108,13 @@ class PiDogGazeboController(Node):
                 self.get_logger().info('Controller now active - accepting gait commands')
             # During startup, keep publishing standing pose to prevent collapse
 
+        # DIAGNOSTIC: Log position array length
+        if not hasattr(self, '_pos_log_count'):
+            self._pos_log_count = 0
+        self._pos_log_count += 1
+        if self._pos_log_count <= 5 or self._pos_log_count % 100 == 0:
+            self.get_logger().info(f'Publishing {len(self.current_position)} values: {self.current_position[:4]}...')
+
         msg = Float64MultiArray()
         msg.data = self.current_position
         self.position_pub.publish(msg)
