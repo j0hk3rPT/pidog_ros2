@@ -210,26 +210,28 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 - turn: -1=left, 0=straight, 1=right
 - phase: 0.0 to 1.0 (gait cycle position)
 
-**Output**: 8 joint angles (radians) for leg motors
+**Output**: 12 joint angles (radians) for all motors (8 legs + 4 head/tail)
 
 **Available Models**:
 
 1. **GaitNet (Simple)** - Basic MLP (~200K params)
-   - Input(4) → Dense(128) → Dense(256) → Dense(128) → Dense(8)
+   - Input(4) → Dense(128) → Dense(256) → Dense(128) → Dense(12)
    - Good for: Initial testing, fast training
 
 2. **GaitNetLarge** - Larger MLP (~1M params)
-   - Input(4) → Dense(256) → Dense(512) → Dense(512) → Dense(256) → Dense(8)
+   - Input(4) → Dense(256) → Dense(512) → Dense(512) → Dense(256) → Dense(12)
    - Good for: When simple model underfits
 
 3. **GaitNetSimpleLSTM** - LSTM with temporal memory (~13K params) ⭐ **RECOMMENDED**
-   - Input(4) → LSTM(64) → Dense(32) → Dense(8)
+   - Input(4) → LSTM(64) → Dense(32) → Dense(12)
+   - Output: All 12 motors (8 legs + 4 head/tail for balance)
    - Good for: Sim-to-real transfer, handles servo lag
    - **Best choice for hardware deployment**
 
 4. **GaitNetLSTM** - Full state feedback LSTM (~35K params)
-   - Input(20) → LSTM(128) → Dense(64) → Dense(8)
-   - Input = [gait_cmd(4), joint_pos(8), joint_vel(8)]
+   - Input(28) → LSTM(128) → Dense(64) → Dense(12)
+   - Input = [gait_cmd(4), joint_pos(12), joint_vel(12)]
+   - Output: All 12 motors (8 legs + 4 head/tail for balance)
    - Good for: Advanced control, closed-loop feedback
 
 **Training expectations**:
@@ -240,12 +242,19 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 
 ## Physics Configuration
 
-**Current Tuned Parameters** (balanced for stable movement without bouncing):
+**Current Tuned Parameters** (realistic values matching hardware for sim-to-real transfer):
 
-**Joint Parameters**:
-- Leg joints: effort=1.5 Nm, velocity=7.5 rad/s (430°/s), damping=0.5, friction=0.5
-- Neck joints: effort=0.14 Nm, damping=0.3, friction=0.5, stiffness=50.0
-- Tail joint: effort=1.5 Nm
+**Servo Specifications** (Real Hardware - SunFounder SF006FM 9g Digital Servo):
+- Torque: 0.127-0.137 Nm (1.3-1.4 kgf·cm at 4.8-6V)
+- Speed: 333-400°/s (5.8-7.0 rad/s)
+- Operating voltage: 4.8-6.0V
+- Range: 0-180°
+
+**Joint Parameters** (Simulation):
+- Leg joints (8): effort=0.15 Nm, velocity=7.0 rad/s (400°/s), damping=0.5, friction=0.5
+  - **Matches real servo torque for accurate sim-to-real transfer**
+- Neck joints (3): effort=0.14 Nm, velocity=7.5 rad/s, damping=0.3, friction=0.5, stiffness=50.0
+- Tail joint (1): effort=0.15 Nm, velocity=7.0 rad/s, damping=0.5, friction=0.5
 
 **Contact Physics** (Gazebo ODE):
 - Foot contact: kp=1e6, kd=100, mu1=0.8 (soft contact prevents bouncing)
@@ -261,8 +270,8 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 - position_proportional_gain=1.0 (no amplification)
 
 **Design Philosophy**:
+- **Realistic servo limits** (0.15 Nm) → matches real hardware for sim-to-real transfer
 - **Soft contacts** (kp=1e6 vs 1e15) → prevents bouncing/vibration
-- **Moderate effort limits** (1.5 Nm) → allows movement without overpowering physics
 - **Balanced PID** (P=8, D=2.5) → good tracking with damping
 
 **Troubleshooting**:
@@ -322,9 +331,11 @@ gait_generator → /motor_pos → pidog_gazebo_controller → /position_controll
 
 ### Tuning Gait Parameters
 Edit parameters in `pidog_gaits/pidog_gaits/walk_gait.py` and `trot_gait.py`:
-- `stride_height` - Height of leg lift during step
-- `stride_length` - Forward/backward step distance
-- `swing_period` - Duration of swing phase
+- `LEG_STEP_HEIGHT` - Height of leg lift during step (mm)
+- `LEG_STEP_WIDTH` - Forward/backward step distance (mm)
+- `STEP_COUNT` - Number of steps per section (affects gait speed/smoothness)
+  - Walk: 6 steps × 8 sections = 48 frames (~1.6s per cycle at 30Hz)
+  - Trot: 10 steps × 2 sections = 20 frames (~0.67s per cycle at 30Hz)
 
 After editing, rebuild and test:
 ```bash

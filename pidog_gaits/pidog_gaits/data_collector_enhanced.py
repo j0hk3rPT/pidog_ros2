@@ -123,37 +123,38 @@ class DataCollectorEnhancedNode(Node):
         frames_in_gait = self.frame_count - self.gait_start_frame
         phase = (frames_in_gait % 100) / 100.0  # Assume ~100 frames per cycle
 
-        # Extract leg angles only (first 8 motors)
-        leg_angles = np.array(msg.position[:8], dtype=np.float32)
+        # Extract ALL 12 motor angles (8 legs + 4 head/tail)
+        # Even if head/tail are currently at 0, NN can learn to use them for balance
+        motor_angles = np.array(msg.position[:12], dtype=np.float32)
 
         # Add observation noise to positions (simulates sensor noise)
         if self.add_noise:
-            leg_angles_noisy = leg_angles + np.random.normal(
-                0, self.pos_noise_std, size=8
+            motor_angles_noisy = motor_angles + np.random.normal(
+                0, self.pos_noise_std, size=12
             ).astype(np.float32)
         else:
-            leg_angles_noisy = leg_angles
+            motor_angles_noisy = motor_angles
 
         # Calculate velocities if needed
-        leg_velocities = None
+        motor_velocities = None
         if self.collect_vel:
-            if len(msg.velocity) >= 8:
+            if len(msg.velocity) >= 12:
                 # Use provided velocities
-                leg_velocities = np.array(msg.velocity[:8], dtype=np.float32)
+                motor_velocities = np.array(msg.velocity[:12], dtype=np.float32)
             elif self.previous_positions is not None and self.previous_time is not None:
                 # Compute velocities from position difference
                 dt = elapsed - self.previous_time
                 if dt > 0:
-                    leg_velocities = (leg_angles - self.previous_positions) / dt
+                    motor_velocities = (motor_angles - self.previous_positions) / dt
                 else:
-                    leg_velocities = np.zeros(8, dtype=np.float32)
+                    motor_velocities = np.zeros(12, dtype=np.float32)
             else:
-                leg_velocities = np.zeros(8, dtype=np.float32)
+                motor_velocities = np.zeros(12, dtype=np.float32)
 
             # Add observation noise to velocities
-            if self.add_noise and leg_velocities is not None:
-                leg_velocities = leg_velocities + np.random.normal(
-                    0, self.vel_noise_std, size=8
+            if self.add_noise and motor_velocities is not None:
+                motor_velocities = motor_velocities + np.random.normal(
+                    0, self.vel_noise_std, size=12
                 ).astype(np.float32)
 
         # Create data point
@@ -165,17 +166,17 @@ class DataCollectorEnhancedNode(Node):
             'direction': gait_features['direction'],     # -1=back, 0=none, 1=forward
             'turn': gait_features['turn'],               # -1=left, 0=straight, 1=right
             'phase': phase,                               # 0.0 to 1.0
-            'joint_angles': leg_angles_noisy.tolist()    # 8 angles in radians (with noise)
+            'joint_angles': motor_angles_noisy.tolist()  # 12 angles (8 legs + 4 head/tail) with noise
         }
 
-        if leg_velocities is not None:
-            data_point['joint_velocities'] = leg_velocities.tolist()
+        if motor_velocities is not None:
+            data_point['joint_velocities'] = motor_velocities.tolist()
 
         self.data.append(data_point)
         self.frame_count += 1
 
         # Store for velocity calculation
-        self.previous_positions = leg_angles.copy()
+        self.previous_positions = motor_angles.copy()
         self.previous_time = elapsed
 
         # Log progress every 100 frames
@@ -222,7 +223,7 @@ class DataCollectorEnhancedNode(Node):
             ]
             inputs.append(input_vec)
 
-            # Output: 8 joint angles
+            # Output: 12 joint angles (8 legs + 4 head/tail)
             outputs.append(point['joint_angles'])
 
             # Velocities (if collected)

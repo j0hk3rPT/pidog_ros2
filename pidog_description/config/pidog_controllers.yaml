@@ -19,11 +19,10 @@ position_controller:
       - back_left_leg_b_to_a
       - body_to_front_left_leg_b
       - front_left_leg_b_to_a
-      # Temporarily disable head/tail to test
-      # - motor_8_to_tail
-      # - neck1_to_motor_9
-      # - neck2_to_motor_10
-      # - neck3_to_motor_11
+      - motor_8_to_tail
+      - neck1_to_motor_9
+      - neck2_to_motor_10
+      - neck3_to_motor_11
 
     command_interfaces:
       - position
@@ -32,22 +31,23 @@ position_controller:
       - position
       - velocity
 
-    # Balanced PID gains - strong tracking with damping to prevent oscillation
-    # Effort limits: 1.5 Nm (sufficient for movement)
-    # Joint damping: 0.5, friction: 0.5 in URDF
+    # Aggressive PID gains for low-torque servos
+    # Effort limits: 1.0 Nm (realistic for low-friction joints with dynamic loads)
+    # Real servo: 0.127-0.137 Nm stall, but very low friction (0.01) needs more control authority
+    # Joint damping: 0.01, friction: 0.01 in URDF (very low - matches efficient servo gearboxes)
     # Contact stiffness: 1e6 (soft contact to prevent bouncing)
     # position_proportional_gain: 1.0 (no amplification)
     gains:
-      body_to_back_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      back_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_front_right_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      front_right_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_back_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      back_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      body_to_front_left_leg_b: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      front_left_leg_b_to_a: {p: 8.0, d: 2.5, i: 0.1, i_clamp: 0.5}
-      # Head and tail gains (disabled for testing)
-      # motor_8_to_tail: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
-      # neck1_to_motor_9: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
-      # neck2_to_motor_10: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
-      # neck3_to_motor_11: {p: 5.0, d: 8.0, i: 0.1, i_clamp: 0.5}
+      body_to_back_right_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      back_right_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      body_to_front_right_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      front_right_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      body_to_back_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      back_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      body_to_front_left_leg_b: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      front_left_leg_b_to_a: {p: 10.0, d: 5.0, i: 0.3, i_clamp: 0.8}
+      # Head and tail gains (lighter load, more damping for stability)
+      motor_8_to_tail: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      neck1_to_motor_9: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      neck2_to_motor_10: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}
+      neck3_to_motor_11: {p: 8.0, d: 6.0, i: 0.2, i_clamp: 0.6}

@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Wrapper script for data_collector_enhanced."""
+from pidog_gaits.data_collector_enhanced import main
+
+if __name__ == '__main__':
+    main()

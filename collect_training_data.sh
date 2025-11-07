@@ -17,19 +17,22 @@ echo "⏱️  Recording $DURATION seconds per gait"
 echo ""
 
 # List of gaits to record
+# NOTE: If certain gaits cause the robot to fall, you can:
+#   1. Comment them out here temporarily
+#   2. Collect them separately with manual monitoring
+#   3. Adjust duration to reduce fall risk
 GAITS=(
-    "walk_forward"
-    "walk_backward"
-    "walk_left"
-    "walk_right"
-    "trot_forward"
-    "trot_backward"
-    "trot_left"
-    "trot_right"
-    "stand"
-    "sit"
-    "lie"
-    "stretch"
+    "walk_forward"   # Usually stable
+    "walk_backward"  # Usually stable
+    "walk_left"      # May cause instability
+    "walk_right"     # May cause instability
+    "trot_forward"   # Usually stable
+    "trot_backward"  # May cause instability
+    "trot_left"      # May cause instability
+    "trot_right"     # May cause instability
+    "sit"            # Static pose - stable
+    "lie"            # Static pose - stable
+    "stretch"        # Static pose - stable
 )
 
 TOTAL_GAITS=${#GAITS[@]}
@@ -56,8 +59,24 @@ for i in "${!GAITS[@]}"; do
     echo "[$NUM/$TOTAL_GAITS] Recording: $GAIT"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+    # Send stand command FIRST to set joint angles
+    echo "  📍 Setting stand pose..."
+    ros2 topic pub /gait_command std_msgs/msg/String "data: 'stand'" --once
+    sleep 1
+
+    # Then reset robot position in Gazebo (moves body upright)
+    echo "  🔄 Resetting robot position in Gazebo..."
+    gz service -s /world/pidog_world/set_pose \
+        --reqtype gz.msgs.Pose \
+        --reptype gz.msgs.Boolean \
+        --timeout 2000 \
+        --req "name: 'Robot.urdf', position: {x: 0.0, y: 0.0, z: 0.12}, orientation: {x: 0, y: 0, z: 0, w: 1}" &>/dev/null || echo "  ⚠️  Gazebo reset failed, continuing..."
+    sleep 2
+
     # Send gait command
+    echo "  ▶️  Starting gait: $GAIT"
     ros2 topic pub /gait_command std_msgs/msg/String "data: '$GAIT'" --once
+    sleep 1
 
     # Show progress bar
     for ((sec=1; sec<=DURATION; sec++)); do

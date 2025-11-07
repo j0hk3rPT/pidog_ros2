@@ -72,8 +72,7 @@ class LegIK:
 
         for i, coord in enumerate(leg_coords):
             y, z = coord
-            # Invert Y for URDF coordinate system (forward is negative Y)
-            y = -y
+            # NO y-coordinate inversion (SunFounder uses coordinates directly)
             leg_angle, foot_angle = cls.coord2angles(y, z)
 
             # Match SunFounder implementation exactly:

@@ -25,8 +25,8 @@ class Trot:
     RIGHT = 1
 
     # Gait timing parameters
-    SECTION_COUNT = 2  # Only 2 sections (two diagonal pairs)
-    STEP_COUNT = 3     # Steps per section
+    SECTION_COUNT = 2   # Only 2 sections (two diagonal pairs)
+    STEP_COUNT = 10     # Steps per section (increased from 3 for smoother/slower motion)
     LEG_RAISE_ORDER = [[1, 4], [2, 3]]  # Diagonal pairs
 
     # Movement parameters (in mm)

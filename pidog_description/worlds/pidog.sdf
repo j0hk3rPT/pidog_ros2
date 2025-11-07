@@ -56,8 +56,8 @@
           <surface>
             <friction>
               <ode>
-                <mu>1.0</mu>
-                <mu2>1.0</mu2>
+                <mu>0.6</mu>
+                <mu2>0.6</mu2>
               </ode>
             </friction>
             <contact>
@@ -65,7 +65,7 @@
                 <!-- Reduced from 1e15 to prevent excessive stiffness and jitter -->
                 <!-- For small robots, softer contact is more stable -->
                 <kp>10000000.0</kp><!-- 1e7 - more reasonable for small robot -->
-                <kd>100.0</kd><!-- Moderate damping -->
+                <kd>500.0</kd><!-- Higher damping to prevent bouncing/stick-slip -->
                 <min_depth>0.0005</min_depth>
                 <max_vel>0.1</max_vel>
               </ode>
