@@ -32,7 +32,7 @@ class LegIK:
             z (float): Vertical distance from hip (mm)
 
         Returns:
-            tuple: (leg_angle, foot_angle) in degrees
+            tuple: (leg_angle, foot_angle) in radians
         """
         # Calculate distance from hip to foot
         u = sqrt(y**2 + z**2)
@@ -49,11 +49,8 @@ class LegIK:
         angle2 = acos(cos_angle2)
         alpha = angle2 + angle1
 
-        # Convert to degrees
-        alpha_deg = alpha * 180.0 / pi
-        beta_deg = beta * 180.0 / pi
-
-        return alpha_deg, beta_deg
+        # Return in radians (SI units for ros2_control)
+        return alpha, beta
 
     @classmethod
     def legs_coords_to_angles(cls, leg_coords):
@@ -67,7 +64,7 @@ class LegIK:
                                      leg3 (left back), leg4 (right back)
 
         Returns:
-            list: 8 angles [a1, a2, a3, a4, a5, a6, a7, a8]
+            list: 8 angles [a1, a2, a3, a4, a5, a6, a7, a8] in radians
                   where (a1,a2) = leg1, (a3,a4) = leg2, etc.
                   Format matches PiDog's motor order
         """
@@ -80,8 +77,8 @@ class LegIK:
             leg_angle, foot_angle = cls.coord2angles(y, z)
 
             # Adjust for leg mounting orientation
-            # SunFounder convention: foot_angle -= 90
-            foot_angle = foot_angle - 90
+            # SunFounder convention: foot_angle -= 90° (π/2 radians)
+            foot_angle = foot_angle - (pi / 2)
 
             # Right side legs (odd indices) are mirrored
             if i % 2 != 0:
