@@ -50,7 +50,7 @@ class GaitGeneratorNode(Node):
 
         # Gait state
         self.current_gait = self.default_gait
-        self.gait_coords = []
+        self.gait_coords = None  # Initialize to None for static poses (will be set by gaits)
         self.frame_index = 0
 
         # Transition state for smooth gait switching
@@ -226,6 +226,13 @@ class GaitGeneratorNode(Node):
         # 8 leg angles + 4 zeros for tail/head
         angles_rad = leg_angles.copy()
         angles_rad.extend([0.0, 0.0, 0.0, 0.0])  # motors 8-11 (tail, head)
+
+        # DIAGNOSTIC: Log published array length
+        if not hasattr(self, '_pub_log_count'):
+            self._pub_log_count = 0
+        self._pub_log_count += 1
+        if self._pub_log_count <= 5 or self._pub_log_count % 100 == 0:
+            self.get_logger().info(f'Publishing {len(angles_rad)} angles: {angles_rad}')
 
         self.joint_state.position = angles_rad
         self.joint_pub.publish(self.joint_state)
