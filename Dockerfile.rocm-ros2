@@ -68,7 +68,7 @@ RUN pip install --no-cache-dir \
     shimmy \
     tensorboard \
     matplotlib \
-    opencv \
+    opencv-python \
     numpy \
     scipy \
     empy \
