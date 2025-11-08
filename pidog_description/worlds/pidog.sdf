@@ -37,6 +37,13 @@
       <update_frequency>100</update_frequency>
     </plugin>
 
+    <!-- EXPERIMENTAL: Try enabling sensor plugins again -->
+    <!-- These caused crashes before, but might work with pose publisher loaded -->
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
     <!-- Lighting -->
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
