@@ -27,12 +27,6 @@
       </ode>
     </physics>
 
-    <!-- Sensor system plugins for Gazebo Harmonic -->
-    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-      <render_engine>ogre2</render_engine>
-    </plugin>
-
     <!-- Lighting -->
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
