@@ -1014,8 +1014,9 @@
     </inertial>
     <!-- Visual representation: two "eyes" (HC-SR04 transducers) -->
     <!-- Spaced wider (20mm apart) to align with eye piece circles -->
+    <!-- Rotated 90° around Y-axis to face forward (circular face visible from front) -->
     <visual>
-      <origin xyz="0 0.010 0" rpy="0 0 0"/>
+      <origin xyz="0 0.010 0" rpy="0 1.5708 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
@@ -1024,7 +1025,7 @@
       </material>
     </visual>
     <visual>
-      <origin xyz="0 -0.010 0" rpy="0 0 0"/>
+      <origin xyz="0 -0.010 0" rpy="0 1.5708 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
