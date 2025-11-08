@@ -34,17 +34,16 @@ class PiDogVisionEnv(gym.Env):
     Action: [12 joint positions] in radians
 
     Sensors Used:
-        - Camera: Vision for obstacle detection
-        - IMU: Orientation and angular velocity
-        - Ultrasonic: Distance measurement for navigation
-        - Touch: Contact detection
+        - Camera: Vision for navigation and obstacle detection
+        - IMU: Orientation and angular velocity for balance
+        - Ultrasonic: Distance measurement for obstacle avoidance
+        - Touch (head): User interaction sensor (petting) - for dog-like behavior training
         - Joint encoders: Position and velocity feedback
 
-    Rewards:
-        - Stability (upright, head not touching ground)
-        - Speed (forward velocity for running)
-        - Efficiency (smooth movements)
-        - Collision avoidance (ultrasonic + touch feedback)
+    Rewards (configurable per task):
+        - Max velocity: Forward speed, stability, smooth movements
+        - Dog-like behavior: Touch response (react to petting), tail wag, etc.
+        - Obstacle avoidance: Ultrasonic distance penalties
     """
 
     metadata = {'render.modes': ['human']}
