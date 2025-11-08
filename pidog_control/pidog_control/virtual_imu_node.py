@@ -5,7 +5,7 @@ Virtual IMU Node - Synthesizes IMU data from Gazebo model state
 This node creates realistic IMU sensor data from Gazebo's physics simulation,
 allowing RL training to use the same sensor inputs as the real robot.
 
-Subscribes to: /model/pidog/pose (from Gazebo)
+Subscribes to: /gazebo/model_states (from Gazebo via ros_gz_bridge)
 Publishes to:  /imu (sensor_msgs/Imu)
 
 For sim-to-real transfer:
@@ -17,10 +17,9 @@ For sim-to-real transfer:
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
-from tf2_msgs.msg import TFMessage
+from gazebo_msgs.msg import ModelStates
 import numpy as np
 from scipy.spatial.transform import Rotation
-import math
 
 
 class VirtualIMUNode(Node):
@@ -30,69 +29,89 @@ class VirtualIMUNode(Node):
         # Publisher
         self.imu_pub = self.create_publisher(Imu, '/imu', 10)
 
-        # Subscribers - TF messages from Gazebo
-        self.tf_sub = self.create_subscription(
-            TFMessage,
-            '/tf',
-            self.tf_callback,
+        # Subscribe to Gazebo model states
+        self.model_sub = self.create_subscription(
+            ModelStates,
+            '/gazebo/model_states',
+            self.model_callback,
             10
         )
 
         # State tracking for computing derivatives
-        self.last_orientation = None
-        self.last_time = None
         self.last_velocity = None
+        self.last_time = None
 
         # Noise parameters matching URDF configuration
         self.angular_vel_noise_std = 0.01  # rad/s
         self.linear_acc_noise_std = 0.1    # m/s^2
 
-        # Gravity vector (Gazebo's linear acceleration includes gravity)
+        # Gravity vector
         self.gravity = 9.81
 
-        self.get_logger().info('Virtual IMU node started - synthesizing IMU from TF')
-        self.get_logger().info('Publishing to /imu topic at 100Hz')
+        # Model name to track (Gazebo spawns as this name)
+        self.model_name = 'PiDog'
 
-    def tf_callback(self, msg):
+        self.get_logger().info('Virtual IMU node started - synthesizing IMU from Gazebo model states')
+        self.get_logger().info('Publishing to /imu topic')
+
+    def model_callback(self, msg):
         """
-        Compute IMU data from TF transform (body link).
+        Compute IMU data from Gazebo model states.
 
         IMU outputs:
-        - orientation: Direct from TF (quaternion)
-        - angular_velocity: Computed from orientation derivative
-        - linear_acceleration: Gravity transformed to body frame
+        - orientation: Direct from model pose (quaternion)
+        - angular_velocity: From model twist, transformed to body frame
+        - linear_acceleration: Computed from velocity derivative + gravity compensation
         """
-        # Find the body link transform
-        body_transform = None
-        for transform in msg.transforms:
-            # Look for transform from world/odom to body link
-            if transform.child_frame_id == 'body' or transform.child_frame_id == 'base_link':
-                body_transform = transform
-                break
-
-        if body_transform is None:
-            return  # Body transform not in this message
+        # Find our robot in the model states
+        try:
+            idx = msg.name.index(self.model_name)
+        except ValueError:
+            # Model not found, skip this message
+            return
 
         current_time = self.get_clock().now()
 
+        # Extract pose and twist
+        pose = msg.pose[idx]
+        twist = msg.twist[idx]
+
         # Extract orientation quaternion
-        q = body_transform.transform.rotation
+        q = pose.orientation
         orientation_quat = np.array([q.x, q.y, q.z, q.w])
 
-        # Compute angular velocity from orientation change
-        angular_velocity = np.array([0.0, 0.0, 0.0])
-        if self.last_orientation is not None and self.last_time is not None:
+        # Compute angular velocity in body frame
+        # Gazebo twist angular is in world frame, transform to body frame
+        angular_velocity_world = np.array([
+            twist.angular.x,
+            twist.angular.y,
+            twist.angular.z
+        ])
+
+        # Transform to body frame
+        r = Rotation.from_quat(orientation_quat)
+        angular_velocity = r.inv().apply(angular_velocity_world)
+
+        # Compute linear acceleration
+        # Get current linear velocity in world frame
+        linear_velocity_world = np.array([
+            twist.linear.x,
+            twist.linear.y,
+            twist.linear.z
+        ])
+
+        # Compute acceleration from velocity derivative
+        linear_acc_world = np.array([0.0, 0.0, 0.0])
+        if self.last_velocity is not None and self.last_time is not None:
             dt = (current_time - self.last_time).nanoseconds / 1e9
             if dt > 0:
-                angular_velocity = self._compute_angular_velocity(
-                    self.last_orientation,
-                    orientation_quat,
-                    dt
-                )
+                linear_acc_world = (linear_velocity_world - self.last_velocity) / dt
 
-        # For now, we don't have velocity from pose topic, so linear acceleration
-        # will just be gravity transformed to body frame
-        linear_acceleration = self._compute_linear_acceleration(orientation_quat)
+        # Transform to body frame and add gravity compensation
+        # IMU measures specific force = acceleration - gravity
+        gravity_world = np.array([0.0, 0.0, -self.gravity])
+        specific_force_world = linear_acc_world - gravity_world
+        linear_acceleration = r.inv().apply(specific_force_world)
 
         # Add realistic noise
         angular_velocity += np.random.normal(0, self.angular_vel_noise_std, 3)
@@ -138,50 +157,8 @@ class VirtualIMUNode(Node):
         self.imu_pub.publish(imu_msg)
 
         # Update state for next iteration
-        self.last_orientation = orientation_quat
+        self.last_velocity = linear_velocity_world
         self.last_time = current_time
-
-    def _compute_angular_velocity(self, q_prev, q_curr, dt):
-        """
-        Compute angular velocity from quaternion change.
-
-        Uses quaternion derivative: ω = 2 * q_dot * q_conj
-        """
-        # Convert quaternions to scipy Rotation objects
-        r_prev = Rotation.from_quat(q_prev)
-        r_curr = Rotation.from_quat(q_curr)
-
-        # Compute relative rotation
-        r_delta = r_curr * r_prev.inv()
-
-        # Convert to axis-angle to get angular velocity
-        rotvec = r_delta.as_rotvec()  # Returns rotation vector (axis * angle)
-        angular_velocity = rotvec / dt  # Convert to angular velocity
-
-        return angular_velocity
-
-    def _compute_linear_acceleration(self, orientation_quat):
-        """
-        Compute linear acceleration in body frame.
-
-        Since we don't have velocity from pose topic, we return gravity
-        transformed to body frame (what a real IMU measures when stationary).
-
-        A real IMU measures: specific_force = acceleration - gravity_world
-        When stationary: specific_force = -gravity_world
-        Transformed to body frame using orientation.
-        """
-        # Gravity in world frame (pointing down)
-        gravity_world = np.array([0.0, 0.0, -self.gravity])
-
-        # Transform to body frame
-        r = Rotation.from_quat(orientation_quat)
-        gravity_body = r.inv().apply(gravity_world)
-
-        # IMU measures specific force = -gravity when stationary
-        linear_acceleration = -gravity_body
-
-        return linear_acceleration
 
 
 def main(args=None):

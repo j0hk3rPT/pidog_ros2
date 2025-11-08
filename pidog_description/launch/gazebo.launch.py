@@ -153,7 +153,16 @@ def generate_launch_description():
     #     output='screen',
     # )
 
-    # Virtual IMU node - synthesizes IMU data from TF
+    # Bridge Gazebo model states for virtual IMU
+    model_states_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/world/pidog_world/model/PiDog/link_state@gazebo_msgs/msg/ModelStates[gz.msgs.Model'],
+        output='screen',
+        remappings=[('/world/pidog_world/model/PiDog/link_state', '/gazebo/model_states')]
+    )
+
+    # Virtual IMU node - synthesizes IMU data from Gazebo model states
     # For sim-to-real transfer: disable this on real robot, use real IMU instead
     virtual_imu = Node(
         package='pidog_control',
@@ -176,8 +185,9 @@ def generate_launch_description():
         robot_state_publisher,
         rviz,
         gazebo,
-        clock_bridge,   # Add clock bridge before spawning robot
-        virtual_imu,    # Virtual IMU synthesizes IMU from TF
+        clock_bridge,           # Bridge clock from Gazebo
+        model_states_bridge,    # Bridge model states for virtual IMU
+        virtual_imu,            # Virtual IMU synthesizes IMU from model states
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
