@@ -899,10 +899,11 @@
   <!-- Gazebo IMU sensor plugin -->
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
-      <always_on>1</always_on>
+      <always_on>true</always_on>
       <update_rate>100</update_rate>
       <visualize>false</visualize>
       <topic>imu</topic>
+      <enable_metrics>false</enable_metrics>
       <imu>
         <angular_velocity>
           <x>
