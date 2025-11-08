@@ -877,6 +877,142 @@
     <origin xyz="0.0 0.0 0.036" rpy="0 0.0 0"/>
   </joint>
 
+  <!-- ===============================================================================================================
+  ========================================== SENSORS =============================================================
+  =============================================================================================================== -->
+
+  <!-- IMU Sensor - Mounted on body center for balance/orientation sensing -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+
+  <joint name="imu_joint" type="fixed">
+    <parent link="body"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>  <!-- Center of body, 2cm up -->
+  </joint>
+
+  <!-- Gazebo IMU sensor plugin -->
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>1</always_on>
+      <update_rate>100</update_rate>
+      <visualize>false</visualize>
+      <topic>imu</topic>
+      <imu>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.1</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.1</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.1</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- Contact sensors for each foot (acrylic pads) -->
+  <gazebo reference="back_right_acrylic">
+    <sensor name="back_right_foot_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <contact>
+        <collision>back_right_acrylic_collision</collision>
+      </contact>
+      <plugin name="back_right_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <bumperTopicName>contact/back_right_foot</bumperTopicName>
+        <frameName>back_right_acrylic</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="front_right_acrylic">
+    <sensor name="front_right_foot_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <contact>
+        <collision>front_right_acrylic_collision</collision>
+      </contact>
+      <plugin name="front_right_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <bumperTopicName>contact/front_right_foot</bumperTopicName>
+        <frameName>front_right_acrylic</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="back_left_acrylic">
+    <sensor name="back_left_foot_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <contact>
+        <collision>back_left_acrylic_collision</collision>
+      </contact>
+      <plugin name="back_left_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <bumperTopicName>contact/back_left_foot</bumperTopicName>
+        <frameName>back_left_acrylic</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="front_left_acrylic">
+    <sensor name="front_left_foot_contact" type="contact">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <contact>
+        <collision>front_left_acrylic_collision</collision>
+      </contact>
+      <plugin name="front_left_contact_plugin" filename="libgazebo_ros_bumper.so">
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <bumperTopicName>contact/front_left_foot</bumperTopicName>
+        <frameName>front_left_acrylic</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <!-- Gazebo-specific settings for sphere paw contacts -->
   <!-- Reduced stiffness to prevent bouncing - more realistic for compliant contact -->
   <gazebo reference="back_right_acrylic">
