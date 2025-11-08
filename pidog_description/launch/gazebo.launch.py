@@ -144,16 +144,9 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Bridge IMU data from Gazebo to ROS 2
-    # Gazebo topic: /imu (gz.msgs.IMU)
-    # ROS 2 topic: /imu/data (sensor_msgs/msg/Imu)
-    imu_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
-        remappings=[('/imu', '/imu/data')],  # Remap to standard ROS 2 topic name
-        output='screen',
-    )
+    # IMU sensor bridge removed - Gazebo sensor plugins prevent world initialization
+    # TODO: Add virtual_imu_node or alternative IMU implementation
+    # See: pidog_control/virtual_imu_node.py (needs model states bridge)
 
     # Gazebo controller to hold robot in standing pose
     gazebo_controller = Node(
@@ -170,7 +163,6 @@ def generate_launch_description():
         rviz,
         gazebo,
         clock_bridge,           # Bridge clock from Gazebo
-        imu_bridge,             # Bridge IMU data to /imu/data
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,

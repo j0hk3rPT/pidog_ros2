@@ -2,11 +2,9 @@
 <sdf version="1.8">
   <world name="pidog_world">
 
-    <!-- System plugins - REQUIRED for sensors to work in Gazebo Harmonic -->
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-      <!-- Render engine removed - sensors can work without it -->
-    </plugin>
-    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <!-- Sensor plugins REMOVED - they prevent world service from initializing -->
+    <!-- Using virtual_imu_node instead, which computes IMU from model states -->
+    <!-- See: pidog_control/virtual_imu_node.py -->
 
     <!-- Physics settings optimized to fix position control jitter -->
     <!-- Based on gazebo_ros2_control known issues and best practices -->
