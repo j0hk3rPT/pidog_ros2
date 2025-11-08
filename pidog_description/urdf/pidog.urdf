@@ -882,18 +882,30 @@
   =============================================================================================================== -->
 
   <!-- IMU Sensor - Mounted on body center for balance/orientation sensing -->
+  <!-- MPU6050: 21mm × 16mm × 3mm -->
   <link name="imu_link">
     <inertial>
       <mass value="0.001"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
+    <!-- Visual representation of MPU6050 chip -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.021 0.016 0.003"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.1 0.1 0.6 0.8"/>
+      </material>
+    </visual>
   </link>
 
   <joint name="imu_joint" type="fixed">
     <parent link="body"/>
     <child link="imu_link"/>
-    <origin xyz="0 0 0.02" rpy="0 0 0"/>  <!-- Center of body, 2cm up -->
+    <!-- Mounted on left face of body near back legs (X=left/right, Y=front/back) -->
+    <origin xyz="0.032 -0.03 0.01" rpy="0 1.5708 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) IMU sensor - no plugin tag needed -->
@@ -972,8 +984,8 @@
   <joint name="camera_joint" type="fixed">
     <parent link="head"/>
     <child link="camera_link"/>
-    <!-- Mount at front of nose, pointing forward -->
-    <origin xyz="0.03 0 0.02" rpy="0 0 0"/>
+    <!-- Mount at front of nose, laying flat on nose surface, lowered by 3× camera length -->
+    <origin xyz="0.04 0 -0.010" rpy="0 0.2 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) Camera sensor -->
@@ -1013,8 +1025,10 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
     <!-- Visual representation: two "eyes" (HC-SR04 transducers) -->
+    <!-- Spaced wider (20mm apart) to align with eye piece circles -->
+    <!-- Rotated 90° around Y-axis to face forward (circular face visible from front) -->
     <visual>
-      <origin xyz="0 0.006 0" rpy="0 0 0"/>
+      <origin xyz="0 0.010 0" rpy="0 1.5708 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
@@ -1023,7 +1037,7 @@
       </material>
     </visual>
     <visual>
-      <origin xyz="0 -0.006 0" rpy="0 0 0"/>
+      <origin xyz="0 -0.010 0" rpy="0 1.5708 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
@@ -1037,6 +1051,7 @@
     <parent link="head"/>
     <child link="ultrasonic_link"/>
     <!-- Position at eyes location - HC-SR04 transducers ARE the eyes -->
+    <!-- Looking straight forward, transducers spaced to align with eye circles -->
     <origin xyz="0.0 0.0 0.036" rpy="0 0 0"/>
   </joint>
 
@@ -1106,8 +1121,8 @@
   <joint name="touch_sensor_joint" type="fixed">
     <parent link="head"/>
     <child link="touch_sensor_link"/>
-    <!-- Flush on top surface of head, centered behind eyes -->
-    <origin xyz="-0.003 0 0.020" rpy="0 0 0"/>
+    <!-- Moved back by 2× length (2 × 0.012 = 0.024m) to sit on head piece -->
+    <origin xyz="-0.027 0 0.020" rpy="0 0 0"/>
   </joint>
 
   <!-- Gazebo contact sensor for touch detection -->
@@ -1192,31 +1207,6 @@
     <parent link="head"/>
     <child link="mic_right_link"/>
     <origin xyz="0.02 -0.015 0.025" rpy="0 0 0"/>
-  </joint>
-
-  <!-- RGB LED Strip - Visual indicator on chest -->
-  <link name="rgb_led_link">
-    <inertial>
-      <mass value="0.001"/>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.04 0.02 0.002"/>
-      </geometry>
-      <material name="led_blue">
-        <color rgba="0.2 0.4 1.0 0.8"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="rgb_led_joint" type="fixed">
-    <parent link="body"/>
-    <child link="rgb_led_link"/>
-    <!-- Front chest area -->
-    <origin xyz="0.045 0 0.01" rpy="0 0 0"/>
   </joint>
 
   <!-- Speaker - Audio output (visual representation) -->

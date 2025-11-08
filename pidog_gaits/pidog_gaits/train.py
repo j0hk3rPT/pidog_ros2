@@ -18,7 +18,7 @@ from datetime import datetime
 from .neural_network import GaitNet, GaitNetLarge, GaitNetSimpleLSTM, GaitNetLSTM, load_dataset, count_parameters
 
 
-def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='cpu', save_dir='./models'):
+def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='cpu', save_dir='./models', patience=None):
     """
     Train the gait model.
 
@@ -30,6 +30,7 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
         lr: Learning rate
         device: 'cpu' or 'cuda'
         save_dir: Directory to save models
+        patience: Early stopping patience (None to disable)
 
     Returns:
         dict: Training history
@@ -56,12 +57,15 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
     os.makedirs(save_dir, exist_ok=True)
 
     best_val_loss = float('inf')
+    epochs_without_improvement = 0
 
     print("\nStarting training...")
     print(f"Device: {device}")
     print(f"Epochs: {epochs}")
     print(f"Learning rate: {lr}")
     print(f"Model parameters: {count_parameters(model):,}")
+    if patience:
+        print(f"Early stopping patience: {patience}")
     print("=" * 60)
 
     for epoch in range(epochs):
@@ -125,6 +129,7 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
+            epochs_without_improvement = 0
             best_model_path = os.path.join(save_dir, 'best_model.pth')
             torch.save({
                 'epoch': epoch,
@@ -133,6 +138,14 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
                 'val_loss': val_loss,
                 'train_loss': train_loss,
             }, best_model_path)
+        else:
+            epochs_without_improvement += 1
+
+        # Early stopping check
+        if patience and epochs_without_improvement >= patience:
+            print(f"\nEarly stopping triggered after {epoch + 1} epochs")
+            print(f"No improvement for {patience} epochs")
+            break
 
     print("=" * 60)
     print(f"Training complete! Best val loss: {best_val_loss:.6f}")
@@ -191,6 +204,7 @@ def main():
     parser.add_argument('--val_split', type=float, default=0.2, help='Validation split ratio')
     parser.add_argument('--save_dir', type=str, default='./models', help='Model save directory')
     parser.add_argument('--device', type=str, default='auto', help='Device: auto, cpu, or cuda')
+    parser.add_argument('--patience', type=int, default=None, help='Early stopping patience (epochs without improvement)')
 
     args = parser.parse_args()
 
@@ -239,7 +253,8 @@ def main():
         epochs=args.epochs,
         lr=args.lr,
         device=device,
-        save_dir=args.save_dir
+        save_dir=args.save_dir,
+        patience=args.patience
     )
 
     # Plot results

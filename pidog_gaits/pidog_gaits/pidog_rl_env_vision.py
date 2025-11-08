@@ -9,7 +9,7 @@ import gymnasium as gym
 import numpy as np
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import JointState, Imu, Image
+from sensor_msgs.msg import JointState, Imu, Image, LaserScan
 from std_msgs.msg import Float64MultiArray, String
 from tf2_ros import TransformListener, Buffer, TransformException
 from cv_bridge import CvBridge
@@ -18,24 +18,35 @@ import time
 import math
 from scipy.spatial.transform import Rotation
 
+# Note: Touch sensor support disabled for now (requires Gazebo Jetty contact message types)
+# Will be re-enabled for dog-like behavior training later
+
 
 class PiDogVisionEnv(gym.Env):
     """
-    Multi-modal Gym environment for PiDog using vision + proprioception.
+    Multi-modal Gym environment for PiDog using ALL sensors.
 
     Observation: Dict with:
         - 'image': Camera RGB [84, 84, 3] (resized for CNN)
         - 'vector': [gait_cmd(4), joint_pos(12), joint_vel(12),
-                     body_pos(3), body_orient(4), imu_orient(4), imu_angvel(3)]
-                    Total: 42 dimensions
+                     body_pos(3), body_orient(4), imu_orient(4), imu_angvel(3),
+                     ultrasonic_range(1)]
+                    Total: 43 dimensions (touch sensor disabled for now)
 
     Action: [12 joint positions] in radians
 
-    Rewards:
-        - Stability (upright, head not touching ground)
-        - Speed (forward velocity for running)
-        - Efficiency (smooth movements)
-        - Visual obstacles avoidance (future)
+    Sensors Used (active):
+        - Camera: Vision for navigation and obstacle detection
+        - IMU: Orientation and angular velocity for balance
+        - Ultrasonic: Distance measurement for obstacle avoidance
+        - Joint encoders: Position and velocity feedback
+
+    Note: Touch sensor (head petting) disabled - will be enabled for dog-like behavior training
+
+    Rewards (configurable per task):
+        - Max velocity: Forward speed, stability, smooth movements
+        - Dog-like behavior: Touch response (react to petting), tail wag, etc.
+        - Obstacle avoidance: Ultrasonic distance penalties
     """
 
     metadata = {'render.modes': ['human']}
@@ -65,6 +76,7 @@ class PiDogVisionEnv(gym.Env):
         self.body_orientation = np.zeros(4)  # quaternion (x,y,z,w)
         self.imu_orientation = np.zeros(4)  # from IMU
         self.imu_angular_vel = np.zeros(3)
+        self.ultrasonic_range = 4.0  # Default max range (4m for HC-SR04)
         self.last_joint_positions = np.zeros(12)
 
         # Current gait command
@@ -112,6 +124,16 @@ class PiDogVisionEnv(gym.Env):
             10
         )
 
+        self.ultrasonic_sub = self.node.create_subscription(
+            LaserScan,
+            '/ultrasonic',
+            self._ultrasonic_callback,
+            10
+        )
+
+        # Touch sensor subscriber disabled (requires Gazebo Jetty message types)
+        # Will be re-enabled for dog-like behavior training
+
         # Gym spaces - MultiModal observation
         self.observation_space = gym.spaces.Dict({
             'image': gym.spaces.Box(
@@ -123,7 +145,7 @@ class PiDogVisionEnv(gym.Env):
             'vector': gym.spaces.Box(
                 low=-np.inf,
                 high=np.inf,
-                shape=(42,),
+                shape=(43,),  # 42D proprioception + ultrasonic_range(1)
                 dtype=np.float32
             )
         })
@@ -147,7 +169,8 @@ class PiDogVisionEnv(gym.Env):
         }
 
         print(f"[PiDogVisionEnv] Multi-modal environment initialized")
-        print(f"[PiDogVisionEnv] Observation: 84x84x3 image + 42D vector")
+        print(f"[PiDogVisionEnv] Observation: 84x84x3 image + 43D vector")
+        print(f"[PiDogVisionEnv] Sensors: Camera, IMU, Ultrasonic, 12 Joint Encoders")
 
     def _joint_callback(self, msg):
         """Update joint states from ROS topic."""
@@ -183,6 +206,14 @@ class PiDogVisionEnv(gym.Env):
         except Exception as e:
             self.node.get_logger().warn(f"Camera callback error: {e}")
 
+    def _ultrasonic_callback(self, msg):
+        """Update ultrasonic sensor distance reading."""
+        if len(msg.ranges) > 0:
+            # HC-SR04 range: 0.02-4.0m, single beam
+            self.ultrasonic_range = msg.ranges[0]
+            # Clamp to valid range
+            self.ultrasonic_range = np.clip(self.ultrasonic_range, 0.02, 4.0)
+
     def _update_body_pose_from_tf(self):
         """Get body pose from TF tree."""
         try:
@@ -217,16 +248,17 @@ class PiDogVisionEnv(gym.Env):
         # Get current gait parameters
         gait_vec = self.gait_params.get(self.target_gait, [0.0, 0.0, 0.0])
 
-        # Construct vector observation
+        # Construct vector observation (43D total)
         vector_obs = np.concatenate([
-            gait_vec,                # Gait command (3)
-            [self.phase],            # Phase (1)
-            self.joint_positions,    # Joint positions (12)
-            self.joint_velocities,   # Joint velocities (12)
-            self.body_position,      # Body position (3)
-            self.body_orientation,   # Body orientation (4)
-            self.imu_orientation,    # IMU orientation (4)
-            self.imu_angular_vel,    # IMU angular velocity (3)
+            gait_vec,                 # Gait command (3)
+            [self.phase],             # Phase (1)
+            self.joint_positions,     # Joint positions (12)
+            self.joint_velocities,    # Joint velocities (12)
+            self.body_position,       # Body position (3)
+            self.body_orientation,    # Body orientation (4)
+            self.imu_orientation,     # IMU orientation (4)
+            self.imu_angular_vel,     # IMU angular velocity (3)
+            [self.ultrasonic_range],  # Ultrasonic distance (1)
         ]).astype(np.float32)
 
         return {
