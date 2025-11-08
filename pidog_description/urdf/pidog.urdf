@@ -904,8 +904,8 @@
   <joint name="imu_joint" type="fixed">
     <parent link="body"/>
     <child link="imu_link"/>
-    <!-- Mounted on left side surface of body, rotated 90° around Y-axis to stand vertically -->
-    <origin xyz="0 0.05 0.01" rpy="0 1.5708 0"/>
+    <!-- Mounted on left face of body near left legs, rotated 90° around Y-axis to stand vertically -->
+    <origin xyz="-0.03 0.05 0.01" rpy="0 1.5708 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) IMU sensor - no plugin tag needed -->
