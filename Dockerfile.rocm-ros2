@@ -10,9 +10,11 @@ ENV TZ=UTC
 # ROCm/GPU settings
 ENV ROCM_VISIBLE_DEVICES=0
 ENV PYTHONUNBUFFERED=1
+ENV HSA_OVERRIDE_GFX_VERSION=11.0.0
+ENV PYTORCH_ROCM_ARCH=gfx1100
 
 # ROS2 settings
-ENV ROS_DISTRO=jazzy
+ENV ROS_DISTRO=rolling
 ENV ROS_DOMAIN_ID=0
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
@@ -34,39 +36,44 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
     http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" \
     | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-# Install ROS2 Jazzy Desktop (includes rviz, rqt, etc.)
+# Install ROS2 Rolling Desktop (includes rviz, rqt, etc.)
 RUN apt-get update && apt-get install -y \
     ros-${ROS_DISTRO}-desktop \
     ros-${ROS_DISTRO}-ros2-control \
     ros-${ROS_DISTRO}-ros2-controllers \
     ros-${ROS_DISTRO}-gz-ros2-control \
-    ros-${ROS_DISTRO}-gazebo-msgs \
     ros-${ROS_DISTRO}-joint-state-publisher \
     ros-${ROS_DISTRO}-joint-state-publisher-gui \
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
     ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-cv-bridge \
     python3-colcon-common-extensions \
     python3-rosdep \
+    python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Gazebo Harmonic
+# Install Gazebo Jetty
 RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] \
     http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
     | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
     apt-get update && apt-get install -y \
-    gz-harmonic \
+    gz-jetty \
     ros-${ROS_DISTRO}-ros-gz \
     && rm -rf /var/lib/apt/lists/*
 
 # Install RL dependencies
 RUN pip install --no-cache-dir \
     stable-baselines3 \
+    stable-baselines3[extra] \
     gymnasium \
     shimmy \
     tensorboard \
     matplotlib \
-    numpy
+    numpy \
+    scipy \
+    empy \
+    lark
 
 # Initialize rosdep
 RUN rosdep init || true && rosdep update

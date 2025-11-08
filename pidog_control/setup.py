@@ -20,11 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'pidog_gait_control = pidog_control.pidog_gait_control:main',
             'pidog_gazebo_controller = pidog_control.pidog_gazebo_controller:main',
-            'simple_walk_gazebo = pidog_control.simple_walk_gazebo:main',
-            'simple_walk_v2 = pidog_control.simple_walk_v2:main',
-            'virtual_imu_node = pidog_control.virtual_imu_node:main',
         ],
     },
 )

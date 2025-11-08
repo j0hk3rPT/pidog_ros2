@@ -26,7 +26,7 @@ services:
     security_opt:
       - seccomp:unconfined
     ipc: host
-    shm_size: '8gb'
+#    shm_size: '8gb'
     volumes:
       - .:/workspace
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -38,6 +38,7 @@ services:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - QT_X11_NO_MITSHM=1
+      - PYTORCH_ROCM_ARCH=gfx1100
     network_mode: host
     command: /bin/bash
     stdin_open: true

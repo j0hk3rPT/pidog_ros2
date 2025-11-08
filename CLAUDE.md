@@ -227,7 +227,6 @@ ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 
 **pidog_control**: Joint control nodes for Gazebo
 - `pidog_gazebo_controller.py` - Publishes to `/position_controller/commands` (ros2_control)
-- `simple_walk_gazebo.py` - Simple walking controller for testing
 
 **pidog_gaits**: Gait generation and neural network learning
 - `gait_generator_node.py` - Traditional gait controller (publishes to `/motor_pos`)
@@ -418,7 +417,7 @@ ros2 launch pidog_gaits gait_demo.launch.py
 
 ## Dependencies
 
-**ROS2**: Jazzy (in Docker)
+**ROS2**: Rolling (in Docker)
 - rclpy
 - ros_gz_sim, ros_gz_bridge
 - controller_manager, joint_state_broadcaster, position_controllers

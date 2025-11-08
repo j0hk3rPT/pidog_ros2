@@ -23,16 +23,16 @@ echo ""
 #   3. Adjust duration to reduce fall risk
 GAITS=(
     "walk_forward"   # Usually stable
-    "walk_backward"  # Usually stable
-    "walk_left"      # May cause instability
-    "walk_right"     # May cause instability
+#    "walk_backward"  # Usually stable
+#    "walk_left"      # May cause instability
+#    "walk_right"     # May cause instability
     "trot_forward"   # Usually stable
-    "trot_backward"  # May cause instability
-    "trot_left"      # May cause instability
-    "trot_right"     # May cause instability
-    "sit"            # Static pose - stable
-    "lie"            # Static pose - stable
-    "stretch"        # Static pose - stable
+#    "trot_backward"  # May cause instability
+#    "trot_left"      # May cause instability
+#    "trot_right"     # May cause instability
+#    "sit"            # Static pose - stable
+#    "lie"            # Static pose - stable
+#    "stretch"        # Static pose - stable
 )
 
 TOTAL_GAITS=${#GAITS[@]}
