@@ -27,7 +27,8 @@ echo "Launching Gazebo with verbose logging..."
 echo "Watch for plugin loading messages and any errors..."
 echo ""
 
-ros2 run ros_gz_sim create -world pidog_description/worlds/pidog_with_imu_only.sdf -v 4 &
+# Launch Gazebo directly with gz command for better control
+gz sim pidog_description/worlds/pidog_with_imu_only.sdf -v 4 -r &
 GZ_PID=$!
 
 echo ""
