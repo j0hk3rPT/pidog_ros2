@@ -52,8 +52,8 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
             sample_image = sample_image.permute(0, 3, 1, 2)  # (B, H, W, C) -> (B, C, H, W)
             n_flatten = self.cnn(sample_image).shape[1]
 
-        # MLP for vector observations (ALL sensors: proprioception + ultrasonic + touch)
-        vector_dim = observation_space['vector'].shape[0]  # 44D (was 42D)
+        # MLP for vector observations (ALL active sensors: proprioception + ultrasonic)
+        vector_dim = observation_space['vector'].shape[0]  # 43D (touch sensor disabled for now)
         self.vector_mlp = nn.Sequential(
             nn.Linear(vector_dim, 128),
             nn.ReLU(),
