@@ -26,7 +26,7 @@ GAITS=(
 #    "walk_backward"  # Usually stable
 #    "walk_left"      # May cause instability
 #    "walk_right"     # May cause instability
-    "trot_forward"   # Usually stable
+#    "trot_forward"   # Usually stable
 #    "trot_backward"  # May cause instability
 #    "trot_left"      # May cause instability
 #    "trot_right"     # May cause instability
