@@ -882,12 +882,23 @@
   =============================================================================================================== -->
 
   <!-- IMU Sensor - Mounted on body center for balance/orientation sensing -->
+  <!-- MPU6050: 21mm × 16mm × 3mm -->
   <link name="imu_link">
     <inertial>
       <mass value="0.001"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
+    <!-- Visual representation of MPU6050 chip -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.021 0.016 0.003"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.1 0.1 0.6 0.8"/>
+      </material>
+    </visual>
   </link>
 
   <joint name="imu_joint" type="fixed">
@@ -973,8 +984,8 @@
   <joint name="camera_joint" type="fixed">
     <parent link="head"/>
     <child link="camera_link"/>
-    <!-- Mount at front of nose, laying flat on nose surface, pointing forward/slightly down -->
-    <origin xyz="0.04 0 0.005" rpy="0 0.2 0"/>
+    <!-- Mount at front of nose, laying flat on nose surface, lowered by 3× camera length -->
+    <origin xyz="0.04 0 -0.010" rpy="0 0.2 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) Camera sensor -->
