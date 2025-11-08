@@ -48,8 +48,10 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
 
         # Compute shape by doing one forward pass
         with torch.no_grad():
-            sample_image = torch.as_tensor(observation_space['image'].sample()[None]).float()
-            sample_image = sample_image.permute(0, 3, 1, 2)  # (B, H, W, C) -> (B, C, H, W)
+            sample_image = observation_space['image'].sample()
+            # Add batch dim and convert: (H, W, C) -> (1, C, H, W)
+            sample_image = torch.from_numpy(sample_image).unsqueeze(0).float()  # (1, H, W, C)
+            sample_image = sample_image.permute(0, 3, 1, 2)  # (1, C, H, W)
             n_flatten = self.cnn(sample_image).shape[1]
 
         # MLP for vector observations (ALL active sensors: proprioception + ultrasonic)
