@@ -144,6 +144,14 @@ def generate_launch_description():
         output='screen',
     )
 
+    # Bridge IMU sensor from Gazebo to ROS 2
+    imu_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+        output='screen',
+    )
+
     # Gazebo controller to hold robot in standing pose
     gazebo_controller = Node(
         package='pidog_control',
@@ -159,6 +167,7 @@ def generate_launch_description():
         rviz,
         gazebo,
         clock_bridge,  # Add clock bridge before spawning robot
+        imu_bridge,    # Add IMU sensor bridge
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
