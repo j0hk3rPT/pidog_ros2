@@ -948,70 +948,8 @@
     </sensor>
   </gazebo>
 
-  <!-- Contact sensors for each foot (acrylic pads) -->
-  <gazebo reference="back_right_acrylic">
-    <sensor name="back_right_foot_contact" type="contact">
-      <always_on>true</always_on>
-      <update_rate>50</update_rate>
-      <contact>
-        <collision>back_right_acrylic_collision</collision>
-      </contact>
-      <plugin name="back_right_contact_plugin" filename="libgazebo_ros_bumper.so">
-        <always_on>true</always_on>
-        <update_rate>50.0</update_rate>
-        <bumperTopicName>contact/back_right_foot</bumperTopicName>
-        <frameName>back_right_acrylic</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-  <gazebo reference="front_right_acrylic">
-    <sensor name="front_right_foot_contact" type="contact">
-      <always_on>true</always_on>
-      <update_rate>50</update_rate>
-      <contact>
-        <collision>front_right_acrylic_collision</collision>
-      </contact>
-      <plugin name="front_right_contact_plugin" filename="libgazebo_ros_bumper.so">
-        <always_on>true</always_on>
-        <update_rate>50.0</update_rate>
-        <bumperTopicName>contact/front_right_foot</bumperTopicName>
-        <frameName>front_right_acrylic</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-  <gazebo reference="back_left_acrylic">
-    <sensor name="back_left_foot_contact" type="contact">
-      <always_on>true</always_on>
-      <update_rate>50</update_rate>
-      <contact>
-        <collision>back_left_acrylic_collision</collision>
-      </contact>
-      <plugin name="back_left_contact_plugin" filename="libgazebo_ros_bumper.so">
-        <always_on>true</always_on>
-        <update_rate>50.0</update_rate>
-        <bumperTopicName>contact/back_left_foot</bumperTopicName>
-        <frameName>back_left_acrylic</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
-
-  <gazebo reference="front_left_acrylic">
-    <sensor name="front_left_foot_contact" type="contact">
-      <always_on>true</always_on>
-      <update_rate>50</update_rate>
-      <contact>
-        <collision>front_left_acrylic_collision</collision>
-      </contact>
-      <plugin name="front_left_contact_plugin" filename="libgazebo_ros_bumper.so">
-        <always_on>true</always_on>
-        <update_rate>50.0</update_rate>
-        <bumperTopicName>contact/front_left_foot</bumperTopicName>
-        <frameName>front_left_acrylic</frameName>
-      </plugin>
-    </sensor>
-  </gazebo>
+  <!-- NOTE: Contact sensors removed - not available on real PiDog hardware -->
+  <!-- Virtual contact detection will use IMU + kinematics instead -->
 
   <!-- Gazebo-specific settings for sphere paw contacts -->
   <!-- Reduced stiffness to prevent bouncing - more realistic for compliant contact -->
