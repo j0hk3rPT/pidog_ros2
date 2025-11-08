@@ -973,8 +973,8 @@
   <joint name="camera_joint" type="fixed">
     <parent link="head"/>
     <child link="camera_link"/>
-    <!-- Mount at center of nose, pointing forward -->
-    <origin xyz="0.03 0 0.01" rpy="0 0 0"/>
+    <!-- Mount at front of nose, laying flat on nose surface, pointing forward/slightly down -->
+    <origin xyz="0.04 0 0.005" rpy="0 0.2 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) Camera sensor -->
