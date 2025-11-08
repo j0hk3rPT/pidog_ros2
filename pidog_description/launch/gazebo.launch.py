@@ -145,29 +145,11 @@ def generate_launch_description():
     )
 
     # Bridge IMU sensor from Gazebo to ROS 2
-    # NOTE: Disabled - sensor plugins crash Gazebo Harmonic
-    # imu_bridge = Node(
-    #     package='ros_gz_bridge',
-    #     executable='parameter_bridge',
-    #     arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
-    #     output='screen',
-    # )
-
-    # Bridge Gazebo model states for virtual IMU
-    model_states_bridge = Node(
+    # Native Gazebo IMU sensor - enabled with Sensors system plugin in world file
+    imu_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/world/pidog_world/model/PiDog/link_state@gazebo_msgs/msg/ModelStates[gz.msgs.Model'],
-        output='screen',
-        remappings=[('/world/pidog_world/model/PiDog/link_state', '/gazebo/model_states')]
-    )
-
-    # Virtual IMU node - synthesizes IMU data from Gazebo model states
-    # For sim-to-real transfer: disable this on real robot, use real IMU instead
-    virtual_imu = Node(
-        package='pidog_control',
-        executable='virtual_imu_node',
-        name='virtual_imu_node',
+        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
         output='screen',
     )
 
@@ -186,8 +168,7 @@ def generate_launch_description():
         rviz,
         gazebo,
         clock_bridge,           # Bridge clock from Gazebo
-        model_states_bridge,    # Bridge model states for virtual IMU
-        virtual_imu,            # Virtual IMU synthesizes IMU from model states
+        imu_bridge,             # Bridge native Gazebo IMU to ROS2
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
