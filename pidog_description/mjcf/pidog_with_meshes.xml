@@ -1,0 +1,230 @@
+<mujoco model="pidog_quadruped_with_meshes">
+  <!-- Compiler settings - tell MuJoCo where to find mesh files -->
+  <compiler angle="radian" meshdir="../meshes" autolimits="true"/>
+
+  <option timestep="0.001" iterations="50" solver="Newton" tolerance="1e-10"/>
+
+  <!-- Visual and rendering settings -->
+  <visual>
+    <headlight ambient="0.5 0.5 0.5"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global offwidth="640" offheight="480"/>
+  </visual>
+
+  <asset>
+    <!-- Load actual PiDog mesh files -->
+    <mesh name="body_mesh" file="body.dae" scale="0.001 0.001 0.001"/>
+    <mesh name="leg_b_mesh" file="leg_b.dae" scale="0.001 0.001 0.001"/>
+    <mesh name="leg_a_mesh" file="leg_a.dae" scale="0.001 0.001 0.001"/>
+    <mesh name="acrylic_mesh" file="acrylic.dae" scale="0.001 0.001 0.001"/>
+    <mesh name="motor_mesh" file="motor.dae" scale="0.001 0.001 0.001"/>
+
+    <!-- Materials -->
+    <material name="body_mat" rgba="0.2 0.6 0.8 1"/>
+    <material name="leg_mat" rgba="0.3 0.3 0.3 1"/>
+    <material name="ground_mat" rgba="0.5 0.5 0.5 1"/>
+  </asset>
+
+  <default>
+    <joint damping="0.5" armature="0.001"/>
+    <geom contype="1" conaffinity="1" condim="3" friction="0.8 0.005 0.0001"/>
+    <motor ctrllimited="true" ctrlrange="-1.57 1.57"/>
+  </default>
+
+  <worldbody>
+    <!-- Ground plane -->
+    <geom name="ground" type="plane" size="10 10 0.1" material="ground_mat"
+          friction="1.0 0.005 0.0001" solimp="0.9 0.95 0.001" solref="0.002 1"/>
+
+    <!-- Lighting -->
+    <light directional="true" diffuse="0.6 0.6 0.6" specular="0.3 0.3 0.3"
+           pos="0 0 4" dir="0 0 -1" castshadow="false"/>
+    <light directional="true" diffuse="0.4 0.4 0.4" specular="0.1 0.1 0.1"
+           pos="0 0 4" dir="0 0 -1"/>
+
+    <!-- Robot body -->
+    <body name="body" pos="0 0 0.12">
+      <freejoint/>
+
+      <!-- Body visual mesh (for appearance) -->
+      <geom name="body_visual" type="mesh" mesh="body_mesh"
+            material="body_mat" contype="0" conaffinity="0" group="1"/>
+
+      <!-- Body collision shape (simplified for physics) -->
+      <geom name="body_collision" type="box" size="0.08 0.03 0.02"
+            mass="0.15" rgba="0 0 0 0"/>  <!-- Invisible collision box -->
+
+      <!-- IMU sensor site -->
+      <site name="imu_site" pos="0 0 0.02" size="0.001"/>
+
+      <!-- BACK RIGHT LEG -->
+      <body name="back_right_leg_b" pos="-0.0405 0.06685 -0.009" euler="0 1.57 0">
+        <joint name="body_to_back_right_leg_b" type="hinge" axis="0 0 1"
+               range="-1.57 1.57" damping="0.5"/>
+
+        <!-- Visual mesh -->
+        <geom name="br_shoulder_visual" type="mesh" mesh="leg_b_mesh"
+              contype="0" conaffinity="0" group="1"/>
+        <!-- Collision capsule -->
+        <geom name="br_shoulder_collision" type="capsule" size="0.008 0.01"
+              material="leg_mat" mass="0.015"/>
+
+        <body name="back_right_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+          <joint name="back_right_leg_b_to_a" type="hinge" axis="0 1 0"
+                 range="-1.57 1.57" damping="0.5"/>
+
+          <!-- Visual mesh -->
+          <geom name="br_knee_visual" type="mesh" mesh="leg_a_mesh"
+                contype="0" conaffinity="0" group="1"/>
+          <!-- Collision capsule -->
+          <geom name="br_knee_collision" type="capsule" size="0.006 0.025"
+                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+
+          <!-- Foot -->
+          <body name="back_right_foot" pos="-0.031 -0.005 0">
+            <!-- Visual mesh -->
+            <geom name="br_foot_visual" type="mesh" mesh="acrylic_mesh"
+                  contype="0" conaffinity="0" group="1"/>
+            <!-- Collision sphere -->
+            <geom name="br_foot_collision" type="sphere" size="0.008"
+                  mass="0.003" friction="0.8 0.005 0.0001"/>
+            <site name="br_foot_site" pos="0 0 0" size="0.001"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- FRONT RIGHT LEG -->
+      <body name="front_right_leg_b" pos="0.0405 0.06685 -0.009" euler="0 1.57 0">
+        <joint name="body_to_front_right_leg_b" type="hinge" axis="0 0 1"
+               range="-1.57 1.57" damping="0.5"/>
+        <geom name="fr_shoulder_visual" type="mesh" mesh="leg_b_mesh"
+              contype="0" conaffinity="0" group="1"/>
+        <geom name="fr_shoulder_collision" type="capsule" size="0.008 0.01"
+              material="leg_mat" mass="0.015"/>
+
+        <body name="front_right_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+          <joint name="front_right_leg_b_to_a" type="hinge" axis="0 1 0"
+                 range="-1.57 1.57" damping="0.5"/>
+          <geom name="fr_knee_visual" type="mesh" mesh="leg_a_mesh"
+                contype="0" conaffinity="0" group="1"/>
+          <geom name="fr_knee_collision" type="capsule" size="0.006 0.025"
+                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+
+          <body name="front_right_foot" pos="-0.031 -0.005 0">
+            <geom name="fr_foot_visual" type="mesh" mesh="acrylic_mesh"
+                  contype="0" conaffinity="0" group="1"/>
+            <geom name="fr_foot_collision" type="sphere" size="0.008"
+                  mass="0.003" friction="0.8 0.005 0.0001"/>
+            <site name="fr_foot_site" pos="0 0 0" size="0.001"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- BACK LEFT LEG -->
+      <body name="back_left_leg_b" pos="-0.0405 -0.06685 -0.009" euler="0 1.57 3.1415">
+        <joint name="body_to_back_left_leg_b" type="hinge" axis="0 0 1"
+               range="-1.57 1.57" damping="0.5"/>
+        <geom name="bl_shoulder_visual" type="mesh" mesh="leg_b_mesh"
+              contype="0" conaffinity="0" group="1"/>
+        <geom name="bl_shoulder_collision" type="capsule" size="0.008 0.01"
+              material="leg_mat" mass="0.015"/>
+
+        <body name="back_left_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+          <joint name="back_left_leg_b_to_a" type="hinge" axis="0 1 0"
+                 range="-1.57 1.57" damping="0.5"/>
+          <geom name="bl_knee_visual" type="mesh" mesh="leg_a_mesh"
+                contype="0" conaffinity="0" group="1"/>
+          <geom name="bl_knee_collision" type="capsule" size="0.006 0.025"
+                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+
+          <body name="back_left_foot" pos="-0.031 -0.005 0">
+            <geom name="bl_foot_visual" type="mesh" mesh="acrylic_mesh"
+                  contype="0" conaffinity="0" group="1"/>
+            <geom name="bl_foot_collision" type="sphere" size="0.008"
+                  mass="0.003" friction="0.8 0.005 0.0001"/>
+            <site name="bl_foot_site" pos="0 0 0" size="0.001"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- FRONT LEFT LEG -->
+      <body name="front_left_leg_b" pos="0.0405 -0.06685 -0.009" euler="0 1.57 3.1415">
+        <joint name="body_to_front_left_leg_b" type="hinge" axis="0 0 1"
+               range="-1.57 1.57" damping="0.5"/>
+        <geom name="fl_shoulder_visual" type="mesh" mesh="leg_b_mesh"
+              contype="0" conaffinity="0" group="1"/>
+        <geom name="fl_shoulder_collision" type="capsule" size="0.008 0.01"
+              material="leg_mat" mass="0.015"/>
+
+        <body name="front_left_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+          <joint name="front_left_leg_b_to_a" type="hinge" axis="0 1 0"
+                 range="-1.57 1.57" damping="0.5"/>
+          <geom name="fl_knee_visual" type="mesh" mesh="leg_a_mesh"
+                contype="0" conaffinity="0" group="1"/>
+          <geom name="fl_knee_collision" type="capsule" size="0.006 0.025"
+                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+
+          <body name="front_left_foot" pos="-0.031 -0.005 0">
+            <geom name="fl_foot_visual" type="mesh" mesh="acrylic_mesh"
+                  contype="0" conaffinity="0" group="1"/>
+            <geom name="fl_foot_collision" type="sphere" size="0.008"
+                  mass="0.003" friction="0.8 0.005 0.0001"/>
+            <site name="fl_foot_site" pos="0 0 0" size="0.001"/>
+          </body>
+        </body>
+      </body>
+
+    </body>
+  </worldbody>
+
+  <!-- Actuators (same as simple model) -->
+  <actuator>
+    <position name="act_br_shoulder" joint="body_to_back_right_leg_b"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_br_knee" joint="back_right_leg_b_to_a"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_fr_shoulder" joint="body_to_front_right_leg_b"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_fr_knee" joint="front_right_leg_b_to_a"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_bl_shoulder" joint="body_to_back_left_leg_b"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_bl_knee" joint="back_left_leg_b_to_a"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_fl_shoulder" joint="body_to_front_left_leg_b"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+    <position name="act_fl_knee" joint="front_left_leg_b_to_a"
+              kp="8.0" kv="2.5" forcerange="-0.15 0.15"/>
+  </actuator>
+
+  <!-- Sensors (same as simple model) -->
+  <sensor>
+    <framequat name="imu_orientation" objtype="site" objname="imu_site"/>
+    <gyro name="imu_gyro" site="imu_site" noise="0.01"/>
+    <accelerometer name="imu_accel" site="imu_site" noise="0.1"/>
+
+    <jointpos name="jp_br_shoulder" joint="body_to_back_right_leg_b"/>
+    <jointpos name="jp_br_knee" joint="back_right_leg_b_to_a"/>
+    <jointpos name="jp_fr_shoulder" joint="body_to_front_right_leg_b"/>
+    <jointpos name="jp_fr_knee" joint="front_right_leg_b_to_a"/>
+    <jointpos name="jp_bl_shoulder" joint="body_to_back_left_leg_b"/>
+    <jointpos name="jp_bl_knee" joint="back_left_leg_b_to_a"/>
+    <jointpos name="jp_fl_shoulder" joint="body_to_front_left_leg_b"/>
+    <jointpos name="jp_fl_knee" joint="front_left_leg_b_to_a"/>
+
+    <jointvel name="jv_br_shoulder" joint="body_to_back_right_leg_b"/>
+    <jointvel name="jv_br_knee" joint="back_right_leg_b_to_a"/>
+    <jointvel name="jv_fr_shoulder" joint="body_to_front_right_leg_b"/>
+    <jointvel name="jv_fr_knee" joint="front_right_leg_b_to_a"/>
+    <jointvel name="jv_bl_shoulder" joint="body_to_back_left_leg_b"/>
+    <jointvel name="jv_bl_knee" joint="back_left_leg_b_to_a"/>
+    <jointvel name="jv_fl_shoulder" joint="body_to_front_left_leg_b"/>
+    <jointvel name="jv_fl_knee" joint="front_left_leg_b_to_a"/>
+
+    <touch name="contact_br_foot" site="br_foot_site"/>
+    <touch name="contact_fr_foot" site="fr_foot_site"/>
+    <touch name="contact_bl_foot" site="bl_foot_site"/>
+    <touch name="contact_fl_foot" site="fl_foot_site"/>
+  </sensor>
+
+</mujoco>

@@ -35,22 +35,34 @@ class PiDogMuJoCoEnv(gym.Env):
     def __init__(
         self,
         render_mode: Optional[str] = None,
-        model_path: str = "pidog_description/mjcf/pidog_simple.xml",
+        model_path: str = "pidog_description/mjcf/pidog_with_meshes.xml",  # Use meshes by default
         frame_skip: int = 20,  # 50 Hz control from 1000 Hz physics
         max_episode_steps: int = 1000,
+        use_simple_model: bool = False,  # Set True for faster training without meshes
     ):
         """Initialize PiDog MuJoCo environment.
 
         Args:
             render_mode: Rendering mode ("human", "rgb_array", or None)
-            model_path: Path to MuJoCo XML model
+            model_path: Path to MuJoCo XML model (default uses meshes)
             frame_skip: Number of physics steps per control step
             max_episode_steps: Maximum episode length
+            use_simple_model: If True, use simple shapes (faster, no meshes)
         """
         super().__init__()
 
-        # Load MuJoCo model
-        self.model = mujoco.MjModel.from_xml_path(model_path)
+        # Load MuJoCo model (use simple if requested or if meshes fail)
+        if use_simple_model:
+            model_path = "pidog_description/mjcf/pidog_simple.xml"
+
+        try:
+            self.model = mujoco.MjModel.from_xml_path(model_path)
+        except Exception as e:
+            print(f"Warning: Failed to load {model_path}: {e}")
+            print("Falling back to simple model...")
+            self.model = mujoco.MjModel.from_xml_path(
+                "pidog_description/mjcf/pidog_simple.xml"
+            )
         self.data = mujoco.MjData(self.model)
         self.frame_skip = frame_skip
         self.max_episode_steps = max_episode_steps
