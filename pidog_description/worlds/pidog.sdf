@@ -27,6 +27,12 @@
       </ode>
     </physics>
 
+    <!-- Sensor system plugin - required for IMU to work -->
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <!-- Don't specify render_engine - let it use default -->
+    </plugin>
+
     <!-- Lighting -->
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
