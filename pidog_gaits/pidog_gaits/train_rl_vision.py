@@ -35,7 +35,16 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
         super().__init__(observation_space, features_dim)
 
         # CNN for image (84x84x3)
-        n_input_channels = observation_space['image'].shape[2]  # 3 (RGB)
+        # Check if image is already in (C, H, W) format (after VecTransposeImage)
+        # or still in (H, W, C) format
+        image_shape = observation_space['image'].shape
+        if len(image_shape) == 3 and image_shape[0] <= 4:  # Likely (C, H, W) if first dim is small
+            n_input_channels = image_shape[0]
+            self.image_is_channels_first = True
+        else:
+            n_input_channels = image_shape[2]  # (H, W, C)
+            self.image_is_channels_first = False
+
         self.cnn = nn.Sequential(
             nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4, padding=0),
             nn.ReLU(),
@@ -49,9 +58,14 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
         # Compute shape by doing one forward pass
         with torch.no_grad():
             sample_image = observation_space['image'].sample()
-            # Add batch dim and convert: (H, W, C) -> (1, C, H, W)
-            sample_image = torch.from_numpy(sample_image).unsqueeze(0).float()  # (1, H, W, C)
-            sample_image = sample_image.permute(0, 3, 1, 2)  # (1, C, H, W)
+            sample_image = torch.from_numpy(sample_image).unsqueeze(0).float()  # Add batch dim
+
+            # Convert to (B, C, H, W) format if needed
+            if not self.image_is_channels_first:
+                # Image is (1, H, W, C), convert to (1, C, H, W)
+                sample_image = sample_image.permute(0, 3, 1, 2)
+            # else: Already in (1, C, H, W) format
+
             n_flatten = self.cnn(sample_image).shape[1]
 
         # MLP for vector observations (ALL active sensors: proprioception + ultrasonic)
@@ -75,9 +89,14 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
         Forward pass through multi-modal architecture.
         """
         # Process image through CNN
-        # observations['image'] is (B, H, W, C), need (B, C, H, W)
         image = observations['image'].float() / 255.0  # Normalize to [0, 1]
-        image = image.permute(0, 3, 1, 2)  # (B, H, W, C) -> (B, C, H, W)
+
+        # Convert to (B, C, H, W) format if needed
+        if not self.image_is_channels_first:
+            # Image is (B, H, W, C), convert to (B, C, H, W)
+            image = image.permute(0, 3, 1, 2)
+        # else: Already in (B, C, H, W) format from VecTransposeImage
+
         image_features = self.cnn(image)
 
         # Process vector through MLP
