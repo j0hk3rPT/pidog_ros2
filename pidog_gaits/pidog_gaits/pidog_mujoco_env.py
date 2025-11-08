@@ -35,7 +35,7 @@ class PiDogMuJoCoEnv(gym.Env):
     def __init__(
         self,
         render_mode: Optional[str] = None,
-        model_path: str = "pidog_description/mjcf/pidog_simple.xml",  # Simple model - faster!
+        model_path: str = "pidog_description/mjcf/pidog_simple.xml",  # Use pidog_with_meshes.xml for realistic appearance
         frame_skip: int = 20,  # 50 Hz control from 1000 Hz physics
         max_episode_steps: int = 1000,
     ):

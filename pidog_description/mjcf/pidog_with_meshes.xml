@@ -12,12 +12,12 @@
   </visual>
 
   <asset>
-    <!-- Load actual PiDog mesh files -->
-    <mesh name="body_mesh" file="body.dae" scale="0.001 0.001 0.001"/>
-    <mesh name="leg_b_mesh" file="leg_b.dae" scale="0.001 0.001 0.001"/>
-    <mesh name="leg_a_mesh" file="leg_a.dae" scale="0.001 0.001 0.001"/>
-    <mesh name="acrylic_mesh" file="acrylic.dae" scale="0.001 0.001 0.001"/>
-    <mesh name="motor_mesh" file="motor.dae" scale="0.001 0.001 0.001"/>
+    <!-- Load actual PiDog mesh files (OBJ format for MuJoCo) -->
+    <mesh name="body_mesh" file="body.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="leg_b_mesh" file="leg_b.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="leg_a_mesh" file="leg_a.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="acrylic_mesh" file="acrylic.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="motor_mesh" file="motor.obj" scale="0.001 0.001 0.001"/>
 
     <!-- Materials -->
     <material name="body_mat" rgba="0.2 0.6 0.8 1"/>
@@ -50,12 +50,12 @@
       <geom name="body_visual" type="mesh" mesh="body_mesh"
             material="body_mat" contype="0" conaffinity="0" group="1"/>
 
-      <!-- Body collision shape (simplified for physics) -->
-      <geom name="body_collision" type="box" size="0.08 0.03 0.02"
-            mass="0.15" rgba="0 0 0 0"/>  <!-- Invisible collision box -->
+      <!-- Body collision shape (simplified for physics, matching actual dimensions) -->
+      <geom name="body_collision" type="box" size="0.0405 0.06685 0.025"
+            mass="0.300" rgba="0 0 0 0"/>  <!-- Invisible collision box -->
 
       <!-- IMU sensor site -->
-      <site name="imu_site" pos="0 0 0.02" size="0.001"/>
+      <site name="imu_site" pos="0 0 0.025" size="0.001"/>
 
       <!-- BACK RIGHT LEG -->
       <body name="back_right_leg_b" pos="-0.0405 0.06685 -0.009" euler="0 1.57 0">
