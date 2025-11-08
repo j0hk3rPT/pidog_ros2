@@ -145,10 +145,28 @@ def generate_launch_description():
     )
 
     # Bridge IMU sensor from Gazebo to ROS 2
-    imu_bridge = Node(
+    # NOTE: Disabled due to Gazebo sensor plugin crash
+    # imu_bridge = Node(
+    #     package='ros_gz_bridge',
+    #     executable='parameter_bridge',
+    #     arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+    #     output='screen',
+    # )
+
+    # Bridge model pose from Gazebo to ROS 2 (for virtual IMU)
+    pose_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+        arguments=['/model/pidog/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
+        output='screen',
+    )
+
+    # Virtual IMU node - synthesizes IMU data from Gazebo pose
+    # For sim-to-real transfer: disable this on real robot, use real IMU instead
+    virtual_imu = Node(
+        package='pidog_control',
+        executable='virtual_imu_node',
+        name='virtual_imu_node',
         output='screen',
     )
 
@@ -166,8 +184,9 @@ def generate_launch_description():
         robot_state_publisher,
         rviz,
         gazebo,
-        clock_bridge,  # Add clock bridge before spawning robot
-        imu_bridge,    # Add IMU sensor bridge
+        clock_bridge,   # Add clock bridge before spawning robot
+        pose_bridge,    # Bridge Gazebo model pose for virtual IMU
+        virtual_imu,    # Synthesize IMU data from pose
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
