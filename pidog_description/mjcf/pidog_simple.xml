@@ -37,29 +37,33 @@
 
     <!-- Robot body -->
     <body name="body" pos="0 0 0.12">
-      <!-- Body collision shape (box approximating dog body) -->
+      <!-- Body collision shape matching actual PiDog dimensions
+           Leg attachment points at ±40.5mm (front/back) and ±66.85mm (left/right)
+           Box size in MuJoCo is HALF-extents, so full body is 81mm x 134mm x 50mm -->
       <freejoint/>
-      <geom name="body_geom" type="box" size="0.08 0.03 0.02"
-            material="body_mat" mass="0.15"/>
+      <geom name="body_geom" type="box" size="0.0405 0.06685 0.025"
+            material="body_mat" mass="0.300"/>
 
       <!-- IMU sensor site (center of body, slightly above) -->
-      <site name="imu_site" pos="0 0 0.02" size="0.001"/>
+      <site name="imu_site" pos="0 0 0.025" size="0.001"/>
 
-      <!-- BACK RIGHT LEG -->
+      <!-- BACK RIGHT LEG - Actual dimensions from URDF -->
       <body name="back_right_leg_b" pos="-0.0405 0.06685 -0.009" euler="0 1.57 0">
         <joint name="body_to_back_right_leg_b" type="hinge" axis="0 0 1"
                range="-1.57 1.57" damping="0.5"/>
-        <geom name="br_shoulder" type="capsule" size="0.008 0.01"
-              material="leg_mat" mass="0.015"/>
+        <!-- Shoulder segment: 47mm long -->
+        <geom name="br_shoulder" type="capsule" size="0.008 0.0235"
+              material="leg_mat" mass="0.010"/>
 
-        <body name="back_right_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+        <body name="back_right_leg_a" pos="0 0 -0.047" euler="0 3.1415 0">
           <joint name="back_right_leg_b_to_a" type="hinge" axis="0 1 0"
                  range="-1.57 1.57" damping="0.5"/>
-          <geom name="br_knee" type="capsule" size="0.006 0.025"
-                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+          <!-- Knee segment: 63.5mm long -->
+          <geom name="br_knee" type="capsule" size="0.006 0.03175"
+                fromto="0 0 0 -0.0635 0 0" material="leg_mat" mass="0.010"/>
 
           <!-- Foot contact point -->
-          <body name="back_right_foot" pos="-0.031 -0.005 0">
+          <body name="back_right_foot" pos="-0.0635 -0.005 0">
             <geom name="br_foot" type="sphere" size="0.008"
                   material="foot_mat" mass="0.003" friction="0.8 0.005 0.0001"/>
             <site name="br_foot_site" pos="0 0 0" size="0.001"/>
@@ -71,16 +75,16 @@
       <body name="front_right_leg_b" pos="0.0405 0.06685 -0.009" euler="0 1.57 0">
         <joint name="body_to_front_right_leg_b" type="hinge" axis="0 0 1"
                range="-1.57 1.57" damping="0.5"/>
-        <geom name="fr_shoulder" type="capsule" size="0.008 0.01"
-              material="leg_mat" mass="0.015"/>
+        <geom name="fr_shoulder" type="capsule" size="0.008 0.0235"
+              material="leg_mat" mass="0.010"/>
 
-        <body name="front_right_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+        <body name="front_right_leg_a" pos="0 0 -0.047" euler="0 3.1415 0">
           <joint name="front_right_leg_b_to_a" type="hinge" axis="0 1 0"
                  range="-1.57 1.57" damping="0.5"/>
-          <geom name="fr_knee" type="capsule" size="0.006 0.025"
-                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+          <geom name="fr_knee" type="capsule" size="0.006 0.03175"
+                fromto="0 0 0 -0.0635 0 0" material="leg_mat" mass="0.010"/>
 
-          <body name="front_right_foot" pos="-0.031 -0.005 0">
+          <body name="front_right_foot" pos="-0.0635 -0.005 0">
             <geom name="fr_foot" type="sphere" size="0.008"
                   material="foot_mat" mass="0.003" friction="0.8 0.005 0.0001"/>
             <site name="fr_foot_site" pos="0 0 0" size="0.001"/>
@@ -92,16 +96,16 @@
       <body name="back_left_leg_b" pos="-0.0405 -0.06685 -0.009" euler="0 1.57 3.1415">
         <joint name="body_to_back_left_leg_b" type="hinge" axis="0 0 1"
                range="-1.57 1.57" damping="0.5"/>
-        <geom name="bl_shoulder" type="capsule" size="0.008 0.01"
-              material="leg_mat" mass="0.015"/>
+        <geom name="bl_shoulder" type="capsule" size="0.008 0.0235"
+              material="leg_mat" mass="0.010"/>
 
-        <body name="back_left_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+        <body name="back_left_leg_a" pos="0 0 -0.047" euler="0 3.1415 0">
           <joint name="back_left_leg_b_to_a" type="hinge" axis="0 1 0"
                  range="-1.57 1.57" damping="0.5"/>
-          <geom name="bl_knee" type="capsule" size="0.006 0.025"
-                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+          <geom name="bl_knee" type="capsule" size="0.006 0.03175"
+                fromto="0 0 0 -0.0635 0 0" material="leg_mat" mass="0.010"/>
 
-          <body name="back_left_foot" pos="-0.031 -0.005 0">
+          <body name="back_left_foot" pos="-0.0635 -0.005 0">
             <geom name="bl_foot" type="sphere" size="0.008"
                   material="foot_mat" mass="0.003" friction="0.8 0.005 0.0001"/>
             <site name="bl_foot_site" pos="0 0 0" size="0.001"/>
@@ -113,16 +117,19 @@
       <body name="front_left_leg_b" pos="0.0405 -0.06685 -0.009" euler="0 1.57 3.1415">
         <joint name="body_to_front_left_leg_b" type="hinge" axis="0 0 1"
                range="-1.57 1.57" damping="0.5"/>
-        <geom name="fl_shoulder" type="capsule" size="0.008 0.01"
-              material="leg_mat" mass="0.015"/>
+        <!-- Shoulder segment: 47mm long -->
+        <geom name="fl_shoulder" type="capsule" size="0.008 0.0235"
+              material="leg_mat" mass="0.010"/>
 
-        <body name="front_left_leg_a" pos="0 0 -0.044" euler="0 3.1415 0">
+        <body name="front_left_leg_a" pos="0 0 -0.047" euler="0 3.1415 0">
           <joint name="front_left_leg_b_to_a" type="hinge" axis="0 1 0"
                  range="-1.57 1.57" damping="0.5"/>
-          <geom name="fl_knee" type="capsule" size="0.006 0.025"
-                fromto="0 0 0 -0.031 0 0" material="leg_mat" mass="0.010"/>
+          <!-- Knee segment: 63.5mm long -->
+          <geom name="fl_knee" type="capsule" size="0.006 0.03175"
+                fromto="0 0 0 -0.0635 0 0" material="leg_mat" mass="0.010"/>
 
-          <body name="front_left_foot" pos="-0.031 -0.005 0">
+          <!-- Foot contact point -->
+          <body name="front_left_foot" pos="-0.0635 -0.005 0">
             <geom name="fl_foot" type="sphere" size="0.008"
                   material="foot_mat" mass="0.003" friction="0.8 0.005 0.0001"/>
             <site name="fl_foot_site" pos="0 0 0" size="0.001"/>
