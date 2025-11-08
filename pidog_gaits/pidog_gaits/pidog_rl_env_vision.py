@@ -79,6 +79,10 @@ class PiDogVisionEnv(gym.Env):
         self.ultrasonic_range = 4.0  # Default max range (4m for HC-SR04)
         self.last_joint_positions = np.zeros(12)
 
+        # Velocity tracking for speed rewards
+        self.last_body_position = np.zeros(3)
+        self.body_velocity = np.zeros(3)  # Linear velocity (x, y, z)
+
         # Current gait command
         self.current_gait = [0.0, 0.0, 0.0, 0.0]  # [gait_type, direction, turn, phase]
         self.phase = 0.0
@@ -215,7 +219,7 @@ class PiDogVisionEnv(gym.Env):
             self.ultrasonic_range = np.clip(self.ultrasonic_range, 0.02, 4.0)
 
     def _update_body_pose_from_tf(self):
-        """Get body pose from TF tree."""
+        """Get body pose from TF tree and calculate velocity."""
         try:
             transform = self.tf_buffer.lookup_transform(
                 'world',
@@ -223,6 +227,9 @@ class PiDogVisionEnv(gym.Env):
                 rclpy.time.Time(),
                 timeout=rclpy.duration.Duration(seconds=0.1)
             )
+
+            # Store last position for velocity calculation
+            self.last_body_position = self.body_position.copy()
 
             self.body_position = np.array([
                 transform.transform.translation.x,
@@ -236,6 +243,9 @@ class PiDogVisionEnv(gym.Env):
                 transform.transform.rotation.z,
                 transform.transform.rotation.w
             ])
+
+            # Calculate velocity (position change / dt)
+            self.body_velocity = (self.body_position - self.last_body_position) / self.dt
 
         except (TransformException, Exception) as e:
             pass
@@ -268,33 +278,24 @@ class PiDogVisionEnv(gym.Env):
 
     def _calculate_reward(self, action):
         """
-        Calculate reward optimized for SPEED.
+        Enhanced reward function for speed, agility, and obstacle avoidance.
 
-        Primary goal: Run forward as fast as possible while staying upright.
+        Goals (in priority order):
+        1. Stay upright and stable
+        2. Move fast in commanded direction
+        3. Avoid obstacles using ultrasonic sensor
+        4. Smooth, efficient movements (agility)
         """
         reward = 0.0
         done = False
         info = {}
 
-        # === STABILITY REWARDS (Must stay upright to run) ===
+        # Parse gait command
+        gait_vec = self.gait_params.get(self.target_gait, [0.0, 0.0, 0.0])
+        desired_direction = gait_vec[1] if len(gait_vec) > 1 else 0.0  # -1=backward, 0=none, 1=forward
+        desired_turn = gait_vec[2] if len(gait_vec) > 2 else 0.0  # -1=left, 0=straight, 1=right
 
-        # 1. Upright reward
-        target_height = 0.10  # 10cm standing height
-        height_error = abs(self.body_position[2] - target_height)
-        if self.body_position[2] > 0.08:
-            reward += 1.0 - height_error * 5.0
-        else:
-            reward -= 2.0
-
-        # 2. Head not touching ground
-        head_z = self.body_position[2] + 0.05
-        if head_z < 0.02:
-            reward -= 5.0
-            info['head_contact'] = True
-        else:
-            reward += 0.5
-
-        # 3. Body orientation (pitch and roll should be small)
+        # Get orientation
         qx, qy, qz, qw = self.imu_orientation
         try:
             r = Rotation.from_quat([qx, qy, qz, qw])
@@ -303,42 +304,150 @@ class PiDogVisionEnv(gym.Env):
         except:
             roll = math.atan2(2*(qw*qx + qy*qz), 1 - 2*(qx**2 + qy**2))
             pitch = math.asin(np.clip(2*(qw*qy - qz*qx), -1, 1))
+            yaw = math.atan2(2*(qw*qz + qx*qy), 1 - 2*(qy**2 + qz**2))
 
-        if abs(roll) < 0.3 and abs(pitch) < 0.3:
-            reward += 1.0
+        # Get velocities
+        vel_x, vel_y, vel_z = self.body_velocity
+        forward_vel = vel_x  # Assuming x-axis is forward
+        lateral_vel = vel_y
+        vertical_vel = vel_z
+
+        # ========================================
+        # 1. STABILITY REWARDS (Foundation)
+        # ========================================
+
+        # Height reward - maintain standing height
+        target_height = 0.10  # 10cm standing height
+        height_error = abs(self.body_position[2] - target_height)
+        if self.body_position[2] > 0.08:
+            reward += 1.5 - height_error * 8.0  # Strong penalty for height deviation
         else:
-            reward -= abs(roll) + abs(pitch)
+            reward -= 3.0  # Heavy penalty for crouching/falling
+
+        # Orientation stability - penalize tilt
+        roll_penalty = abs(roll) * 2.0
+        pitch_penalty = abs(pitch) * 2.0
+        if abs(roll) < 0.2 and abs(pitch) < 0.2:
+            reward += 1.5  # Bonus for good stability
+        else:
+            reward -= roll_penalty + pitch_penalty
+
+        # Head clearance - never touch ground
+        head_z = self.body_position[2] + 0.05  # Head is ~5cm above body
+        if head_z < 0.02:
+            reward -= 8.0
+            done = True
+            info['head_contact'] = True
 
         # Check if fallen over
         if abs(roll) > 1.0 or abs(pitch) > 1.0 or self.body_position[2] < 0.05:
-            reward -= 10.0
+            reward -= 15.0
             done = True
             info['fallen'] = True
 
-        # === SPEED REWARDS (Primary objective!) ===
+        # ========================================
+        # 2. OBSTACLE AVOIDANCE (Safety)
+        # ========================================
 
-        # Estimate forward velocity from position change
-        # In real implementation, this would come from TF velocity or odometry
-        body_vel_x = 0.0  # Placeholder - need to track position history
+        # Ultrasonic-based obstacle avoidance
+        safe_distance = 0.5  # 50cm safe zone
+        danger_distance = 0.2  # 20cm danger zone
+
+        if self.ultrasonic_range < danger_distance:
+            # DANGER: Very close to obstacle
+            reward -= 5.0
+            info['obstacle_danger'] = True
+            # Penalize forward movement when obstacle ahead
+            if forward_vel > 0:
+                reward -= forward_vel * 3.0
+        elif self.ultrasonic_range < safe_distance:
+            # WARNING: Entering safe zone
+            proximity_penalty = (safe_distance - self.ultrasonic_range) / safe_distance
+            reward -= proximity_penalty * 2.0
+            info['obstacle_warning'] = True
+        else:
+            # SAFE: Good distance maintained
+            reward += 0.3
+
+        # ========================================
+        # 3. SPEED REWARDS (Primary Objective)
+        # ========================================
+
+        speed = np.linalg.norm(self.body_velocity[:2])  # Horizontal speed (x, y)
 
         if self.target_gait in ['trot_forward', 'walk_forward']:
-            # BIG reward for forward speed!
-            reward += body_vel_x * 5.0  # 5x multiplier for speed emphasis
+            # Forward motion
+            if desired_direction > 0:
+                # Reward forward velocity
+                reward += forward_vel * 8.0  # BIG multiplier for speed!
+                # Penalize backward movement
+                if forward_vel < 0:
+                    reward -= abs(forward_vel) * 3.0
+                # Bonus for high speed
+                if forward_vel > 0.15:  # > 15 cm/s
+                    reward += 2.0
+            # Penalize excessive lateral drift
+            reward -= abs(lateral_vel) * 1.5
 
-        # === EFFICIENCY ===
+        elif self.target_gait in ['trot_backward', 'walk_backward']:
+            # Backward motion
+            if desired_direction < 0:
+                reward += abs(forward_vel) * 6.0 if forward_vel < 0 else -forward_vel * 3.0
+            reward -= abs(lateral_vel) * 1.5
 
-        # Penalize large accelerations (smooth = fast)
+        elif 'left' in self.target_gait or 'right' in self.target_gait:
+            # Lateral motion
+            if desired_turn != 0:
+                reward += abs(lateral_vel) * 5.0
+            reward -= abs(forward_vel) * 1.0  # Penalize forward drift during turns
+
+        # Penalize vertical velocity (bouncing)
+        reward -= abs(vertical_vel) * 2.0
+
+        # ========================================
+        # 4. AGILITY REWARDS (Efficiency)
+        # ========================================
+
+        # Smooth movements - penalize jerky accelerations
         joint_accel = self.joint_positions - self.last_joint_positions
-        energy_cost = np.sum(np.square(joint_accel)) * 0.01
-        reward -= energy_cost
+        jerk_penalty = np.sum(np.square(joint_accel)) * 0.015
+        reward -= jerk_penalty
 
-        # Timeout
-        if self.episode_step > self.max_episode_steps:
+        # Energy efficiency - penalize large joint velocities at low speeds
+        if speed < 0.05:  # Moving slowly or standing
+            energy_waste = np.sum(np.square(self.joint_velocities)) * 0.02
+            reward -= energy_waste
+
+        # Angular velocity control - reward turning when commanded
+        yaw_rate = self.imu_angular_vel[2]  # Angular velocity around z-axis
+        if desired_turn != 0:
+            # Reward turning in correct direction
+            reward += abs(yaw_rate) * desired_turn * 2.0
+        else:
+            # Penalize unwanted spinning
+            reward -= abs(yaw_rate) * 1.0
+
+        # ========================================
+        # 5. TASK COMPLETION
+        # ========================================
+
+        # Timeout check
+        if self.episode_step >= self.max_episode_steps:
             done = True
             info['timeout'] = True
+            # Bonus for surviving full episode
+            if not info.get('fallen', False):
+                reward += 5.0
 
+        # ========================================
+        # Info logging
+        # ========================================
         info['body_z'] = self.body_position[2]
-        info['forward_vel'] = body_vel_x
+        info['forward_vel'] = forward_vel
+        info['speed'] = speed
+        info['ultrasonic_range'] = self.ultrasonic_range
+        info['roll'] = roll
+        info['pitch'] = pitch
 
         return reward, done, info
 
@@ -383,6 +492,8 @@ class PiDogVisionEnv(gym.Env):
 
         # Reset state
         self.last_joint_positions = np.zeros(12)
+        self.last_body_position = np.zeros(3)
+        self.body_velocity = np.zeros(3)
 
         # Wait for state to stabilize
         time.sleep(0.5)
