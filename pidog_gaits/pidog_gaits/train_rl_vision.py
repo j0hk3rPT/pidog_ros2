@@ -90,12 +90,12 @@ class MultiModalFeatureExtractor(BaseFeaturesExtractor):
         return features
 
 
-def make_env(rank=0):
+def make_env(rank=0, headless=True):
     """
     Create a wrapped vision environment for training.
     """
     def _init():
-        env = PiDogVisionEnv(node_name=f'pidog_vision_env_{rank}')
+        env = PiDogVisionEnv(node_name=f'pidog_vision_env_{rank}', headless=headless)
         env = Monitor(env)
         return env
 
@@ -108,7 +108,8 @@ def train_vision_rl(
     total_timesteps=100000,
     n_envs=1,
     learning_rate=3e-4,
-    device='cuda'
+    device='cuda',
+    headless=True
 ):
     """
     Train PiDog with vision-based RL using CNN policy.
@@ -135,9 +136,10 @@ def train_vision_rl(
 
     # Create environment(s)
     if n_envs == 1:
-        env = DummyVecEnv([make_env(0)])
+        env = DummyVecEnv([make_env(0, headless=headless)])
     else:
-        env = SubprocVecEnv([make_env(i) for i in range(n_envs)])
+        # Parallel envs always headless for performance
+        env = SubprocVecEnv([make_env(i, headless=True) for i in range(n_envs)])
 
     # Custom policy kwargs with our multi-modal feature extractor
     policy_kwargs = dict(
@@ -224,6 +226,8 @@ def main():
     parser.add_argument('--device', type=str, default='cuda',
                         choices=['cpu', 'cuda'],
                         help='Device to use for training (default: cuda)')
+    parser.add_argument('--no-headless', action='store_true',
+                        help='Show Gazebo GUI (only works with --envs 1)')
 
     args = parser.parse_args()
 
@@ -244,7 +248,8 @@ def main():
         total_timesteps=args.timesteps,
         n_envs=args.envs,
         learning_rate=args.lr,
-        device=device
+        device=device,
+        headless=(not args.no_headless)
     )
 
     print("\n" + "=" * 60)
