@@ -145,23 +145,15 @@ def generate_launch_description():
     )
 
     # Bridge IMU sensor from Gazebo to ROS 2
-    # EXPERIMENTAL: Re-enabled to test if sensor plugins work now
-    imu_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
-        output='screen',
-    )
+    # NOTE: Disabled - sensor plugins crash Gazebo Harmonic
+    # imu_bridge = Node(
+    #     package='ros_gz_bridge',
+    #     executable='parameter_bridge',
+    #     arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+    #     output='screen',
+    # )
 
-    # Bridge model pose from Gazebo to ROS 2 (for virtual IMU backup)
-    pose_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        arguments=['/model/pidog/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose'],
-        output='screen',
-    )
-
-    # Virtual IMU node - synthesizes IMU data from Gazebo pose
+    # Virtual IMU node - synthesizes IMU data from TF
     # For sim-to-real transfer: disable this on real robot, use real IMU instead
     virtual_imu = Node(
         package='pidog_control',
@@ -185,9 +177,7 @@ def generate_launch_description():
         rviz,
         gazebo,
         clock_bridge,   # Add clock bridge before spawning robot
-        imu_bridge,     # EXPERIMENTAL: Real IMU sensor from Gazebo
-        pose_bridge,    # Bridge Gazebo model pose for virtual IMU backup
-        virtual_imu,    # Virtual IMU (backup if real sensor fails)
+        virtual_imu,    # Virtual IMU synthesizes IMU from TF
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,

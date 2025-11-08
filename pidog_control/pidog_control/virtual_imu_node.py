@@ -17,7 +17,7 @@ For sim-to-real transfer:
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
-from geometry_msgs.msg import PoseStamped, TwistStamped
+from tf2_msgs.msg import TFMessage
 import numpy as np
 from scipy.spatial.transform import Rotation
 import math
@@ -30,11 +30,11 @@ class VirtualIMUNode(Node):
         # Publisher
         self.imu_pub = self.create_publisher(Imu, '/imu', 10)
 
-        # Subscribers - Gazebo model state
-        self.pose_sub = self.create_subscription(
-            PoseStamped,
-            '/model/pidog/pose',
-            self.pose_callback,
+        # Subscribers - TF messages from Gazebo
+        self.tf_sub = self.create_subscription(
+            TFMessage,
+            '/tf',
+            self.tf_callback,
             10
         )
 
@@ -50,22 +50,33 @@ class VirtualIMUNode(Node):
         # Gravity vector (Gazebo's linear acceleration includes gravity)
         self.gravity = 9.81
 
-        self.get_logger().info('Virtual IMU node started - synthesizing IMU from Gazebo pose')
+        self.get_logger().info('Virtual IMU node started - synthesizing IMU from TF')
         self.get_logger().info('Publishing to /imu topic at 100Hz')
 
-    def pose_callback(self, msg):
+    def tf_callback(self, msg):
         """
-        Compute IMU data from Gazebo model pose.
+        Compute IMU data from TF transform (body link).
 
         IMU outputs:
-        - orientation: Direct from pose (quaternion)
+        - orientation: Direct from TF (quaternion)
         - angular_velocity: Computed from orientation derivative
-        - linear_acceleration: Gravity + computed from velocity derivative
+        - linear_acceleration: Gravity transformed to body frame
         """
+        # Find the body link transform
+        body_transform = None
+        for transform in msg.transforms:
+            # Look for transform from world/odom to body link
+            if transform.child_frame_id == 'body' or transform.child_frame_id == 'base_link':
+                body_transform = transform
+                break
+
+        if body_transform is None:
+            return  # Body transform not in this message
+
         current_time = self.get_clock().now()
 
         # Extract orientation quaternion
-        q = msg.pose.orientation
+        q = body_transform.transform.rotation
         orientation_quat = np.array([q.x, q.y, q.z, q.w])
 
         # Compute angular velocity from orientation change
