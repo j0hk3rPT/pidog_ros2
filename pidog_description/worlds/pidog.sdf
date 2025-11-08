@@ -2,6 +2,12 @@
 <sdf version="1.8">
   <world name="pidog_world">
 
+    <!-- System plugins - REQUIRED for sensors to work in Gazebo Harmonic -->
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
     <!-- Physics settings optimized to fix position control jitter -->
     <!-- Based on gazebo_ros2_control known issues and best practices -->
     <physics name="1ms" type="ode">

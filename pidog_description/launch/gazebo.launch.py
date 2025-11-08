@@ -144,9 +144,16 @@ def generate_launch_description():
         output='screen',
     )
 
-    # NOTE: IMU bridge disabled - Gazebo Harmonic sensor plugins cause crashes/hangs
-    # See: https://github.com/gazebosim/gz-sim/issues (known issue with sensor system)
-    # TODO: Implement alternative IMU solution for RL training
+    # Bridge IMU data from Gazebo to ROS 2
+    # Gazebo topic: /imu (gz.msgs.IMU)
+    # ROS 2 topic: /imu/data (sensor_msgs/msg/Imu)
+    imu_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+        remappings=[('/imu', '/imu/data')],  # Remap to standard ROS 2 topic name
+        output='screen',
+    )
 
     # Gazebo controller to hold robot in standing pose
     gazebo_controller = Node(
@@ -163,6 +170,7 @@ def generate_launch_description():
         rviz,
         gazebo,
         clock_bridge,           # Bridge clock from Gazebo
+        imu_bridge,             # Bridge IMU data to /imu/data
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,
