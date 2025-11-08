@@ -1013,8 +1013,9 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
     </inertial>
     <!-- Visual representation: two "eyes" (HC-SR04 transducers) -->
+    <!-- Spaced wider (20mm apart) to align with eye piece circles -->
     <visual>
-      <origin xyz="0 0.006 0" rpy="0 0 0"/>
+      <origin xyz="0 0.010 0" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
@@ -1023,7 +1024,7 @@
       </material>
     </visual>
     <visual>
-      <origin xyz="0 -0.006 0" rpy="0 0 0"/>
+      <origin xyz="0 -0.010 0" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.008" length="0.004"/>
       </geometry>
@@ -1037,6 +1038,7 @@
     <parent link="head"/>
     <child link="ultrasonic_link"/>
     <!-- Position at eyes location - HC-SR04 transducers ARE the eyes -->
+    <!-- Looking straight forward, transducers spaced to align with eye circles -->
     <origin xyz="0.0 0.0 0.036" rpy="0 0 0"/>
   </joint>
 
@@ -1106,8 +1108,8 @@
   <joint name="touch_sensor_joint" type="fixed">
     <parent link="head"/>
     <child link="touch_sensor_link"/>
-    <!-- Flush on top surface of head, centered behind eyes -->
-    <origin xyz="-0.003 0 0.020" rpy="0 0 0"/>
+    <!-- Moved back by 2× length (2 × 0.012 = 0.024m) to sit on head piece -->
+    <origin xyz="-0.027 0 0.020" rpy="0 0 0"/>
   </joint>
 
   <!-- Gazebo contact sensor for touch detection -->
