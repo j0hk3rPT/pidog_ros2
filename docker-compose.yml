@@ -1,13 +1,21 @@
 # Docker Compose for GPU-Accelerated PiDog Training
-# Supports both ROCm (AMD) and CUDA (NVIDIA) GPUs
+# Unified container with ROCm GPU + ROS2 + Gazebo
+#
+# Usage:
+#   docker-compose --profile unified run --rm pidog-unified
+#
+# See GPU_TRAINING.md for complete workflow
 
 version: '3.8'
 
 services:
-  # ROCm service for AMD GPUs
-  pidog-rocm:
-    image: rocm/pytorch:latest
-    container_name: pidog_training_rocm
+  # Unified ROCm + ROS2 + Gazebo Container
+  pidog-unified:
+    build:
+      context: .
+      dockerfile: Dockerfile.rocm-ros2
+    image: pidog-rocm-ros2:latest
+    container_name: pidog_unified
     devices:
       - /dev/kfd
       - /dev/dri
@@ -21,47 +29,18 @@ services:
     shm_size: '8gb'
     volumes:
       - .:/workspace
+      - /tmp/.X11-unix:/tmp/.X11-unix
     working_dir: /workspace
     environment:
+      - DISPLAY=${DISPLAY}
       - ROCM_VISIBLE_DEVICES=0
       - PYTHONUNBUFFERED=1
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - QT_X11_NO_MITSHM=1
+    network_mode: host
     command: /bin/bash
     stdin_open: true
     tty: true
     profiles:
-      - rocm
-
-  # CUDA service for NVIDIA GPUs
-  pidog-cuda:
-    image: pytorch/pytorch:latest
-    container_name: pidog_training_cuda
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - PYTHONUNBUFFERED=1
-    ipc: host
-    shm_size: '8gb'
-    volumes:
-      - .:/workspace
-    working_dir: /workspace
-    command: /bin/bash
-    stdin_open: true
-    tty: true
-    profiles:
-      - cuda
-
-  # CPU-only service (no GPU)
-  pidog-cpu:
-    image: pytorch/pytorch:latest
-    container_name: pidog_training_cpu
-    environment:
-      - PYTHONUNBUFFERED=1
-    ipc: host
-    volumes:
-      - .:/workspace
-    working_dir: /workspace
-    command: /bin/bash
-    stdin_open: true
-    tty: true
-    profiles:
-      - cpu
+      - unified

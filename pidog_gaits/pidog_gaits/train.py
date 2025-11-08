@@ -15,7 +15,7 @@ import argparse
 import os
 from datetime import datetime
 
-from neural_network import GaitNet, GaitNetLarge, GaitNetSimpleLSTM, GaitNetLSTM, load_dataset, count_parameters
+from .neural_network import GaitNet, GaitNetLarge, GaitNetSimpleLSTM, GaitNetLSTM, load_dataset, count_parameters
 
 
 def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='cpu', save_dir='./models'):
@@ -42,7 +42,7 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
 
     # Learning rate scheduler
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=10, verbose=True
+        optimizer, mode='min', factor=0.5, patience=10
     )
 
     # Training history
@@ -76,6 +76,9 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
             # Forward pass
             optimizer.zero_grad()
             outputs = model(inputs)
+            # Handle LSTM models that return (output, hidden)
+            if isinstance(outputs, tuple):
+                outputs = outputs[0]
             loss = criterion(outputs, targets)
 
             # Backward pass
@@ -96,6 +99,9 @@ def train_model(model, train_loader, val_loader, epochs=100, lr=0.001, device='c
                 targets = targets.to(device)
 
                 outputs = model(inputs)
+                # Handle LSTM models that return (output, hidden)
+                if isinstance(outputs, tuple):
+                    outputs = outputs[0]
                 loss = criterion(outputs, targets)
                 val_loss += loss.item()
 

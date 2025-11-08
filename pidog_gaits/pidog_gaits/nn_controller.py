@@ -155,6 +155,9 @@ class NNControllerNode(Node):
         # Predict
         with torch.no_grad():
             output_tensor = self.model(input_tensor)
+            # Handle LSTM models that return (output, hidden)
+            if isinstance(output_tensor, tuple):
+                output_tensor = output_tensor[0]
 
         # Convert back to numpy
         angles = output_tensor.cpu().numpy()[0]

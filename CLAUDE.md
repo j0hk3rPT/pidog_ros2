@@ -16,9 +16,46 @@ PiDog ROS2 is a quadruped robot simulation and control system with neural networ
 
 ## Docker Setup
 
-Two container workflows for different tasks:
+**Unified Container** (RECOMMENDED): Everything in one container with GPU + ROS2 + Gazebo
 
-### ROS2 Container (Simulation & Data Collection)
+### One-Time Setup
+```bash
+# On host: Build unified container
+./setup_unified_container.sh
+
+# Time: ~10-15 minutes
+```
+
+### Daily Usage
+```bash
+# On host: Allow X11 access for Gazebo GUI
+xhost +local:docker
+
+# Start unified container
+docker-compose --profile unified run --rm pidog-unified
+
+# Inside container: Build workspace (first time)
+colcon build
+source install/setup.bash
+```
+
+**Inside the unified container, you can:**
+- Run Gazebo simulations
+- Collect training data
+- Train neural networks with GPU (imitation + RL)
+- Test trained models
+- Everything in ONE place!
+
+**Note**: Source code is mounted at `/workspace`. See `GPU_TRAINING.md` for complete workflow.
+
+---
+
+### Legacy: Separate ROS2 Container (Old Approach)
+
+<details>
+<summary>Click to expand legacy two-container setup (deprecated)</summary>
+
+**ROS2 Container** (Simulation & Data Collection):
 ```bash
 # On host: Allow X11 access for GUI
 xhost +local:docker
@@ -34,18 +71,9 @@ colcon build
 source install/setup.bash
 ```
 
-### Training Container (GPU-Accelerated Training)
-```bash
-# AMD ROCm GPU
-docker-compose --profile rocm run pidog-rocm
+⚠️ **This approach is deprecated. Use the unified container instead for simpler setup.**
 
-# Inside training container:
-python3 -m pidog_gaits.pidog_gaits.train \
-    --data ./training_data/gait_data_*.npz \
-    --model simple --epochs 100 --device auto
-```
-
-**Note**: Source code is mounted at `/workspace` (training container) or `/home/user/pidog_ros2` (ROS2 container).
+</details>
 
 ## Build and Development Commands
 
@@ -127,37 +155,56 @@ ros2 launch pidog_gaits collect_data.launch.py
 
 ### Neural Network Workflow
 
+**All commands run inside the unified container** after `source install/setup.bash`
+
 #### 1. Collect Training Data
 ```bash
 # Enhanced data collection (RECOMMENDED for hardware deployment)
 ros2 launch pidog_gaits collect_data_enhanced.launch.py
-./collect_training_data.sh 20  # 20 seconds per gait
 
-# Basic data collection (for testing only)
-ros2 launch pidog_gaits collect_data.launch.py
+# Or with custom duration:
+./collect_training_data.sh 90  # 90 seconds per gait
 
-# Output: ./training_data/gait_data_[enhanced_]YYYYMMDD_HHMMSS.{json,npz}
+# Output: ./training_data/gait_data_enhanced_YYYYMMDD_HHMMSS.npz
 # Enhanced includes noise: position σ=0.01 rad, velocity σ=0.1 rad/s
 ```
 
-#### 2. Train Neural Network
+#### 2. Train Imitation Model (GPU)
 ```bash
-# Quick training (auto-detect GPU)
-./train_gpu.sh
-
-# Manual training with options
-python3 -m pidog_gaits.pidog_gaits.train \
-    --data ./training_data/gait_data_*.npz \
-    --model simple \
+# GPU-accelerated imitation learning
+python3 -m pidog_gaits.train \
+    --data ./training_data/gait_data_enhanced_*.npz \
+    --model simple_lstm \
     --epochs 200 \
-    --batch_size 256 \
-    --device auto \
+    --batch_size 1024 \
+    --device cuda \
     --save_dir ./models
 
+# Time: ~30 min with 20GB GPU
 # Output: ./models/best_model.pth, ./models/training_history.png
 ```
 
-#### 3. Deploy Trained Model
+#### 3. RL Fine-Tuning (GPU + Parallel Envs)
+```bash
+# Reinforcement learning with physics-based rewards
+python3 -m pidog_gaits.train_rl \
+    --pretrained ./models/best_model.pth \
+    --output ./models/rl \
+    --timesteps 100000 \
+    --envs 32
+
+# Time: ~10-15 min with 32 parallel environments
+# Output: ./models/rl/final_model.zip (SB3), ./models/rl/final_model.pth (PyTorch)
+# Default device: cuda (GPU always used)
+```
+
+**Reward function focuses on:**
+- Standing upright (body height > 0.08m)
+- No head contact with ground
+- Stable orientation (low roll/pitch)
+- Task completion (forward velocity for walk_forward, etc.)
+
+#### 4. Deploy Trained Model
 ```bash
 # Launch neural network controller
 ros2 launch pidog_gaits nn_demo.launch.py
@@ -165,6 +212,8 @@ ros2 launch pidog_gaits nn_demo.launch.py
 # Test learned behaviors
 ros2 topic pub /gait_command std_msgs/msg/String "data: 'walk_forward'" --once
 ```
+
+**See `GPU_TRAINING.md` for complete workflow with troubleshooting.**
 
 ## Architecture
 

@@ -33,7 +33,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'model_path': './models/best_model.pth',
-                'model_type': 'simple',
+                'model_type': 'simple_lstm',
                 'frequency': 30,
                 'device': 'cpu'
             }]

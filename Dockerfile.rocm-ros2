@@ -1,0 +1,81 @@
+# Unified ROCm + ROS2 + Gazebo Container
+# Combines GPU acceleration with full ROS2 simulation stack
+
+FROM rocm/pytorch:latest
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+# ROCm/GPU settings
+ENV ROCM_VISIBLE_DEVICES=0
+ENV PYTHONUNBUFFERED=1
+
+# ROS2 settings
+ENV ROS_DISTRO=jazzy
+ENV ROS_DOMAIN_ID=0
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Install basic utilities
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg2 \
+    lsb-release \
+    wget \
+    software-properties-common \
+    git \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add ROS2 repository
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
+    -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
+    http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" \
+    | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# Install ROS2 Jazzy Desktop (includes rviz, rqt, etc.)
+RUN apt-get update && apt-get install -y \
+    ros-${ROS_DISTRO}-desktop \
+    ros-${ROS_DISTRO}-ros2-control \
+    ros-${ROS_DISTRO}-ros2-controllers \
+    ros-${ROS_DISTRO}-gz-ros2-control \
+    ros-${ROS_DISTRO}-gazebo-msgs \
+    ros-${ROS_DISTRO}-joint-state-publisher \
+    ros-${ROS_DISTRO}-joint-state-publisher-gui \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-xacro \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Gazebo Harmonic
+RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] \
+    http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+    | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+    apt-get update && apt-get install -y \
+    gz-harmonic \
+    ros-${ROS_DISTRO}-ros-gz \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install RL dependencies
+RUN pip install --no-cache-dir \
+    stable-baselines3 \
+    gymnasium \
+    shimmy \
+    tensorboard \
+    matplotlib \
+    numpy
+
+# Initialize rosdep
+RUN rosdep init || true && rosdep update
+
+# Setup workspace
+WORKDIR /workspace
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
+    echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc && \
+    echo "if [ -f /workspace/install/setup.bash ]; then source /workspace/install/setup.bash; fi" >> ~/.bashrc
+
+# Set entrypoint
+CMD ["/bin/bash"]
