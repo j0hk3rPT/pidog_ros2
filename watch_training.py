@@ -8,6 +8,8 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'pidog_gaits'))
 
+import mujoco
+import mujoco.viewer  # Must import viewer explicitly!
 from pidog_gaits.pidog_mujoco_env import PiDogMuJoCoEnv
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback

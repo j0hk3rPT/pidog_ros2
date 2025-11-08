@@ -8,6 +8,7 @@ for training quadruped locomotion policies.
 import gymnasium as gym
 from gymnasium import spaces
 import mujoco
+import mujoco.viewer  # Must import viewer explicitly!
 import numpy as np
 from typing import Optional, Tuple, Dict, Any
 
