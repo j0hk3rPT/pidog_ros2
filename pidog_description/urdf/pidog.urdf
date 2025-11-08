@@ -893,7 +893,8 @@
   <joint name="imu_joint" type="fixed">
     <parent link="body"/>
     <child link="imu_link"/>
-    <origin xyz="0 0 0.02" rpy="0 0 0"/>  <!-- Center of body, 2cm up -->
+    <!-- Center of body, 2cm up, rotated 90° to lay flat on its side -->
+    <origin xyz="0 0 0.02" rpy="0 1.5708 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) IMU sensor - no plugin tag needed -->
@@ -972,8 +973,8 @@
   <joint name="camera_joint" type="fixed">
     <parent link="head"/>
     <child link="camera_link"/>
-    <!-- Mount at front of nose, pointing forward -->
-    <origin xyz="0.03 0 0.02" rpy="0 0 0"/>
+    <!-- Mount at center of nose, pointing forward -->
+    <origin xyz="0.03 0 0.01" rpy="0 0 0"/>
   </joint>
 
   <!-- Modern Gazebo (Jetty) Camera sensor -->
