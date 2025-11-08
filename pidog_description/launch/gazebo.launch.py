@@ -144,11 +144,35 @@ def generate_launch_description():
         output='screen',
     )
 
-    # Bridge IMU sensor from Gazebo to ROS 2
+    # Bridge IMU sensor data from Gazebo to ROS 2
     imu_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'],
+        arguments=['/imu@sensor_msgs/msg/Imu@gz.msgs.IMU'],
+        output='screen',
+    )
+
+    # Bridge Camera sensor data from Gazebo to ROS 2
+    camera_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/camera@sensor_msgs/msg/Image@gz.msgs.Image'],
+        output='screen',
+    )
+
+    # Bridge Ultrasonic sensor (GPU Lidar simulating HC-SR04)
+    ultrasonic_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/ultrasonic@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan'],
+        output='screen',
+    )
+
+    # Bridge Touch sensor (contact sensor) - single sensor behind eyes
+    touch_sensor_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/touch_sensor/contacts@gazebo_msgs/msg/Contacts@gz.msgs.Contacts'],
         output='screen',
     )
 
@@ -166,8 +190,11 @@ def generate_launch_description():
         robot_state_publisher,
         rviz,
         gazebo,
-        clock_bridge,  # Add clock bridge before spawning robot
-        imu_bridge,    # Add IMU sensor bridge
+        clock_bridge,           # Bridge clock from Gazebo
+        imu_bridge,             # Bridge IMU sensor from Gazebo
+        camera_bridge,          # Bridge camera sensor from Gazebo
+        ultrasonic_bridge,      # Bridge ultrasonic/lidar sensor from Gazebo (eyes)
+        touch_sensor_bridge,    # Bridge touch sensor from Gazebo (behind eyes)
         spawn,
         load_joint_state_broadcaster,
         load_position_controller,

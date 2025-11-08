@@ -15,7 +15,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 import gymnasium as gym
 
-from .pidog_rl_env import PiDogGazeboEnv
+from .pidog_rl_env_modern import PiDogGazeboEnv
 from .neural_network import GaitNetSimpleLSTM
 
 

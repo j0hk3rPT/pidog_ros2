@@ -896,13 +896,15 @@
     <origin xyz="0 0 0.02" rpy="0 0 0"/>  <!-- Center of body, 2cm up -->
   </joint>
 
-  <!-- Gazebo IMU sensor plugin -->
+  <!-- Modern Gazebo (Jetty) IMU sensor - no plugin tag needed -->
+  <!-- World file must have: <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/> -->
   <gazebo reference="imu_link">
     <sensor name="imu_sensor" type="imu">
-      <always_on>1</always_on>
+      <always_on>true</always_on>
       <update_rate>100</update_rate>
       <visualize>false</visualize>
       <topic>imu</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
       <imu>
         <angular_velocity>
           <x>
@@ -948,8 +950,299 @@
     </sensor>
   </gazebo>
 
-  <!-- NOTE: Contact sensors removed - not available on real PiDog hardware -->
-  <!-- Virtual contact detection will use IMU + kinematics instead -->
+  <!-- Camera Sensor - Mounted on nose for vision-based RL -->
+  <link name="camera_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <!-- Small visual box to show camera location -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.005 0.01 0.005"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="head"/>
+    <child link="camera_link"/>
+    <!-- Mount at front of nose, pointing forward -->
+    <origin xyz="0.03 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Modern Gazebo (Jetty) Camera sensor -->
+  <gazebo reference="camera_link">
+    <sensor name="nose_camera" type="camera">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <visualize>false</visualize>
+      <topic>camera</topic>
+      <gz_frame_id>camera_link</gz_frame_id>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>  <!-- 60 degrees -->
+        <image>
+          <width>320</width>
+          <height>240</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>10.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- Ultrasonic Sensor (HC-SR04) - The "eyes" ARE the ultrasonic sensor -->
+  <!-- HC-SR04 has 2 transducers (transmitter/receiver) that look like eyes -->
+  <link name="ultrasonic_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <!-- Visual representation: two "eyes" (HC-SR04 transducers) -->
+    <visual>
+      <origin xyz="0 0.006 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.004"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.8 0.8 0.9 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.006 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.004"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.8 0.8 0.9 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="ultrasonic_joint" type="fixed">
+    <parent link="head"/>
+    <child link="ultrasonic_link"/>
+    <!-- Position at eyes location - HC-SR04 transducers ARE the eyes -->
+    <origin xyz="0.0 0.0 0.036" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Modern Gazebo (Jetty) Ultrasonic/GPU Lidar sensor (simulates HC-SR04) -->
+  <gazebo reference="ultrasonic_link">
+    <sensor name="ultrasonic_sensor" type="gpu_lidar">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>false</visualize>
+      <topic>ultrasonic</topic>
+      <gz_frame_id>ultrasonic_link</gz_frame_id>
+      <lidar>
+        <!-- Simulate HC-SR04: single beam, 2cm-400cm range, <15° cone -->
+        <scan>
+          <horizontal>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>0.02</min>
+          <max>4.0</max>
+          <resolution>0.003</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.003</stddev>
+        </noise>
+      </lidar>
+    </sensor>
+  </gazebo>
+
+  <!-- Touch Sensor - On top of head piece, behind eyes -->
+  <!-- Real PiDog has 1 touch sensor flush on the head surface -->
+  <link name="touch_sensor_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.0005" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.018 0.001"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.1 0.1 0.6"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0005" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.018 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="touch_sensor_joint" type="fixed">
+    <parent link="head"/>
+    <child link="touch_sensor_link"/>
+    <!-- Flush on top surface of head, centered behind eyes -->
+    <origin xyz="-0.003 0 0.020" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo contact sensor for touch detection -->
+  <gazebo reference="touch_sensor_link">
+    <sensor name="touch_sensor" type="contact">
+      <always_on>true</always_on>
+      <update_rate>30</update_rate>
+      <contact>
+        <collision>touch_sensor_link_collision</collision>
+      </contact>
+    </sensor>
+  </gazebo>
+
+  <!-- Microphone Array (3 microphones) - Sound direction detection -->
+  <!-- Left microphone -->
+  <link name="mic_left_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.002"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="mic_left_joint" type="fixed">
+    <parent link="head"/>
+    <child link="mic_left_link"/>
+    <origin xyz="0.02 0.015 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Center microphone -->
+  <link name="mic_center_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.002"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="mic_center_joint" type="fixed">
+    <parent link="head"/>
+    <child link="mic_center_link"/>
+    <origin xyz="0.025 0 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Right microphone -->
+  <link name="mic_right_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.002"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="mic_right_joint" type="fixed">
+    <parent link="head"/>
+    <child link="mic_right_link"/>
+    <origin xyz="0.02 -0.015 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <!-- RGB LED Strip - Visual indicator on chest -->
+  <link name="rgb_led_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.02 0.002"/>
+      </geometry>
+      <material name="led_blue">
+        <color rgba="0.2 0.4 1.0 0.8"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="rgb_led_joint" type="fixed">
+    <parent link="body"/>
+    <child link="rgb_led_link"/>
+    <!-- Front chest area -->
+    <origin xyz="0.045 0 0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Speaker - Audio output (visual representation) -->
+  <link name="speaker_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.003"/>
+      </geometry>
+      <material name="dark_gray">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="speaker_joint" type="fixed">
+    <parent link="body"/>
+    <child link="speaker_link"/>
+    <!-- Bottom center of body -->
+    <origin xyz="-0.03 0 -0.015" rpy="0 0 0"/>
+  </joint>
 
   <!-- Gazebo-specific settings for sphere paw contacts -->
   <!-- Reduced stiffness to prevent bouncing - more realistic for compliant contact -->

@@ -2,27 +2,13 @@
 <sdf version="1.8">
   <world name="pidog_world">
 
-    <!-- IMU system plugin for modern Gazebo (Jetty) -->
-    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
-    </plugin>
-
-    <!-- Camera system plugin for modern Gazebo (Jetty) -->
+    <!-- System plugins TEMPORARILY DISABLED for testing -->
+    <!-- Trying to see if these plugins are causing the hang -->
+    <!--
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
-      <render_engine>ogre2</render_engine>
     </plugin>
-
-    <!-- Contact system plugin for touch sensors -->
-    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact">
-    </plugin>
-
-    <!-- Pose Publisher for RL training - publishes model poses -->
-    <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
-      <publish_model_pose>true</publish_model_pose>
-      <publish_link_pose>true</publish_link_pose>
-      <publish_nested_model_pose>false</publish_nested_model_pose>
-      <use_pose_vector_msg>true</use_pose_vector_msg>
-      <update_frequency>100</update_frequency>
-    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    -->
 
     <!-- Physics settings optimized to fix position control jitter -->
     <!-- Based on gazebo_ros2_control known issues and best practices -->
