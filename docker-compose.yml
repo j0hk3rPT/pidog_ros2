@@ -13,7 +13,7 @@ services:
   pidog-unified:
     build:
       context: .
-      dockerfile: Dockerfile.rocm-ros2
+      dockerfile: Dockerfile.rocm
     image: pidog-rocm-ros2:latest
     container_name: pidog_unified
     devices:
