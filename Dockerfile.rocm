@@ -48,9 +48,6 @@ RUN python3 -m pip install \
     dm-haiku \
     rlax
 
-# Install PyTorch with ROCm (for model conversion and deployment)
-RUN python3 -m pip install torch torchvision --index-url https://download.pytorch.org/whl/rocm6.0
-
 # Install visualization and monitoring tools
 RUN python3 -m pip install \
     tensorboardX \
