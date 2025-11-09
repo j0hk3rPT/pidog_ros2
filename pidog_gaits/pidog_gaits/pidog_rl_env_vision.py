@@ -460,11 +460,9 @@ class PiDogVisionEnv(gym.Env):
         action_msg.data = action.tolist()
         self.action_pub.publish(action_msg)
 
-        # Wait for control step
-        time.sleep(self.dt)
-
-        # Spin node to process callbacks
-        rclpy.spin_once(self.node, timeout_sec=0.01)
+        # Spin node to process callbacks (no sleep - run as fast as possible)
+        # For RL training, we want max speed. Gazebo will limit the rate.
+        rclpy.spin_once(self.node, timeout_sec=0.001)
 
         # Update phase
         self.phase = (self.phase + 0.01) % 1.0
@@ -495,9 +493,9 @@ class PiDogVisionEnv(gym.Env):
         self.last_body_position = np.zeros(3)
         self.body_velocity = np.zeros(3)
 
-        # Wait for state to stabilize
-        time.sleep(0.5)
-        rclpy.spin_once(self.node, timeout_sec=0.1)
+        # Spin a few times to get fresh state (no long sleep)
+        for _ in range(10):
+            rclpy.spin_once(self.node, timeout_sec=0.001)
 
         obs = self._get_obs()
         info = {}

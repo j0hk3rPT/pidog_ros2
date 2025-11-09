@@ -18,6 +18,11 @@ ENV ROS_DISTRO=rolling
 ENV ROS_DOMAIN_ID=0
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+# CRITICAL: Gazebo performance fix
+# OpenBLAS thread limit prevents overhead from thread management
+# See: https://discourse.openrobotics.org/t/massive-gazebo-performance-improvement-ymmv/39181
+ENV OPENBLAS_NUM_THREADS=4
+
 # Install basic utilities
 RUN apt-get update && apt-get install -y \
     curl \
@@ -61,7 +66,9 @@ RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pk
     && rm -rf /var/lib/apt/lists/*
 
 # Install RL dependencies
+# IMPORTANT: Pin numpy<2 for compatibility with ROS2 cv_bridge
 RUN pip install --no-cache-dir \
+    "numpy<2" \
     stable-baselines3 \
     stable-baselines3[extra] \
     gymnasium \
@@ -69,7 +76,6 @@ RUN pip install --no-cache-dir \
     tensorboard \
     matplotlib \
     opencv-python \
-    numpy \
     scipy \
     empy \
     lark \
