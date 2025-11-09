@@ -1,8 +1,9 @@
 # Dockerfile for PiDog MJX Training with AMD ROCm Support
-# Base: ROCm 6.2+ with Ubuntu 24.04 and Python 3.12
+# Base: PyTorch with ROCm 6.2 on Ubuntu 24.04
 # Target: AMD 7900XT GPU training
+# Note: Uses rocm/pytorch base for optimized PyTorch+ROCm setup
 
-FROM rocm/dev-ubuntu-24.04:latest
+FROM rocm/pytorch:latest
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
