@@ -19,7 +19,7 @@ from brax import base
 import numpy as np
 from typing import Any, Dict, Tuple
 
-from pidog_brax_config import create_pidog_config
+from pidog_brax_mjcf import generate_pidog_mjcf
 
 
 class PiDogBraxEnv(PipelineEnv):
@@ -66,14 +66,13 @@ class PiDogBraxEnv(PipelineEnv):
             episode_length: Max steps per episode
             action_repeat: Number of physics steps per action
         """
-        config = create_pidog_config()
-
-        # Create Brax system from config
-        sys = mjcf.load_model(config) if isinstance(config, str) else config
-
-        # Note: Brax v2 uses different API - this needs adjustment based on version
-        # For Brax v2 with dictionaries:
-        # sys = base.System.from_config(config)
+        # Generate MJCF XML and load via MuJoCo model object
+        # Note: Brax's mjcf.loads() has XML parsing issues
+        # Workaround: Load with MuJoCo first, then convert to Brax system
+        mjcf_xml = generate_pidog_mjcf()
+        import mujoco
+        mj_model = mujoco.MjModel.from_xml_string(mjcf_xml)
+        sys = mjcf.load_model(mj_model)
 
         self._gait_command = jnp.array(gait_command, dtype=jnp.float32)
         self._phase = 0.0
@@ -92,24 +91,34 @@ class PiDogBraxEnv(PipelineEnv):
         """
         rng, rng1, rng2 = jax.random.split(rng, 3)
 
-        # Initial joint positions (standing pose)
+        # Initial state for freejoint + 8 leg joints
+        # nq = 15: [x, y, z, qw, qx, qy, qz, joint1, ..., joint8]
+        # nv = 14: [vx, vy, vz, wx, wy, wz, joint_vel1, ..., joint_vel8]
+
+        # Freejoint position: [x, y, z] + quaternion [w, x, y, z]
+        # Start with body at 0.1m height, identity rotation
+        freejoint_pos = jnp.array([0.0, 0.0, 0.1])  # XYZ position
+        freejoint_quat = jnp.array([1.0, 0.0, 0.0, 0.0])  # Identity quaternion (w, x, y, z)
+
+        # Leg joint positions (standing pose)
         # Shoulder angles: ~0.5 rad (legs angled outward)
         # Knee angles: ~-0.8 rad (knees bent to support weight)
-        q_init = jnp.array([
+        leg_joints = jnp.array([
             0.5, -0.8,  # BR
             0.5, -0.8,  # FR
             0.5, -0.8,  # BL
             0.5, -0.8,  # FL
         ])
 
-        # Add small random noise to initial pose
-        q_init = q_init + jax.random.uniform(rng1, (8,), minval=-0.1, maxval=0.1)
+        # Add small random noise to leg joints
+        leg_joints = leg_joints + jax.random.uniform(rng1, (8,), minval=-0.1, maxval=0.1)
 
-        # Initial velocities (zero)
-        qd_init = jnp.zeros(8)
+        # Combine into full q_init (15 DOF)
+        q_init = jnp.concatenate([freejoint_pos, freejoint_quat, leg_joints])
 
-        # Body position: slightly above ground
-        # (Brax will set root position based on joint config)
+        # Initial velocities (14 DOF: 6 for freejoint + 8 for legs)
+        qd_init = jnp.zeros(14)
+
         pipeline_state = self.pipeline_init(q_init, qd_init)
 
         obs = self._get_obs(pipeline_state, jnp.zeros(8))
