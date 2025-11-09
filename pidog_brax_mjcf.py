@@ -49,6 +49,16 @@ def generate_pidog_mjcf():
       <geom name="torso_geom" type="box" size="0.05 0.05 0.05"
             rgba="0.4 0.4 0.8 1"/>
 
+      <!-- ========== SENSORS ========== -->
+      <!-- Camera (320x240, 30Hz) on front of head -->
+      <camera name="head_camera" pos="0.06 0 0.02" quat="0.7071 0 0 0.7071" fovy="60"/>
+
+      <!-- Ultrasonic rangefinder site (HC-SR04) - forward facing -->
+      <site name="ultrasonic_site" pos="0.055 0 0.015" size="0.003" rgba="1 0 0 0.5"/>
+
+      <!-- Head touch sensor site (on top of head) -->
+      <site name="head_touch_site" pos="0.04 0 0.03" size="0.01" rgba="0 1 0 0.5"/>
+
       <!-- ========== BACK RIGHT LEG ========== -->
       <body name="br_upper" pos="0.0405 -0.06685 -0.009">
         <joint name="br_shoulder" type="hinge" axis="0 1 0"
@@ -71,6 +81,7 @@ def generate_pidog_mjcf():
                       diaginertia="1.64e-8 6.52e-8 7.99e-8"/>
             <geom name="br_foot_geom" type="sphere" size="0.008"
                   rgba="0.2 0.2 0.2 1" friction="1.0 0.005 0.0001"/>
+            <site name="br_foot_site" pos="0 0 -0.008" size="0.005"/>
           </body>
         </body>
       </body>
@@ -97,6 +108,7 @@ def generate_pidog_mjcf():
                       diaginertia="1.64e-8 6.52e-8 7.99e-8"/>
             <geom name="fr_foot_geom" type="sphere" size="0.008"
                   rgba="0.2 0.2 0.2 1" friction="1.0 0.005 0.0001"/>
+            <site name="fr_foot_site" pos="0 0 -0.008" size="0.005"/>
           </body>
         </body>
       </body>
@@ -123,6 +135,7 @@ def generate_pidog_mjcf():
                       diaginertia="1.64e-8 6.52e-8 7.99e-8"/>
             <geom name="bl_foot_geom" type="sphere" size="0.008"
                   rgba="0.2 0.2 0.2 1" friction="1.0 0.005 0.0001"/>
+            <site name="bl_foot_site" pos="0 0 -0.008" size="0.005"/>
           </body>
         </body>
       </body>
@@ -149,6 +162,7 @@ def generate_pidog_mjcf():
                       diaginertia="1.64e-8 6.52e-8 7.99e-8"/>
             <geom name="fl_foot_geom" type="sphere" size="0.008"
                   rgba="0.2 0.2 0.2 1" friction="1.0 0.005 0.0001"/>
+            <site name="fl_foot_site" pos="0 0 -0.008" size="0.005"/>
           </body>
         </body>
       </body>
@@ -176,11 +190,48 @@ def generate_pidog_mjcf():
   </actuator>
 
   <sensor>
-    <!-- IMU sensors for observation -->
-    <framequat name="torso_quat" objtype="body" objname="torso"/>
-    <framepos name="torso_pos" objtype="body" objname="torso"/>
-    <framelinvel name="torso_vel" objtype="body" objname="torso"/>
-    <frameangvel name="torso_angvel" objtype="body" objname="torso"/>
+    <!-- ========== IMU (MPU6050 on body) ========== -->
+    <!-- 6-axis IMU: 3-axis accelerometer + 3-axis gyroscope -->
+    <framequat name="imu_quat" objtype="body" objname="torso"/>
+    <framepos name="imu_pos" objtype="body" objname="torso"/>
+    <framelinvel name="imu_linvel" objtype="body" objname="torso"/>
+    <frameangvel name="imu_angvel" objtype="body" objname="torso"/>
+    <framelinacc name="imu_linacc" objtype="body" objname="torso"/>
+    <frameangacc name="imu_angacc" objtype="body" objname="torso"/>
+
+    <!-- ========== Joint Position/Velocity Sensors ========== -->
+    <!-- For servo feedback (real servos have position encoders) -->
+    <jointpos name="br_shoulder_pos" joint="br_shoulder"/>
+    <jointpos name="br_knee_pos" joint="br_knee"/>
+    <jointpos name="fr_shoulder_pos" joint="fr_shoulder"/>
+    <jointpos name="fr_knee_pos" joint="fr_knee"/>
+    <jointpos name="bl_shoulder_pos" joint="bl_shoulder"/>
+    <jointpos name="bl_knee_pos" joint="bl_knee"/>
+    <jointpos name="fl_shoulder_pos" joint="fl_shoulder"/>
+    <jointpos name="fl_knee_pos" joint="fl_knee"/>
+
+    <jointvel name="br_shoulder_vel" joint="br_shoulder"/>
+    <jointvel name="br_knee_vel" joint="br_knee"/>
+    <jointvel name="fr_shoulder_vel" joint="fr_shoulder"/>
+    <jointvel name="fr_knee_vel" joint="fr_knee"/>
+    <jointvel name="bl_shoulder_vel" joint="bl_shoulder"/>
+    <jointvel name="bl_knee_vel" joint="bl_knee"/>
+    <jointvel name="fl_shoulder_vel" joint="fl_shoulder"/>
+    <jointvel name="fl_knee_vel" joint="fl_knee"/>
+
+    <!-- ========== Foot Contact/Force Sensors ========== -->
+    <!-- Touch sensors on foot pads (for gait phase detection) -->
+    <touch name="br_foot_contact" site="br_foot_site"/>
+    <touch name="fr_foot_contact" site="fr_foot_site"/>
+    <touch name="bl_foot_contact" site="bl_foot_site"/>
+    <touch name="fl_foot_contact" site="fl_foot_site"/>
+
+    <!-- ========== Ultrasonic Rangefinder (HC-SR04 simulation) ========== -->
+    <!-- Mounted on head, forward-facing (0.02-4m range) -->
+    <rangefinder name="ultrasonic" site="ultrasonic_site"/>
+
+    <!-- ========== Head Touch Sensor ========== -->
+    <touch name="head_touch" site="head_touch_site"/>
   </sensor>
 </mujoco>
 """
